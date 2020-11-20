@@ -1,0 +1,10 @@
+{
+	"uid": "server",
+	"append": true,
+	"watch": true,
+	"script": "./index.js",
+	"sourceDir": "",
+	"logFile": "/home/klikz/logs/c2keep.klikz.us/log.log",
+	"outFile": "/home/klikz/logs/c2keep.klikz.us/out.log",
+	"errFile": "/home/klikz/logs/c2keep.klikz.us/err.log"
+}

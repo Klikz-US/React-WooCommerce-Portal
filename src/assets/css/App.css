@@ -1,0 +1,54 @@
+html {
+  scroll-behavior: smooth;
+}
+
+/**
+ * Form
+ */
+
+/** **************** */
+
+/**
+ * Table
+ */
+/** **************** */
+table.table a {
+  margin: 0;
+  color: #007bff;
+}
+
+table td {
+  font-size: 1.1rem;
+  font-weight: 400;
+}
+
+/**
+ * Navigation
+ */
+/** **************** */
+.list-group-item {
+  font-size: 1.2em;
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+
+.navigation .accordion .btn-link {
+  text-decoration: none;
+}
+
+.navigation a.active {
+  background-color: #9fa8da;
+}
+
+/**
+ * Slier
+ */
+.carousel-control-prev-icon,
+.carousel-control-next-icon,
+.carousel-indicators li {
+  background-color: #33b5e5 !important;
+}
+
+.carousel-indicators li.active {
+  background-color: #0d7ea7 !important;
+}
