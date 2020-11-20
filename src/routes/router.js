@@ -106,12 +106,6 @@ export default function MainRouter() {
                     isAuthenticated={isAuthenticated}
                   />
 
-                  <PublicRoute
-                    path="/login"
-                    component={Login}
-                    isAuthenticated={isAuthenticated}
-                  />
-
                   <Redirect to={isAuthenticated ? "/" : "/login"} />
                 </Switch>
               </main>
@@ -119,6 +113,12 @@ export default function MainRouter() {
             </div>
           </>
         )}
+
+        <PublicRoute
+          path="/login"
+          component={Login}
+          isAuthenticated={isAuthenticated}
+        />
       </Router>
     </div>
   );

@@ -5,7 +5,7 @@ const UserModel = new Schema(
   {
     role: {
       type: String,
-      default: "employee",
+      default: "editor",
       required: true,
       trim: true,
     },
@@ -13,11 +13,6 @@ const UserModel = new Schema(
       type: String,
       default: "",
       required: true,
-      trim: true,
-    },
-    pharmacyId: {
-      type: String,
-      default: "",
       trim: true,
     },
     phone: {
@@ -37,11 +32,10 @@ const UserModel = new Schema(
       required: true,
       trim: true,
     },
-    userNPI: {
-      type: String,
-      default: "",
+    isAdmin: {
+      type: Boolean,
+      default: false,
       required: true,
-      trim: true,
     },
   },
   {

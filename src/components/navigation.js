@@ -1,174 +1,101 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-import { Accordion, Button } from "react-bootstrap";
-import { MDBListGroupItem, MDBIcon } from "mdbreact";
-
 import logo from "./../assets/images/logo.png";
+
+import { FcHome } from "react-icons/fc";
+import { FcCustomerSupport } from "react-icons/fc";
+import { FcContacts } from "react-icons/fc";
+import { FcCurrencyExchange } from "react-icons/fc";
+import { FcApproval } from "react-icons/fc";
+import { FcBullish } from "react-icons/fc";
 
 export default function Navigation() {
   const auth_obj = useSelector((state) => state.auth);
   const { isAdmin } = auth_obj.user;
 
+  const location = useLocation();
+
   return (
     <>
       <div className="w-100 p-5">
-        <Link to="/dashboard">
-          <img src={logo} className="img-fluid" alt="C2 Keep" />
-        </Link>
+        <img src={logo} className="img-fluid" alt="C2 Keep" />
       </div>
 
-      <Link to="/dashboard" className="btn w-100 p-0 m-0 text-left">
-        <MDBListGroupItem>
-          <MDBIcon icon="chart-pie" className="mr-2" />
+      <Link
+        to="/"
+        className={`btn w-100 px-4 py-3 m-0 mb-1 text-left ${
+          location.pathname === "/" ? "bg-info text-white" : "bg-white"
+        }`}
+      >
+        <FcHome size="24" style={{ verticalAlign: "bottom" }} />
+        <span className="ml-2" style={{ fontSize: "16px" }}>
           Dashboard
-        </MDBListGroupItem>
+        </span>
       </Link>
 
-      <Accordion className="w-100">
-        {isAdmin && (
-          <>
-            <Accordion.Toggle
-              as={Button}
-              variant="link"
-              className="btn w-100 p-0 m-0 text-left"
-              eventKey="0"
-            >
-              <MDBListGroupItem>
-                <MDBIcon icon="user" className="mr-2" />
-                Account Mangement
-              </MDBListGroupItem>
-            </Accordion.Toggle>
-            <Accordion.Collapse eventKey="0">
-              <>
-                <Link
-                  to="/users"
-                  className="shadow-none btn w-100 p-0 pl-3 m-0 text-left"
-                >
-                  <MDBListGroupItem className="border-0">
-                    <MDBIcon icon="align-justify" className="mr-2" />
-                    All Accounts
-                  </MDBListGroupItem>
-                </Link>
-                <Link
-                  to="/users/add"
-                  className="shadow-none btn w-100 p-0 pl-3 m-0 text-left"
-                >
-                  <MDBListGroupItem className="border-0">
-                    <MDBIcon icon="plus" className="mr-2" />
-                    Add New Account
-                  </MDBListGroupItem>
-                </Link>
-              </>
-            </Accordion.Collapse>
-          </>
-        )}
-
-        <Accordion.Toggle
-          as={Button}
-          variant="link"
-          className="btn w-100 p-0 m-0 text-left"
-          eventKey="1"
+      {isAdmin && (
+        <Link
+          to="/users"
+          className={`btn w-100 px-4 py-3 m-0 mb-1 text-left ${
+            location.pathname === "/users" ? "bg-info text-white" : "bg-white"
+          }`}
         >
-          <MDBListGroupItem>
-            <MDBIcon icon="clipboard-list" className="mr-2" />
-            Inventory Mangement
-          </MDBListGroupItem>
-        </Accordion.Toggle>
-        <Accordion.Collapse eventKey="1">
-          <>
-            <Link
-              to="/inventories"
-              className="shadow-none btn w-100 p-0 pl-3 m-0 text-left"
-            >
-              <MDBListGroupItem className="border-0">
-                <MDBIcon icon="align-justify" className="mr-2" />
-                All Inventories
-              </MDBListGroupItem>
-            </Link>
-            <Link
-              to="/inventories/add"
-              className="shadow-none btn w-100 p-0 pl-3 m-0 text-left"
-            >
-              <MDBListGroupItem className="border-0">
-                <MDBIcon icon="plus" className="mr-2" />
-                Add New Inventory
-              </MDBListGroupItem>
-            </Link>
-            <Link
-              to="/inventories/add"
-              className="shadow-none btn w-100 p-0 pl-3 m-0 text-left"
-            >
-              <MDBListGroupItem className="border-0">
-                <MDBIcon icon="edit" className="mr-2" />
-                Dispense Inventory
-              </MDBListGroupItem>
-            </Link>
-            <Link
-              to="/inventories/add"
-              className="shadow-none btn w-100 p-0 pl-3 m-0 text-left"
-            >
-              <MDBListGroupItem className="border-0">
-                <MDBIcon icon="trash-alt" className="mr-2" />
-                Amend Inventory
-              </MDBListGroupItem>
-            </Link>
-          </>
-        </Accordion.Collapse>
+          <FcCustomerSupport size="24" style={{ verticalAlign: "bottom" }} />
+          <span className="ml-2" style={{ fontSize: "16px" }}>
+            Users
+          </span>
+        </Link>
+      )}
 
-        <Accordion.Toggle
-          as={Button}
-          variant="link"
-          className="btn w-100 p-0 m-0 text-left"
-          eventKey="2"
-        >
-          <MDBListGroupItem>
-            <MDBIcon icon="chart-line" className="mr-2" />
-            Review Activity
-          </MDBListGroupItem>
-        </Accordion.Toggle>
-        <Accordion.Collapse eventKey="2">
-          <>
-            <Link
-              to="/report"
-              className="shadow-none btn w-100 p-0 pl-3 m-0 text-left"
-            >
-              <MDBListGroupItem className="border-0">
-                <MDBIcon icon="align-justify" className="mr-2" />
-                All Activity
-              </MDBListGroupItem>
-            </Link>
-            <Link
-              to="/report/user-defined"
-              className="shadow-none btn w-100 p-0 pl-3 m-0 text-left"
-            >
-              <MDBListGroupItem className="border-0">
-                <MDBIcon icon="user-circle" className="mr-2" />
-                User Defined Activity
-              </MDBListGroupItem>
-            </Link>
-            <Link
-              to="/report/drug-defined"
-              className="shadow-none btn w-100 p-0 pl-3 m-0 text-left"
-            >
-              <MDBListGroupItem className="border-0">
-                <MDBIcon icon="pills" className="mr-2" />
-                Drug Defined Activity
-              </MDBListGroupItem>
-            </Link>
-            <Link
-              to="/report/dea-compliant"
-              className="shadow-none btn w-100 p-0 pl-3 m-0 text-left"
-            >
-              <MDBListGroupItem className="border-0">
-                <MDBIcon icon="radiation-alt" className="mr-2" />
-                DEA Compliant
-              </MDBListGroupItem>
-            </Link>
-          </>
-        </Accordion.Collapse>
-      </Accordion>
+      <Link
+        to="/customers"
+        className={`btn w-100 px-4 py-3 m-0 mb-1 text-left ${
+          location.pathname === "/customers" ? "bg-info text-white" : "bg-white"
+        }`}
+      >
+        <FcContacts size="24" style={{ verticalAlign: "bottom" }} />
+        <span className="ml-2" style={{ fontSize: "16px" }}>
+          Customers
+        </span>
+      </Link>
+
+      <Link
+        to="/products"
+        className={`btn w-100 px-4 py-3 m-0 mb-1 text-left ${
+          location.pathname === "/products" ? "bg-info text-white" : "bg-white"
+        }`}
+      >
+        <FcApproval size="24" style={{ verticalAlign: "bottom" }} />
+        <span className="ml-2" style={{ fontSize: "16px" }}>
+          Products
+        </span>
+      </Link>
+
+      <Link
+        to="/orders"
+        className={`btn w-100 px-4 py-3 m-0 mb-1 text-left ${
+          location.pathname === "/orders" ? "bg-info text-white" : "bg-white"
+        }`}
+      >
+        <FcCurrencyExchange size="24" style={{ verticalAlign: "bottom" }} />
+        <span className="ml-2" style={{ fontSize: "16px" }}>
+          Orders
+        </span>
+      </Link>
+
+      <Link
+        to="/activity"
+        className={`btn w-100 px-4 py-3 m-0 mb-1 text-left ${
+          location.pathname === "/activity" ? "bg-info text-white" : "bg-white"
+        }`}
+      >
+        <FcBullish size="24" style={{ verticalAlign: "bottom" }} />
+        <span className="ml-2" style={{ fontSize: "16px" }}>
+          Activity
+        </span>
+      </Link>
     </>
   );
 }
