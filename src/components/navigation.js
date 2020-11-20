@@ -13,7 +13,7 @@ import { FcBullish } from "react-icons/fc";
 
 export default function Navigation() {
   const auth_obj = useSelector((state) => state.auth);
-  const { isAdmin } = auth_obj.user;
+  const { isAdmin } = auth_obj.user !== null ? auth_obj.user : false;
 
   const location = useLocation();
 

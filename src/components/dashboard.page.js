@@ -1,14 +1,16 @@
 import React from "react";
-import AdminCardSection2 from "./admin-dashboard/AdminCardSection2";
-import TableSection from "./admin-dashboard/TableSection";
-import BreadcrumSection from "./admin-dashboard/BreadcrumSection";
-import ChartSection1 from "./admin-dashboard/ChartSection1";
-import ChartSection2 from "./admin-dashboard/ChartSection2";
+import AdminCardSection2 from "./sections/AdminCardSection2";
+import TableSection from "./sections/TableSection";
+import BreadcrumSection from "./sections/BreadcrumSection";
+import ChartSection1 from "./sections/ChartSection1";
+import ChartSection2 from "./sections/ChartSection2";
 
 export default function Dashboard() {
   return (
     <>
-      <BreadcrumSection />
+      <BreadcrumSection
+        breadcrumb={{ parentPath: "", parentLink: "", activePath: "" }}
+      />
       <AdminCardSection2 />
       <ChartSection1 />
       <TableSection />

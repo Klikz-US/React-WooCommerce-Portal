@@ -10,7 +10,7 @@ function PublicRoute({ component: Component, ...rest }) {
         !rest.isAuthenticated ? (
           <Component {...props} />
         ) : (
-          <Redirect to={{ pathname: "/dashboard" }} />
+          <Redirect to={{ pathname: "/" }} />
         )
       }
     />
