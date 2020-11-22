@@ -4,11 +4,9 @@ import { Link } from "react-router-dom";
 import {
   MDBCard,
   MDBCardBody,
-  MDBIcon,
   MDBBreadcrumb,
   MDBBreadcrumbItem,
   MDBFormInline,
-  MDBBtn,
 } from "mdbreact";
 
 const BreadcrumSection = ({ breadcrumb }) => {
@@ -34,17 +32,16 @@ const BreadcrumSection = ({ breadcrumb }) => {
           )}
         </MDBBreadcrumb>
 
-        <MDBFormInline className="md-form m-0">
-          <input
-            className="form-control form-control-md px-2"
-            type="search"
-            placeholder="Quick Search"
-            aria-label="Search"
-          />
-          <MDBBtn size="sm" color="primary" className="my-0" type="submit">
-            <MDBIcon icon="search" />
-          </MDBBtn>
-        </MDBFormInline>
+        {breadcrumb.btnLink && (
+          <MDBFormInline className="m-0">
+            <Link
+              to={breadcrumb.btnLink}
+              className="btn m-0 bg-primary text-white"
+            >
+              <span>{breadcrumb.btnText}</span>
+            </Link>
+          </MDBFormInline>
+        )}
       </MDBCardBody>
     </MDBCard>
   );

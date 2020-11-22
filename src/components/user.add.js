@@ -7,7 +7,7 @@ import { verifyTokenAsync } from "../actions/auth-async.action";
 import { setAuthToken } from "../services/auth.service";
 
 import { useFormInput } from "../utils/form-input.util";
-import { useFormCheck } from "../utils/form-check.util";
+import { useFormSelect } from "../utils/form-select.util";
 import { userRegisterService } from "../services/user.service";
 import BreadcrumSection from "./sections/BreadcrumSection";
 
@@ -31,7 +31,7 @@ export default function UserRegister() {
   }, [expiredAt, token, dispatch]);
   /* ----------------------- */
 
-  const role = useFormCheck("manager");
+  const role = useFormSelect("manager");
   const name = useFormInput("");
   const email = useFormInput("");
   const phone = useFormInput("");

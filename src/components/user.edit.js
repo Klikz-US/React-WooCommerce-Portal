@@ -11,7 +11,7 @@ import {
 import { setAuthToken } from "../services/auth.service";
 
 import { useFormInput } from "../utils/form-input.util";
-import { useFormCheck } from "../utils/form-check.util";
+import { useFormSelect } from "../utils/form-select.util";
 
 import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
 
@@ -44,7 +44,7 @@ export default function UserEdit() {
     phone: "",
   });
 
-  const role = useFormCheck(user.role);
+  const role = useFormSelect(user.role);
   const name = useFormInput(user.name);
   const email = useFormInput(user.email);
   const phone = useFormInput(user.phone);

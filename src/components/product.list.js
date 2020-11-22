@@ -10,13 +10,9 @@ import Tooltip from "react-bootstrap/Tooltip";
 import { FaSearch, FaTrashAlt, FaEye, FaEdit } from "react-icons/fa";
 import { FcCancel } from "react-icons/fc";
 import BarLoader from "react-spinners/BarLoader";
-import { FcPlus } from "react-icons/fc";
 import noImage from "../assets/images/no-image.png";
 
-import {
-  verifyTokenAsync,
-  userLogoutAsync,
-} from "../actions/auth-async.action";
+import { verifyTokenAsync } from "../actions/auth-async.action";
 import { setAuthToken } from "../services/auth.service";
 import {
   productGetTotal,
@@ -48,8 +44,8 @@ export default function ProductList() {
   /* ----------------------- */
 
   const [products, setProducts] = useState([]);
-  const [deleteError, setDeleteError] = useState("");
   const [pageLoading, setPageLoading] = useState(true);
+  const [pageError, setPageError] = useState("");
 
   const [activePage, setActivePage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -63,7 +59,7 @@ export default function ProductList() {
     async function fetchTotal() {
       const productTotal = await productGetTotal();
       if (productTotal.error) {
-        dispatch(userLogoutAsync());
+        setPageError("Server Error! Please retry...");
       } else {
         let productTotalNum = 0;
         productTotal.data.forEach((total) => {
@@ -75,7 +71,7 @@ export default function ProductList() {
     async function fetchData() {
       const productList = await productGetListService(activePage);
       if (productList.error) {
-        dispatch(userLogoutAsync());
+        setPageError("Server Error! Please retry...");
       } else {
         setProducts(productList.data);
       }
@@ -89,18 +85,43 @@ export default function ProductList() {
   }, [dispatch, activePage, hasResult]);
 
   const handleDelete = (_id) => {
-    async function fetchData() {
+    async function funcDelete() {
+      setPageLoading(true);
       const result = await productDeleteService(_id);
       if (result.error) {
-        setDeleteError(result.errMsg);
+        setPageError("Delete Error! Please retry...");
         setTimeout(() => {
-          setDeleteError("");
+          setPageError("");
         }, 3000);
       } else {
-        setProducts(result.data);
+        async function fetchTotal() {
+          const productTotal = await productGetTotal();
+          if (productTotal.error) {
+            setPageError("Server Error! Please retry...");
+          } else {
+            let productTotalNum = 0;
+            productTotal.data.forEach((total) => {
+              productTotalNum += total.total;
+            });
+            setTotalPages(parseInt(productTotalNum / 20));
+          }
+        }
+        async function fetchData() {
+          const productList = await productGetListService(activePage);
+          if (productList.error) {
+            setPageError("Server Error! Please retry...");
+          } else {
+            setProducts(productList.data);
+          }
+          setPageLoading(false);
+        }
+        if (!hasResult) {
+          fetchTotal();
+          fetchData();
+        }
       }
     }
-    fetchData();
+    funcDelete();
   };
 
   const renderPhotoPopover = (product) => {
@@ -221,7 +242,7 @@ export default function ProductList() {
   );
 
   const productList = (products) => {
-    if (pageLoading) {
+    if (pageLoading || isSearching) {
       return (
         <tr>
           <td>
@@ -233,7 +254,7 @@ export default function ProductList() {
                 css="margin: auto;"
                 size={100}
                 color={"#007cc3"}
-                loading={pageLoading}
+                loading={pageLoading || isSearching}
               />
             </Container>
           </td>
@@ -241,7 +262,6 @@ export default function ProductList() {
       );
     } else {
       return products.map(function (product, index) {
-        console.log(product);
         product.type = "";
         if (product.tags.length === 0) {
           product.type = "Sell";
@@ -298,7 +318,10 @@ export default function ProductList() {
   const handleSearch = (e) => {
     if (e) e.preventDefault();
 
-    if (searchValue.value.trim() !== "") {
+    if (
+      searchValue.value.trim() !== "" &&
+      searchValue.value.trim().length > 2
+    ) {
       async function fetchData() {
         setIsSearching(true);
 
@@ -346,23 +369,17 @@ export default function ProductList() {
   return (
     <>
       <BreadcrumSection
-        breadcrumb={{ parentPath: "", parentLink: "", activePath: "Products" }}
+        breadcrumb={{
+          parentPath: "",
+          parentLink: "",
+          activePath: "Products",
+          btnLink: "/products/add",
+          btnText: "Add New Product",
+        }}
       />
 
       <Container className="position-relative">
         <h1 className="m-5 text-center">Products</h1>
-        <div
-          className="position-absolute"
-          style={{ top: "10px", right: "20px" }}
-        >
-          <Link
-            to="/products/add"
-            className="btn p-0 m-0"
-            style={{ borderRadius: "50%" }}
-          >
-            <FcPlus size="48" />
-          </Link>
-        </div>
 
         <Row className="mt-4">
           <Col>
@@ -373,7 +390,7 @@ export default function ProductList() {
                     type="text"
                     {...searchValue}
                     className="px-2"
-                    placeholder="Search Products"
+                    placeholder="Input at least 3 characters"
                   />
                 </Col>
 
@@ -406,6 +423,18 @@ export default function ProductList() {
 
         <Row>
           <Card className="w-100">
+            {pageError && (
+              <div
+                className="d-flex flex-column position-absolute w-100 h-100"
+                style={{
+                  top: "0",
+                  left: "0",
+                  backgroundColor: "rgba(255, 255, 255, .7)",
+                }}
+              >
+                <p className="mt-5 pt-5 text-danger text-center">{pageError}</p>
+              </div>
+            )}
             <Table responsive className="m-0">
               <thead className="bg-success text-white">
                 <tr>
@@ -423,10 +452,6 @@ export default function ProductList() {
             </Table>
           </Card>
         </Row>
-
-        {deleteError !== "" && (
-          <p className="float-right text-danger mx-4">{deleteError}</p>
-        )}
       </Container>
     </>
   );

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-export const useFormCheck = (initialValue) => {
+export const useFormSelect = (initialValue) => {
   const [selected, setSelected] = useState("");
 
   useEffect(() => {

@@ -1,29 +1,21 @@
 import React, { useState, useEffect } from "react";
+import { useHistory, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
+import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
 
-import {
-  verifyTokenAsync,
-  userLogoutAsync,
-} from "../actions/auth-async.action";
+import { verifyTokenAsync } from "../actions/auth-async.action";
 import { setAuthToken } from "../services/auth.service";
+import { useFormInput } from "../utils/form-input.util";
 import {
-  productGetListService,
-  productDeleteService,
+  productGetService,
+  productUpdateService,
 } from "../services/product.service";
-
 import BreadcrumSection from "./sections/BreadcrumSection";
-import { MdPhoneForwarded } from "react-icons/md";
-import { FaTrashAlt } from "react-icons/fa";
-
-import { Container, Row, Card } from "react-bootstrap";
-import Table from "react-bootstrap/Table";
-import { Link } from "react-router-dom";
-
 import BarLoader from "react-spinners/BarLoader";
-import { FcPlus } from "react-icons/fc";
+import { useFormCheck } from "../utils/form-check.util";
 
-export default function ProductList() {
+export default function ProductEdit() {
   /*
    * Private Page Token Verification Module.
    */
@@ -41,136 +33,178 @@ export default function ProductList() {
   }, [expiredAt, token, dispatch]);
   /* ----------------------- */
 
-  const [products, setProducts] = useState([]);
-  const [deleteError, setDeleteError] = useState("");
+  const { id } = useParams();
+  const [product, setProduct] = useState({
+    sku: "",
+    name: "",
+    regular_price: "",
+    sale_price: "",
+    images: [],
+    height: "",
+    length: "",
+    width: "",
+    weight: "",
+  });
+
+  const history = useHistory();
+  const [pageError, setPageError] = useState("");
   const [pageLoading, setPageLoading] = useState(true);
 
+  const sku = useFormInput(product.sku);
+  const name = useFormInput(product.name);
+  const regular_price = useFormInput(product.regular_price);
+  const sale_price = useFormInput(product.sale_price);
+  const height = useFormInput(product.height);
+  const length = useFormInput(product.length);
+  const width = useFormInput(product.width);
+  const weight = useFormInput(product.weight);
+
   useEffect(() => {
-    async function fetchData() {
-      const result = await productGetListService();
-      if (result.error) {
-        dispatch(userLogoutAsync());
+    async function getData() {
+      const productData = await productGetService(id);
+      if (productData.error) {
+        setPageError("Server Error! Please retry...");
       } else {
-        setProducts(result.data);
+        setProduct((product) => ({ ...product, ...productData.data }));
+        console.log(productData.data);
       }
       setPageLoading(false);
     }
-    setPageLoading(true);
-    fetchData();
-  }, [dispatch]);
+    getData();
+  }, [dispatch, id]);
 
-  const handleDelete = (_id) => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const product = {
+      sku: sku.value,
+      name: name.value,
+      regular_price: regular_price.value,
+    };
+
     async function fetchData() {
-      const result = await productDeleteService(_id);
+      setPageLoading(true);
+      const result = await productUpdateService(id, product);
       if (result.error) {
-        setDeleteError(result.errMsg);
-        setTimeout(() => {
-          setDeleteError("");
-        }, 3000);
+        setPageError("Server Error! Please retry...");
       } else {
-        setProducts(result.data);
+        setProduct((product) => ({ ...product, ...result.data }));
       }
+      setPageLoading(false);
     }
     fetchData();
   };
 
-  const Product = (props) => (
-    <tr>
-      <td>{props.product.image}</td>
-      <td>
-        <Link to={"/products/edit/" + props.product._id}>
-          {props.product.sku}
-        </Link>
-      </td>
-      <td>{props.product.name}</td>
-      <td>{props.product.price}</td>
-      <td>{props.product.tags}</td>
-      <td>
-        <Link to={props.product.link}>
-          <MdPhoneForwarded className="text-info mx-1" />
-        </Link>
-        <Link to={"products/edit/" + props.product._id}>
-          <MdPhoneForwarded className="text-info mx-1" />
-        </Link>
-        <span onClick={() => handleDelete(props.user._id)}>
-          {" "}
-          <FaTrashAlt
-            style={{ cursor: "pointer" }}
-            className="text-danger mx-1"
-          />
-        </span>
-      </td>
-    </tr>
-  );
-
-  const productList = (products) => {
-    if (pageLoading) {
-      return (
-        <tr>
-          <td>
-            <Container
-              className="py-5 text-center"
-              style={{ position: "absolute" }}
-            >
-              <BarLoader
-                css="margin: auto;"
-                size={100}
-                color={"#007cc3"}
-                loading={pageLoading}
-              />
-            </Container>
-          </td>
-        </tr>
-      );
-    } else {
-      return products.map(function (product, index) {
-        return <Product product={product} key={index} />;
-      });
-    }
+  const handleCancel = (e) => {
+    e.preventDefault();
+    history.goBack();
   };
 
   return (
     <>
       <BreadcrumSection
-        breadcrumb={{ parentPath: "", parentLink: "", activePath: "Products" }}
+        breadcrumb={{
+          parentPath: "Products",
+          parentLink: "/products",
+          activePath: "Add New Product",
+        }}
       />
 
-      <Container className="position-relative">
-        <h1 className="m-5 text-center">Products</h1>
-        <div
-          className="position-absolute"
-          style={{ top: "10px", right: "20px" }}
-        >
-          <Link
-            to="/products/add"
-            className="btn p-0 m-0"
-            style={{ borderRadius: "50%" }}
-          >
-            <FcPlus size="48" />
-          </Link>
-        </div>
+      <Container>
+        <h1 className="m-5 text-center">Update Product Information</h1>
 
-        <Row>
-          <Card className="w-100">
-            <Table responsive className="m-0">
-              <thead className="bg-success text-white">
-                <tr>
-                  <th>Image</th>
-                  <th>SKU</th>
-                  <th>Product Name</th>
-                  <th>Price</th>
-                  <th>Tags</th>
-                </tr>
-              </thead>
+        <Form autoComplete="off">
+          <Container>
+            <Row>
+              <Col>
+                <Card className="h-100 shadow">
+                  <Card.Header className="bg-danger text-white">
+                    <h5 className="m-0">Product Information</h5>
+                  </Card.Header>
+                  <Card.Body>
+                    {pageLoading && (
+                      <div
+                        className="d-flex flex-column justify-content-center position-absolute w-100 h-100"
+                        style={{
+                          top: "0",
+                          left: "0",
+                          backgroundColor: "rgba(255, 255, 255, .7)",
+                        }}
+                      >
+                        <BarLoader
+                          css="margin: auto;"
+                          size={100}
+                          color={"#007cc3"}
+                          loading={pageLoading}
+                        />
+                      </div>
+                    )}
 
-              <tbody>{productList(products)}</tbody>
-            </Table>
-          </Card>
-        </Row>
+                    {pageError && (
+                      <div
+                        className="d-flex flex-column position-absolute w-100 h-100"
+                        style={{
+                          top: "0",
+                          left: "0",
+                          backgroundColor: "rgba(255, 255, 255, .7)",
+                        }}
+                      >
+                        <p className="mt-5 pt-5 text-danger text-center">
+                          {pageError}
+                        </p>
+                      </div>
+                    )}
 
-        {deleteError !== "" && (
-          <p className="float-right text-danger mx-4">{deleteError}</p>
-        )}
+                    <Form.Group>
+                      <Form.Label>Product SKU</Form.Label>
+                      <Form.Control id="sku" name="sku" type="text" {...sku} />
+                    </Form.Group>
+
+                    <Form.Group>
+                      <Form.Label>Product Name</Form.Label>
+                      <Form.Control
+                        id="name"
+                        name="name"
+                        type="text"
+                        {...name}
+                      />
+                    </Form.Group>
+
+                    <Form.Group>
+                      <Form.Label>Product Price</Form.Label>
+                      <Form.Control
+                        id="price"
+                        name="price"
+                        type="text"
+                        {...regular_price}
+                      />
+                    </Form.Group>
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
+
+            <Row>
+              <Col>
+                <Button
+                  className="float-right mt-5"
+                  variant="outline-secondary"
+                  onClick={handleCancel}
+                >
+                  Cancel
+                </Button>
+
+                <Button
+                  className="float-right mr-2 mt-5"
+                  variant="primary"
+                  onClick={handleSubmit}
+                >
+                  Update Product
+                </Button>
+              </Col>
+            </Row>
+          </Container>
+        </Form>
       </Container>
     </>
   );
