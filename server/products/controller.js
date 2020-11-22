@@ -6,9 +6,9 @@ logger.filename = "cleanair.log";
 
 const WooCommerceRestApi = require("@woocommerce/woocommerce-rest-api").default;
 const WooCommerce = new WooCommerceRestApi({
-  url: "https://stagingclean.wpengine.com",
-  consumerKey: "ck_e8f67fa74154d057f409079771ca9d94cd6ee638",
-  consumerSecret: "cs_f517bd7f1160130f91575b6a236eb314f40e06ea",
+  url: "https://cleanairportal.wpengine.com/",
+  consumerKey: "ck_86f6086e182c8ac6bf95429b1ee5993b996ffd23",
+  consumerSecret: "cs_7624fbf93ff239f08686727adb9b020a066f79e9",
   version: "wc/v3",
 });
 
