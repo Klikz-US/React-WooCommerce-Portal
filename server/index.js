@@ -58,11 +58,8 @@ httpsServer.listen(https_port, () => {
 const UsersRouter = require("./users/routes");
 UsersRouter.routesConfig(app);
 
-const InventoryRouter = require("./inventories/routes");
-InventoryRouter.routesConfig(app);
-
-const PharmacyRouter = require("./pharmacy/routes");
-PharmacyRouter.routesConfig(app);
+const ProductsRouter = require("./products/routes");
+ProductsRouter.routesConfig(app);
 
 const ActivityRouter = require("./activity/routes");
 ActivityRouter.routesConfig(app);

@@ -2,27 +2,28 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
 
-import { userGetListService } from "../services/user.service";
 import {
   verifyTokenAsync,
   userLogoutAsync,
 } from "../actions/auth-async.action";
 import { setAuthToken } from "../services/auth.service";
-import { userDeleteService } from "../services/user.service";
+import {
+  productGetListService,
+  productDeleteService,
+} from "../services/product.service";
 
 import BreadcrumSection from "./sections/BreadcrumSection";
-
 import { MdPhoneForwarded } from "react-icons/md";
-import { FaEnvelopeOpenText } from "react-icons/fa";
 import { FaTrashAlt } from "react-icons/fa";
 
 import { Container, Row, Card } from "react-bootstrap";
 import Table from "react-bootstrap/Table";
 import { Link } from "react-router-dom";
-import ClipLoader from "react-spinners/ClipLoader";
+
+import BarLoader from "react-spinners/BarLoader";
 import { FcPlus } from "react-icons/fc";
 
-export default function UserList() {
+export default function ProductList() {
   /*
    * Private Page Token Verification Module.
    */
@@ -40,19 +41,17 @@ export default function UserList() {
   }, [expiredAt, token, dispatch]);
   /* ----------------------- */
 
-  const { userId } = auth_obj.user;
-  const { username } = auth_obj.user;
-  const [users, setUsers] = useState([]);
+  const [products, setProducts] = useState([]);
   const [deleteError, setDeleteError] = useState("");
   const [pageLoading, setPageLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
-      const result = await userGetListService();
+      const result = await productGetListService();
       if (result.error) {
         dispatch(userLogoutAsync());
       } else {
-        setUsers(result.data);
+        setProducts(result.data);
       }
       setPageLoading(false);
     }
@@ -62,54 +61,49 @@ export default function UserList() {
 
   const handleDelete = (_id) => {
     async function fetchData() {
-      const result = await userDeleteService(_id);
+      const result = await productDeleteService(_id);
       if (result.error) {
         setDeleteError(result.errMsg);
         setTimeout(() => {
           setDeleteError("");
         }, 3000);
       } else {
-        setUsers(result.data);
+        setProducts(result.data);
       }
     }
     fetchData();
   };
 
-  const User = (props) => (
+  const Product = (props) => (
     <tr>
+      <td>{props.product.image}</td>
       <td>
-        <Link to={"/users/edit/" + props.user._id}>{props.user.name}</Link>
+        <Link to={"/products/edit/" + props.product._id}>
+          {props.product.sku}
+        </Link>
       </td>
-      <td>{props.user.email}</td>
-      <td>{props.user.phone}</td>
-      <td>{props.user.role}</td>
+      <td>{props.product.name}</td>
+      <td>{props.product.price}</td>
+      <td>{props.product.tags}</td>
       <td>
-        {username !== props.user.email && (
-          <>
-            <a href={"tel:" + props.user.phone}>
-              <MdPhoneForwarded className="text-info mx-1" />
-            </a>{" "}
-            <a href={"mailto:" + props.user.email}>
-              <FaEnvelopeOpenText className="text-primary mx-1" />
-            </a>
-          </>
-        )}
-        {!props.user.isAdmin && (
-          <>
-            <span onClick={() => handleDelete(props.user._id)}>
-              {" "}
-              <FaTrashAlt
-                style={{ cursor: "pointer" }}
-                className="text-danger mx-1"
-              />
-            </span>
-          </>
-        )}
+        <Link to={props.product.link}>
+          <MdPhoneForwarded className="text-info mx-1" />
+        </Link>
+        <Link to={"products/edit/" + props.product._id}>
+          <MdPhoneForwarded className="text-info mx-1" />
+        </Link>
+        <span onClick={() => handleDelete(props.user._id)}>
+          {" "}
+          <FaTrashAlt
+            style={{ cursor: "pointer" }}
+            className="text-danger mx-1"
+          />
+        </span>
       </td>
     </tr>
   );
 
-  const userList = (users) => {
+  const productList = (products) => {
     if (pageLoading) {
       return (
         <tr>
@@ -118,10 +112,10 @@ export default function UserList() {
               className="py-5 text-center"
               style={{ position: "absolute" }}
             >
-              <ClipLoader
+              <BarLoader
                 css="margin: auto;"
                 size={100}
-                color={"#ff0000"}
+                color={"#007cc3"}
                 loading={pageLoading}
               />
             </Container>
@@ -129,20 +123,8 @@ export default function UserList() {
         </tr>
       );
     } else {
-      return users.map(function (user, index) {
-        if (user._id === userId) return null;
-        const replace_obj = {};
-
-        switch (user.role) {
-          case "admin":
-            replace_obj.role = "Administrator";
-            break;
-          default:
-            replace_obj.role = "Manager";
-            break;
-        }
-
-        return <User user={{ ...user, ...replace_obj }} key={index} />;
+      return products.map(function (product, index) {
+        return <Product product={product} key={index} />;
       });
     }
   };
@@ -150,17 +132,17 @@ export default function UserList() {
   return (
     <>
       <BreadcrumSection
-        breadcrumb={{ parentPath: "", parentLink: "", activePath: "All Users" }}
+        breadcrumb={{ parentPath: "", parentLink: "", activePath: "Products" }}
       />
 
       <Container className="position-relative">
-        <h1 className="m-5 text-center">All Users</h1>
+        <h1 className="m-5 text-center">Products</h1>
         <div
           className="position-absolute"
           style={{ top: "10px", right: "20px" }}
         >
           <Link
-            to="/users/add"
+            to="/products/add"
             className="btn p-0 m-0"
             style={{ borderRadius: "50%" }}
           >
@@ -173,15 +155,15 @@ export default function UserList() {
             <Table responsive className="m-0">
               <thead className="bg-success text-white">
                 <tr>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Phone</th>
-                  <th>Role</th>
-                  <th>Action</th>
+                  <th>Image</th>
+                  <th>SKU</th>
+                  <th>Product Name</th>
+                  <th>Price</th>
+                  <th>Tags</th>
                 </tr>
               </thead>
 
-              <tbody>{userList(users)}</tbody>
+              <tbody>{productList(products)}</tbody>
             </Table>
           </Card>
         </Row>

@@ -14,11 +14,16 @@ html {
 /** **************** */
 table.table a {
   margin: 0;
-  color: #007bff;
+  color: #007cc3;
+}
+
+table th {
+  font-size: 1em;
+  font-weight: 500;
 }
 
 table td {
-  font-size: 1.1rem;
+  font-size: 1em;
   font-weight: 400;
 }
 

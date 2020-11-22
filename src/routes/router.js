@@ -7,17 +7,16 @@ import PublicRoute from "./public.route";
 import Navigation from "../components/navigation";
 import Header from "../components/header";
 import Footer from "../components/footer";
-import Settings from "../components/settings.page";
-import Login from "../components/login.page";
+import Settings from "../components/settings";
+import Login from "../components/login";
 import UserAdd from "../components/user.add";
 import UserList from "../components/user.list";
 import UserEdit from "../components/user.edit";
-import {
-  InventoryEdit,
-  InventoryList,
-  InventoryRegister,
-} from "../components/activity.module";
-import Dashboard from "../components/dashboard.page";
+import Activity from "../components/activity";
+import Dashboard from "../components/dashboard";
+import ProductAdd from "../components/product.add";
+import ProductList from "../components/product.list";
+import ProductEdit from "../components/product.edit";
 
 export default function MainRouter() {
   const auth_obj = useSelector((state) => state.auth);
@@ -42,7 +41,7 @@ export default function MainRouter() {
           style={{ paddingLeft: isAuthenticated ? "270px" : "0" }}
         >
           {isAuthenticated && <Header />}
-          <main className={isAuthenticated && "p-5"}>
+          <main className={isAuthenticated ? "p-5" : ""}>
             <Switch>
               <PrivateRoute
                 path="/"
@@ -74,33 +73,31 @@ export default function MainRouter() {
               />
 
               <PrivateRoute
-                path="/inventories"
+                path="/products"
                 exact
-                component={InventoryList}
+                component={ProductList}
                 isAuthenticated={isAuthenticated}
+                isAdmin={isAdmin}
               />
               <PrivateRoute
-                path="/inventories/add"
+                path="/products/add"
                 exact
-                component={InventoryRegister}
+                component={ProductAdd}
                 isAuthenticated={isAuthenticated}
+                isAdmin={isAdmin}
               />
               <PrivateRoute
-                path="/inventories/edit/:id"
+                path="/products/edit/:id"
                 exact
-                component={InventoryEdit}
+                component={ProductEdit}
                 isAuthenticated={isAuthenticated}
+                isAdmin={isAdmin}
               />
+
               <PrivateRoute
-                path="/inventories/dispense/:id"
+                path="/activity"
                 exact
-                component={InventoryEdit}
-                isAuthenticated={isAuthenticated}
-              />
-              <PrivateRoute
-                path="/inventories/amend/:id"
-                exact
-                component={InventoryEdit}
+                component={Activity}
                 isAuthenticated={isAuthenticated}
               />
 

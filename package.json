@@ -6,6 +6,7 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
+    "@woocommerce/woocommerce-rest-api": "^1.0.1",
     "axios": "^0.20.0",
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.5",
@@ -19,6 +20,7 @@
     "http": "0.0.1-security",
     "https": "^1.0.0",
     "jsonwebtoken": "^8.5.1",
+    "log4js": "^6.3.0",
     "mdbreact": "^4.27.0",
     "moment": "^2.29.0",
     "mongoose": "^5.10.6",
@@ -36,7 +38,8 @@
     "react-ultimate-pagination": "^1.2.0",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
-    "video-react": "^0.14.1"
+    "video-react": "^0.14.1",
+    "woocommerce-api": "^1.5.0"
   },
   "scripts": {
     "start": "react-scripts start",
