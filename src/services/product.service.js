@@ -65,7 +65,7 @@ export const productDeleteService = async (_id) => {
 export const productUpdateService = async (id, product) => {
   try {
     return await axios.patch(
-      `${window.$server_url}/admin/products/edit/${id}`,
+      `${window.$server_url}/admin/products/update/${id}`,
       product
     );
   } catch (err) {

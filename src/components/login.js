@@ -42,7 +42,7 @@ export default function AccountLogin() {
         <div className="card" style={{ width: "400px", margin: "auto" }}>
           <div className="card-header text-center">
             <Link to="/">
-              <img src={logo} width="150" height="auto" alt="C2 Keep" />
+              <img src={logo} width="220" height="auto" alt="C2 Keep" />
             </Link>
           </div>
           <div className="card-body">
@@ -51,14 +51,13 @@ export default function AccountLogin() {
 
             <Form autoComplete="off">
               <Form.Group>
-                <Form.Label>Email</Form.Label>
+                <Form.Label>Email Address</Form.Label>
                 <Form.Control
                   autoComplete="off"
                   id="email"
                   type="email"
                   icon="envelope"
                   {...email}
-                  placeholder="Your Email Address"
                 />
               </Form.Group>
 
@@ -69,7 +68,6 @@ export default function AccountLogin() {
                   id="password"
                   type="password"
                   {...password}
-                  placeholder="Enter Your Password"
                 />
               </Form.Group>
 
@@ -90,19 +88,15 @@ export default function AccountLogin() {
                 </p>
               )}
             </Form>
-            <p className="mt-4">
-              New to C2Keep? <Link to="/signup">Get Started</Link>
-            </p>
           </div>
           <div className="card-footer text-right">
-            <a href="/help" className="mx-2">
-              Help
-            </a>
-            <a href="/help" className="mx-2">
-              Privacy
-            </a>
-            <a href="/help" className="mx-2">
-              Terms
+            <a
+              href="https://www.cleanair.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mx-2"
+            >
+              www.cleanair.com
             </a>
           </div>
         </div>

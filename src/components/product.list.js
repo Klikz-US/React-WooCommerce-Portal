@@ -430,6 +430,7 @@ export default function ProductList() {
                   top: "0",
                   left: "0",
                   backgroundColor: "rgba(255, 255, 255, .7)",
+                  zIndex: "1",
                 }}
               >
                 <p className="mt-5 pt-5 text-danger text-center">{pageError}</p>

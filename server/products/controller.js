@@ -128,7 +128,7 @@ exports.register = (req, res) => {
 exports.search = (req, res) => {
   const search = req.body.value;
   async function process() {
-    WooCommerce.get("products?search=" + search)
+    WooCommerce.get("products?per_page=100&status=publish&search=" + search)
       .then((products) => {
         if (!products) {
           res.status(404).send("No Product");
