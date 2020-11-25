@@ -61,5 +61,11 @@ UsersRouter.routesConfig(app);
 const ProductsRouter = require("./products/routes");
 ProductsRouter.routesConfig(app);
 
+const CustomersRouter = require("./customers/routes");
+CustomersRouter.routesConfig(app);
+
+const OrdersRouter = require("./orders/routes");
+OrdersRouter.routesConfig(app);
+
 const ActivityRouter = require("./activity/routes");
 ActivityRouter.routesConfig(app);

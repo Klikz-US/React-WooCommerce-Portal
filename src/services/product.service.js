@@ -86,3 +86,36 @@ export const productSearchService = async (req) => {
     };
   }
 };
+
+export const productAllCategoriesService = async () => {
+  try {
+    return await axios.get(`${window.$server_url}/admin/products/categories`);
+  } catch (err) {
+    return {
+      error: true,
+      errMsg: err.message,
+    };
+  }
+};
+
+export const productAllTagsService = async () => {
+  try {
+    return await axios.get(`${window.$server_url}/admin/products/tags`);
+  } catch (err) {
+    return {
+      error: true,
+      errMsg: err.message,
+    };
+  }
+};
+
+export const productAllAttributesService = async () => {
+  try {
+    return await axios.get(`${window.$server_url}/admin/products/attributes`);
+  } catch (err) {
+    return {
+      error: true,
+      errMsg: err.message,
+    };
+  }
+};

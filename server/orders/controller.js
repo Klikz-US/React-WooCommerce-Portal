@@ -9,10 +9,10 @@ const WooCommerce = new WooCommerceRestApi({
 exports.getTotal = (req, res) => {
   const pageId = req.params.pageId;
   async function process() {
-    WooCommerce.get("reports/products/totals")
+    WooCommerce.get("reports/orders/totals")
       .then((result) => {
         if (!result) {
-          res.status(404).send("No Product");
+          res.status(404).send("No Order");
         } else {
           res.json(result.data);
         }
@@ -27,12 +27,12 @@ exports.getTotal = (req, res) => {
 exports.getByPage = (req, res) => {
   const pageId = req.params.pageId;
   async function process() {
-    WooCommerce.get("products?page=" + pageId + "&per_page=20&status=publish")
-      .then((products) => {
-        if (!products) {
-          res.status(404).send("No Product");
+    WooCommerce.get("orders?page=" + pageId + "&per_page=20")
+      .then((orders) => {
+        if (!orders) {
+          res.status(404).send("No Order");
         } else {
-          res.json(products.data);
+          res.json(orders.data);
         }
       })
       .catch((err) => {
@@ -45,12 +45,12 @@ exports.getByPage = (req, res) => {
 exports.getById = (req, res) => {
   const _id = req.params._id;
   async function process() {
-    WooCommerce.get("products/" + _id)
-      .then((product) => {
-        if (!product) {
+    WooCommerce.get("orders/" + _id)
+      .then((order) => {
+        if (!order) {
           res.status(404).send("No Data");
         } else {
-          res.json(product.data);
+          res.json(order.data);
         }
       })
       .catch((err) => {
@@ -65,12 +65,12 @@ exports.editById = (req, res) => {
   const data = req.body;
 
   async function process() {
-    WooCommerce.put("products/" + _id, data)
-      .then((product) => {
-        if (!product) {
+    WooCommerce.put("orders/" + _id, data)
+      .then((order) => {
+        if (!order) {
           res.status(404).send("Update failed");
         } else {
-          res.json(product.data);
+          res.json(order.data);
         }
       })
       .catch((err) => {
@@ -84,12 +84,12 @@ exports.deleteById = (req, res) => {
   const _id = req.params._id;
 
   async function process() {
-    WooCommerce.delete("products/" + _id)
-      .then((product) => {
-        if (!product) {
+    WooCommerce.delete("orders/" + _id)
+      .then((order) => {
+        if (!order) {
           res.status(404).send("Delete failed");
         } else {
-          res.json(product.data);
+          res.json(order.data);
         }
       })
       .catch((err) => {
@@ -103,12 +103,12 @@ exports.add = (req, res) => {
   const data = req.body;
 
   async function process() {
-    WooCommerce.post("products", data)
-      .then((product) => {
-        if (!product) {
+    WooCommerce.post("orders", data)
+      .then((order) => {
+        if (!order) {
           res.status(404).send("Create failed");
         } else {
-          res.json(product.data);
+          res.json(order.data);
         }
       })
       .catch((err) => {
@@ -121,12 +121,12 @@ exports.add = (req, res) => {
 exports.search = (req, res) => {
   const search = req.body.value;
   async function process() {
-    WooCommerce.get("products?per_page=100&search=" + search)
-      .then((products) => {
-        if (!products) {
-          res.status(404).send("No Product");
+    WooCommerce.get("orders?per_page=100&search=" + search)
+      .then((orders) => {
+        if (!orders) {
+          res.status(404).send("No Order");
         } else {
-          res.json(products.data);
+          res.json(orders.data);
         }
       })
       .catch((err) => {
@@ -138,7 +138,7 @@ exports.search = (req, res) => {
 
 exports.getCategories = (req, res) => {
   async function process() {
-    WooCommerce.get("products/categories?per_page=99")
+    WooCommerce.get("orders/categories?per_page=99")
       .then((categories) => {
         if (!categories) {
           res.status(404).send("No Category");
@@ -155,7 +155,7 @@ exports.getCategories = (req, res) => {
 
 exports.getTags = (req, res) => {
   async function process() {
-    WooCommerce.get("products/tags")
+    WooCommerce.get("orders/tags")
       .then((tags) => {
         if (!tags) {
           res.status(404).send("No Tag");
@@ -172,7 +172,7 @@ exports.getTags = (req, res) => {
 
 exports.getAttributes = (req, res) => {
   async function process() {
-    WooCommerce.get("products/attributes")
+    WooCommerce.get("orders/attributes")
       .then((attributes) => {
         if (!attributes) {
           res.status(404).send("No Attributes");

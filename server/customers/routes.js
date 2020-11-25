@@ -2,43 +2,43 @@ const Controller = require("./controller");
 const Authentication = require("../services/auth");
 
 exports.routesConfig = function (app) {
-  app.get("/admin/products/total", [
+  app.get("/admin/customers/total", [
     Authentication.authMiddleware,
     Controller.getTotal,
   ]);
-  app.get("/admin/products/page/:pageId", [
+  app.get("/admin/customers/page/:pageId", [
     Authentication.authMiddleware,
     Controller.getByPage,
   ]);
-  app.get("/admin/products/:_id", [
+  app.get("/admin/customers/:_id", [
     Authentication.authMiddleware,
     Controller.getById,
   ]);
-  app.patch("/admin/products/update/:_id", [
+  app.patch("/admin/customers/update/:_id", [
     Authentication.authMiddleware,
     Controller.editById,
   ]);
-  app.delete("/admin/products/delete/:_id", [
+  app.delete("/admin/customers/delete/:_id", [
     Authentication.authMiddleware,
     Controller.deleteById,
   ]);
-  app.post("/admin/products/add", [
+  app.post("/admin/customers/add", [
     Authentication.authMiddleware,
     Controller.add,
   ]);
-  app.post("/admin/products/search", [
+  app.post("/admin/customers/search", [
     Authentication.authMiddleware,
     Controller.search,
   ]);
-  app.get("/admin/products/categories", [
+  app.get("/admin/customers/categories", [
     Authentication.authMiddleware,
     Controller.getCategories,
   ]);
-  app.get("/admin/products/tags", [
+  app.get("/admin/customers/tags", [
     Authentication.authMiddleware,
     Controller.getTags,
   ]);
-  app.get("/admin/products/attributes", [
+  app.get("/admin/customers/attributes", [
     Authentication.authMiddleware,
     Controller.getTags,
   ]);

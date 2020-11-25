@@ -34,16 +34,7 @@ export default function ProductEdit() {
   /* ----------------------- */
 
   const { id } = useParams();
-  const [product, setProduct] = useState({
-    sku: "",
-    name: "",
-    price: "",
-    images: [],
-    height: "",
-    length: "",
-    width: "",
-    weight: "",
-  });
+  const [product, setProduct] = useState({});
 
   const history = useHistory();
   const [pageError, setPageError] = useState("");
@@ -70,7 +61,6 @@ export default function ProductEdit() {
         setPageError("Server Error! Please retry...");
       } else {
         setProduct((product) => ({ ...product, ...productData.data }));
-        console.log(productData.data);
       }
       setPageLoading(false);
     }
@@ -84,6 +74,7 @@ export default function ProductEdit() {
       sku: sku.value,
       name: name.value,
       price: price.value,
+      regular_price: price.value,
       dimensions: {
         height: height.value,
         length: length.value,
@@ -92,15 +83,12 @@ export default function ProductEdit() {
       weight: weight.value,
     };
 
-    console.log(product);
-
     async function fetchData() {
       setPageLoading(true);
       const result = await productUpdateService(id, product);
       if (result.error) {
         setPageError("Server Error! Please retry...");
       } else {
-        console.log(result.data);
         setProduct((product) => ({ ...product, ...result.data }));
       }
       setPageLoading(false);
