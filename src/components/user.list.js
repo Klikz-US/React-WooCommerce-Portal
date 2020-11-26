@@ -20,7 +20,6 @@ import { Container, Row, Card } from "react-bootstrap";
 import Table from "react-bootstrap/Table";
 import { Link } from "react-router-dom";
 import ClipLoader from "react-spinners/ClipLoader";
-import { FcPlus } from "react-icons/fc";
 
 export default function UserList() {
   /*
@@ -150,23 +149,17 @@ export default function UserList() {
   return (
     <>
       <BreadcrumSection
-        breadcrumb={{ parentPath: "", parentLink: "", activePath: "All Users" }}
+        breadcrumb={{
+          parentPath: "",
+          parentLink: "",
+          activePath: "Users",
+          btnLink: "/users/add",
+          btnText: "Add New User",
+        }}
       />
 
       <Container className="position-relative">
         <h1 className="m-5 text-center">All Users</h1>
-        <div
-          className="position-absolute"
-          style={{ top: "10px", right: "20px" }}
-        >
-          <Link
-            to="/users/add"
-            className="btn p-0 m-0"
-            style={{ borderRadius: "50%" }}
-          >
-            <FcPlus size="48" />
-          </Link>
-        </div>
 
         <Row>
           <Card className="w-100">
@@ -176,7 +169,7 @@ export default function UserList() {
                   <th>Name</th>
                   <th>Email</th>
                   <th>Phone</th>
-                  <th>Role</th>
+                  <th>Access</th>
                   <th>Action</th>
                 </tr>
               </thead>

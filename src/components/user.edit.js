@@ -15,6 +15,8 @@ import { useFormSelect } from "../utils/form-select.util";
 
 import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
 
+import logo from "./../assets/images/logo.png";
+
 export default function UserEdit() {
   /*
    * Private Page Token Verification Module.
@@ -48,8 +50,6 @@ export default function UserEdit() {
   const name = useFormInput(user.name);
   const email = useFormInput(user.email);
   const phone = useFormInput(user.phone);
-  const pass = useFormInput("");
-  const pass_confirm = useFormInput("");
 
   useEffect(() => {
     async function getData() {
@@ -68,26 +68,21 @@ export default function UserEdit() {
 
     async function fetchData() {
       let updateUser = {};
-      if (pass.value !== pass_confirm.value) {
-        setFormError("Re-enter the passwords!");
+
+      if (id === userId) {
+        updateUser = {
+          role: user.role,
+          email: email.value,
+          phone: phone.value,
+          name: name.value,
+        };
       } else {
-        if (id === userId) {
-          updateUser = {
-            role: user.role,
-            email: email.value,
-            phone: phone.value,
-            name: name.value,
-            password: pass.value,
-          };
-        } else {
-          updateUser = {
-            role: role.selected,
-            email: email.value,
-            phone: phone.value,
-            name: name.value,
-            password: pass.value,
-          };
-        }
+        updateUser = {
+          role: role.selected,
+          email: email.value,
+          phone: phone.value,
+          name: name.value,
+        };
       }
 
       updateUser.isAdmin = updateUser.role === "admin" ? true : false;
@@ -114,7 +109,9 @@ export default function UserEdit() {
 
         <Form autoComplete="off">
           <Row>
-            <Col className="align-self-center"></Col>
+            <Col className="align-self-center text-center">
+              <img src={logo} width="auto" height="auto" alt="CleanAir" />
+            </Col>
             <Col>
               <Card className="shadow">
                 <Card.Header className="bg-success text-white">
@@ -123,7 +120,7 @@ export default function UserEdit() {
 
                 <Card.Body>
                   <Form.Group>
-                    <Form.Label>Role</Form.Label>
+                    <Form.Label>Access</Form.Label>
                     <Col className="p-0">
                       <Form.Check
                         inline
@@ -131,7 +128,7 @@ export default function UserEdit() {
                         type="radio"
                         name="role"
                         value="admin"
-                        label="STL Admin"
+                        label="System Administrator"
                         checked={role.selected === "admin"}
                         {...role}
                         disabled={userId === id}
@@ -141,20 +138,9 @@ export default function UserEdit() {
                         className="mr-5"
                         type="radio"
                         name="role"
-                        value="rep"
-                        checked={role.selected === "rep"}
-                        label="STL Representation"
-                        {...role}
-                        disabled={userId === id}
-                      />
-                      <Form.Check
-                        inline
-                        className="mr-5"
-                        type="radio"
-                        name="role"
-                        value="vet"
-                        label="Vet Practice"
-                        checked={role.selected === "vet"}
+                        value="manager"
+                        checked={role.selected === "manager"}
+                        label="Store Manager"
                         {...role}
                         disabled={userId === id}
                       />
@@ -187,28 +173,6 @@ export default function UserEdit() {
                       placeholder="Enter Phone Number"
                     />
                   </Form.Group>
-
-                  {id === userId && (
-                    <>
-                      <Form.Group>
-                        <Form.Label>Password</Form.Label>
-                        <Form.Control
-                          type="password"
-                          {...pass}
-                          placeholder="Enter Password"
-                        />
-                      </Form.Group>
-
-                      <Form.Group>
-                        <Form.Label>Confirm Password</Form.Label>
-                        <Form.Control
-                          type="password"
-                          {...pass_confirm}
-                          placeholder="Enter Password Again"
-                        />
-                      </Form.Group>
-                    </>
-                  )}
                 </Card.Body>
               </Card>
             </Col>

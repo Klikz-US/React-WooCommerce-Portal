@@ -13,6 +13,8 @@ import { setAuthToken } from "../services/auth.service";
 import { useFormInput } from "../utils/form-input.util";
 import { userGetService, userUpdateService } from "../services/user.service";
 
+import logo from "./../assets/images/logo.png";
+
 export default function UserEdit() {
   /*
    * Private Page Token Verification Module.
@@ -38,13 +40,11 @@ export default function UserEdit() {
     role: "",
     name: "",
     email: "",
-    userNPI: "",
     phone: "",
   });
 
   const name = useFormInput(user.name);
   const email = useFormInput(user.email);
-  const userNPI = useFormInput(user.userNPI);
   const phone = useFormInput(user.phone);
   const pass = useFormInput("");
   const pass_confirm = useFormInput("");
@@ -69,11 +69,20 @@ export default function UserEdit() {
       if (pass.value !== pass_confirm.value) {
         setFormError("Re-enter the passwords!");
       } else {
-        updateUser = {
-          phone: phone.value,
-          name: name.value,
-          password: pass.value,
-        };
+        if (pass.value === "") {
+          updateUser = {
+            email: email.value,
+            phone: phone.value,
+            name: name.value,
+          };
+        } else {
+          updateUser = {
+            email: email.value,
+            phone: phone.value,
+            name: name.value,
+            password: pass.value,
+          };
+        }
       }
 
       const result = await userUpdateService(userId, updateUser);
@@ -98,7 +107,9 @@ export default function UserEdit() {
 
         <Form autoComplete="off">
           <Row>
-            <Col className="align-self-center"></Col>
+            <Col className="align-self-center text-center">
+              <img src={logo} width="auto" height="auto" alt="CleanAir" />
+            </Col>
             <Col>
               <Card className="shadow">
                 <Card.Header className="bg-success text-white">
@@ -117,14 +128,7 @@ export default function UserEdit() {
                     <Form.Label>
                       <strong>Email</strong>
                     </Form.Label>
-                    <Form.Control type="email" {...email} disabled={true} />
-                  </Form.Group>
-
-                  <Form.Group>
-                    <Form.Label>
-                      <strong>NPI</strong>
-                    </Form.Label>
-                    <Form.Control type="text" {...userNPI} disabled={true} />
+                    <Form.Control type="email" {...email} />
                   </Form.Group>
 
                   <Form.Group>

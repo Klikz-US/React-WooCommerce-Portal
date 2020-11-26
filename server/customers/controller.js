@@ -27,7 +27,11 @@ exports.getTotal = (req, res) => {
 exports.getByPage = (req, res) => {
   const pageId = req.params.pageId;
   async function process() {
-    WooCommerce.get("customers?page=" + pageId + "&per_page=20&status=publish")
+    WooCommerce.get(
+      "customers?page=" +
+        pageId +
+        "&per_page=20&status=publish&orderby=registered_date&order=desc"
+    )
       .then((customers) => {
         if (!customers) {
           res.status(404).send("No Customer");

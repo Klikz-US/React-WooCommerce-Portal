@@ -24,7 +24,7 @@ export const userGetService = async (_id) => {
 
 export const userRegisterService = async (user) => {
   try {
-    return await axios.post(`${window.$server_url}/admin/users/register`, user);
+    return await axios.post(`${window.$server_url}/admin/users/add`, user);
   } catch (err) {
     return {
       error: true,

@@ -13,6 +13,8 @@ import BreadcrumSection from "./sections/BreadcrumSection";
 
 import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
 
+import logo from "./../assets/images/logo.png";
+
 export default function UserRegister() {
   /*
    * Private Page Token Verification Module.
@@ -87,7 +89,9 @@ export default function UserRegister() {
 
         <Form autoComplete="off">
           <Row>
-            <Col className="align-self-center"></Col>
+            <Col className="align-self-center text-center">
+              <img src={logo} width="auto" height="auto" alt="CleanAir" />
+            </Col>
             <Col>
               <Card className="shadow">
                 <Card.Header className="bg-success text-white">
@@ -104,7 +108,7 @@ export default function UserRegister() {
                         type="radio"
                         name="role"
                         value="admin"
-                        label="Administrator"
+                        label="System Administrator"
                         checked={role.selected === "admin"}
                         {...role}
                       />
@@ -113,19 +117,9 @@ export default function UserRegister() {
                         className="mr-5"
                         type="radio"
                         name="role"
-                        value="stuff"
-                        checked={role.selected === "stuff"}
-                        label="Stuff"
-                        {...role}
-                      />
-                      <Form.Check
-                        inline
-                        className="mr-5"
-                        type="radio"
-                        name="role"
-                        value="employee"
-                        label="Employee"
-                        checked={role.selected === "employee"}
+                        value="manager"
+                        checked={role.selected === "manager"}
+                        label="Store Manager"
                         {...role}
                       />
                     </Col>

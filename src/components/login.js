@@ -19,8 +19,9 @@ export default function AccountLogin() {
   const password = useFormInput("");
 
   const handleLogin = () => {
-    if (email.value !== "" && password.value !== "")
+    if (email.value !== "" && password.value !== "") {
       dispatch(userLoginAsync(email.value, password.value));
+    }
   };
 
   return (
