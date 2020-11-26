@@ -1,16 +1,31 @@
 const Model = require("./model");
 
+exports.getTotal = (req, res) => {
+  async function process() {
+    try {
+      const count = await Model.find().countDocuments();
+      if (count) {
+        res.json({
+          count: count,
+        });
+      } else {
+        res.status(404).send("Activity not found");
+      }
+    } catch (error) {
+      res.status(500).send(error);
+    }
+  }
+  process();
+};
+
 exports.getByPage = (req, res) => {
   const pageId = req.params.pageId;
 
   async function process() {
     try {
-      const count = await Model.find().countDocuments();
       const activities = await Model.paginate(
         {},
         {
-          select:
-            "name deaId deaExp license licenseExp subscriptionStatus subscriptionLevel subscriptionExp activityAddress1 activityAddress2 activityCity activityState activityZip activityCountry registered_at",
           page: pageId,
           limit: 20,
           sort: {
@@ -21,7 +36,6 @@ exports.getByPage = (req, res) => {
       if (activities) {
         res.json({
           activities: activities.docs,
-          count: count,
         });
       } else {
         res.status(404).send("Activity not found");
@@ -48,62 +62,14 @@ exports.getById = (req, res) => {
   });
 };
 
-exports.editById = (req, res) => {
-  const _id = req.params._id;
-  const data = req.body;
-
-  async function process() {
-    try {
-      const activity = await Model.findByIdAndUpdate(_id, data);
-      if (activity) {
-        res.json(activity);
-      } else {
-        res.status(404).send("Activity not found");
-      }
-    } catch (error) {
-      res.status(500).send(error);
-    }
-  }
-  process();
-};
-
-exports.deleteById = (req, res) => {
-  const _id = req.params._id;
-
-  Model.findOneAndDelete({ _id: _id }, function (err, activity) {
-    if (err) {
-      res.status(500).send(err);
-    } else {
-      if (!activity) {
-        res.status(404).send("No Activity found");
-      } else {
-        res.json(activity);
-      }
-    }
-  });
-};
-
-exports.register = (req, res) => {
-  const ndc = req.body.ndc;
-  Model.findOne({ ndc: ndc }, function (err, activity) {
-    if (err) {
-      res.status(500).send(err);
-    } else {
-      if (activity) {
-        res.status(403).send("NDC already exist");
-      } else {
-        const newActivity = new Model(req.body);
-        newActivity
-          .save()
-          .then((activity) => {
-            res.json(activity);
-          })
-          .catch((err) => {
-            res.status(500).send(err);
-          });
-      }
-    }
-  });
+exports.add = (user, type, action) => {
+  const newActivity = new Model({ user: user, type: type, action: action });
+  newActivity
+    .save()
+    .then(() => {})
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 exports.search = (req, res) => {
@@ -113,10 +79,10 @@ exports.search = (req, res) => {
   async function fetchRelatedData() {
     let activities = [];
     switch (searchCategory) {
-      case "ndc":
+      case "user":
         try {
           activities = await Model.find({
-            ndc: searchValue,
+            user: searchValue,
           });
         } catch (error) {
           return res.status(500).send(error);
@@ -124,11 +90,11 @@ exports.search = (req, res) => {
 
         break;
 
-      case "drugName":
+      case "type":
         try {
           const activities_data = await Model.paginate(
             {
-              drugName: searchValue,
+              type: searchValue,
             },
             {
               page: 1,
@@ -146,7 +112,7 @@ exports.search = (req, res) => {
         break;
 
       default:
-        return res.status(404).send("Invalid Search Category");
+        return res.status(404).send("Invalid Filter Category");
     }
 
     if (activities.length === 0) {

@@ -2,27 +2,19 @@ const Controller = require("./controller");
 const Authentication = require("../services/auth");
 
 exports.routesConfig = function (app) {
-  app.get("/admin/activity/page/:pageId", [
+  app.get("/admin/activities/total", [
+    Authentication.authMiddleware,
+    Controller.getTotal,
+  ]);
+  app.get("/admin/activities/page/:pageId", [
     Authentication.authMiddleware,
     Controller.getByPage,
   ]);
-  app.get("/admin/activity/:_id", [
+  app.get("/admin/activities/:_id", [
     Authentication.authMiddleware,
     Controller.getById,
   ]);
-  app.patch("/admin/activity/update/:_id", [
-    Authentication.authMiddleware,
-    Controller.editById,
-  ]);
-  app.delete("/admin/activity/delete/:_id", [
-    Authentication.authMiddleware,
-    Controller.deleteById,
-  ]);
-  app.post("/admin/activity/add", [
-    Authentication.authMiddleware,
-    Controller.register,
-  ]);
-  app.post("/admin/activity/search", [
+  app.post("/admin/activities/search", [
     Authentication.authMiddleware,
     Controller.search,
   ]);

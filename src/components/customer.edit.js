@@ -124,7 +124,10 @@ export default function CustomerEdit() {
 
     async function fetchData() {
       setPageLoading(true);
-      const result = await customerUpdateService(id, customer);
+      const result = await customerUpdateService(id, {
+        ...customer,
+        auth_user: auth_obj.user,
+      });
       if (result.error) {
         setPageError("Server Error! Please retry...");
       } else {

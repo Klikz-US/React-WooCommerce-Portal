@@ -1,43 +1,22 @@
 const mongoose = require("../services/mongoose").mongoose;
+const mongoosePaginate = require("mongoose-paginate-v2");
 const Schema = mongoose.Schema;
 
 const ActivityModel = new Schema(
   {
-    userID: {
-      type: String,
-      default: "",
+    user: {
+      type: Object,
+      default: {},
       required: true,
-      trim: true,
-      index: true,
-    },
-    pharmacyID: {
-      type: String,
-      default: "",
-      required: true,
-      trim: true,
-      index: true,
-    },
-    drugID: {
-      type: String,
-      default: "",
-      required: true,
-      trim: true,
-      index: true,
     },
     type: {
-      type: Number,
-      default: 0,
-      required: true,
-    },
-    time: {
-      type: Date,
-      default: new Date(),
+      type: String,
+      default: "",
       required: true,
     },
     action: {
-      type: String,
-      default: "",
-      required: true,
+      type: Object,
+      default: {},
     },
   },
   {
@@ -49,4 +28,5 @@ const ActivityModel = new Schema(
   }
 );
 
+ActivityModel.plugin(mongoosePaginate);
 module.exports = mongoose.model("ActivityModel", ActivityModel);

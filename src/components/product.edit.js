@@ -34,7 +34,17 @@ export default function ProductEdit() {
   /* ----------------------- */
 
   const { id } = useParams();
-  const [product, setProduct] = useState({});
+  const [product, setProduct] = useState({
+    sku: "",
+    name: "",
+    price: "",
+    dimensions: {
+      height: "",
+      length: "",
+      width: "",
+    },
+    weight: "",
+  });
 
   const history = useHistory();
   const [pageError, setPageError] = useState("");
@@ -43,15 +53,9 @@ export default function ProductEdit() {
   const sku = useFormInput(product.sku);
   const name = useFormInput(product.name);
   const price = useFormInput(product.price);
-  const height = useFormInput(
-    product.dimensions === undefined ? "" : product.dimensions.height
-  );
-  const length = useFormInput(
-    product.dimensions === undefined ? "" : product.dimensions.length
-  );
-  const width = useFormInput(
-    product.dimensions === undefined ? "" : product.dimensions.width
-  );
+  const height = useFormInput(product.dimensions.height);
+  const length = useFormInput(product.dimensions.length);
+  const width = useFormInput(product.dimensions.width);
   const weight = useFormInput(product.weight);
 
   useEffect(() => {
@@ -85,7 +89,10 @@ export default function ProductEdit() {
 
     async function fetchData() {
       setPageLoading(true);
-      const result = await productUpdateService(id, product);
+      const result = await productUpdateService(id, {
+        ...product,
+        auth_user: auth_obj.user,
+      });
       if (result.error) {
         setPageError("Server Error! Please retry...");
       } else {

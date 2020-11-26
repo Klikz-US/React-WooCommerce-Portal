@@ -1,3 +1,5 @@
+const activity = require("../activity/controller");
+
 const WooCommerceRestApi = require("@woocommerce/woocommerce-rest-api").default;
 const WooCommerce = new WooCommerceRestApi({
   url: "https://cleanairportal.wpengine.com/",
@@ -71,6 +73,10 @@ exports.editById = (req, res) => {
           res.status(404).send("Update failed");
         } else {
           res.json(product.data);
+          activity.add(req.body.auth_user, "product updated", {
+            name: product.data.name,
+            link: "/products/edit/" + product.data.id,
+          });
         }
       })
       .catch((err) => {
@@ -90,6 +96,10 @@ exports.deleteById = (req, res) => {
           res.status(404).send("Delete failed");
         } else {
           res.json(product.data);
+          activity.add({ username: req.user.name }, "product deleted", {
+            name: product.data.name,
+            link: "/products/edit/" + product.data.id,
+          });
         }
       })
       .catch((err) => {
@@ -109,6 +119,10 @@ exports.add = (req, res) => {
           res.status(404).send("Create failed");
         } else {
           res.json(product.data);
+          activity.add(req.body.auth_user, "product created", {
+            name: product.data.name,
+            link: "/products/edit/" + product.data.id,
+          });
         }
       })
       .catch((err) => {

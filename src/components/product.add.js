@@ -102,7 +102,10 @@ export default function ProductAdd() {
 
     async function fetchData() {
       setPageLoading(true);
-      const result = await productAddService(product);
+      const result = await productAddService({
+        ...product,
+        auth_user: auth_obj.user,
+      });
       if (result.error) {
         setPageError("Server Error! Please retry...");
       } else {

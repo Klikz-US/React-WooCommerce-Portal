@@ -77,11 +77,13 @@ export default function CustomerEdit() {
 
     async function fetchData() {
       setPageLoading(true);
-      const result = await customerAddService(customer);
+      const result = await customerAddService({
+        ...customer,
+        auth_user: auth_obj.user,
+      });
       if (result.error) {
         setPageError("Server Error! Please retry...");
       } else {
-        console.log(result.data);
         history.push("/customers");
       }
       setPageLoading(false);
