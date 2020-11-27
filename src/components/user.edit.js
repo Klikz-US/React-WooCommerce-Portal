@@ -109,7 +109,7 @@ export default function UserEdit() {
 
         <Form autoComplete="off">
           <Row>
-            <Col className="align-self-center text-center">
+            <Col className="align-self-center text-center py-5">
               <img src={logo} width="auto" height="auto" alt="CleanAir" />
             </Col>
             <Col>

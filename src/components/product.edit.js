@@ -231,7 +231,7 @@ export default function ProductEdit() {
                 )}
 
                 <Row>
-                  <Col>
+                  <Col lg={6}>
                     <Carousel
                       style={{
                         height: "400px",
@@ -255,7 +255,7 @@ export default function ProductEdit() {
                     <div>{tagList(product.tags)}</div>
                   </Col>
 
-                  <Col>
+                  <Col lg={6}>
                     <Form.Label>Product Type</Form.Label>
                     <div>
                       <p className="text-capitalize">{product.type}</p>
@@ -338,21 +338,21 @@ export default function ProductEdit() {
             </Card>
 
             <Row>
-              <Col>
+              <Col className="d-flex pt-5">
                 <Button
-                  className="float-right mt-5"
+                  className="m-0 mr-2"
+                  variant="primary"
+                  onClick={handleSubmit}
+                >
+                  Update
+                </Button>
+
+                <Button
+                  className="m-0"
                   variant="outline-secondary"
                   onClick={handleCancel}
                 >
                   Cancel
-                </Button>
-
-                <Button
-                  className="float-right mr-2 mt-5"
-                  variant="primary"
-                  onClick={handleSubmit}
-                >
-                  Update Product
                 </Button>
               </Col>
             </Row>

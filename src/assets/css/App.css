@@ -60,3 +60,31 @@ table td {
 .carousel-indicators li.active {
   background-color: #0d7ea7 !important;
 }
+
+/** 
+ * Responsive
+ */
+.navbar-collapse .collapse-hide {
+  display: none;
+}
+
+div[data-test="table"] {
+  overflow-x: auto;
+}
+
+@media (min-width: 992px) {
+  .page-right header .navbar-expand-lg .navbar-brand,
+  .page-right header .navbar-expand-lg .mr-auto.navbar-nav {
+    display: none;
+  }
+}
+
+@media (max-width: 991px) {
+  #content .page-left {
+    display: none;
+  }
+
+  #content .page-right {
+    padding-left: 0 !important;
+  }
+}

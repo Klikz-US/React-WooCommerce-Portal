@@ -45,7 +45,7 @@ export default function MainRouter() {
           style={{ paddingLeft: isAuthenticated ? "270px" : "0" }}
         >
           {isAuthenticated && <Header />}
-          <main className={isAuthenticated ? "p-5" : ""}>
+          <main className={isAuthenticated ? "py-5 px-2 px-lg-5" : ""}>
             <Switch>
               <PrivateRoute
                 path="/"

@@ -382,7 +382,7 @@ export default function ProductList() {
         <h1 className="m-5 text-center">Products</h1>
 
         <Row className="mt-4">
-          <Col>
+          <Col lg={6}>
             <Form>
               <Form.Group as={Row}>
                 <Col md="5" className="pl-0 my-auto md-form">
@@ -416,7 +416,7 @@ export default function ProductList() {
               </Form.Group>
             </Form>
           </Col>
-          <Col className="px-0">
+          <Col className="px-0" lg={6}>
             {totalPages > 1 && !hasResult && !hasSearchError && pagination()}
           </Col>
         </Row>

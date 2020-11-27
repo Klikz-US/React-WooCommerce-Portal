@@ -12,7 +12,7 @@ import { customerAddService } from "../services/customer.service";
 import BreadcrumSection from "./sections/breadcrumb.section";
 import BarLoader from "react-spinners/BarLoader";
 
-export default function CustomerEdit() {
+export default function CustomerAdd() {
   /*
    * Private Page Token Verification Module.
    */
@@ -118,12 +118,12 @@ export default function CustomerEdit() {
         breadcrumb={{
           parentPath: "Customers",
           parentLink: "/customers",
-          activePath: "Edit Customer",
+          activePath: "New Customer",
         }}
       />
 
       <Container>
-        <h1 className="m-5 text-center">Edit Customer</h1>
+        <h1 className="m-5 text-center">New Customer</h1>
 
         <Form autoComplete="off">
           <Container>
@@ -168,7 +168,7 @@ export default function CustomerEdit() {
                 )}
 
                 <Row>
-                  <Col>
+                  <Col lg={6}>
                     <Form.Group>
                       <Form.Label>Customer Email</Form.Label>
                       <Form.Control
@@ -200,7 +200,7 @@ export default function CustomerEdit() {
                     </Form.Group>
                   </Col>
 
-                  <Col>
+                  <Col lg={6}>
                     <Form.Label>Shipping Address</Form.Label>
                     <Form.Group>
                       <Form.Control
@@ -330,21 +330,21 @@ export default function CustomerEdit() {
             </Card>
 
             <Row>
-              <Col>
+              <Col className="d-flex pt-5">
                 <Button
-                  className="float-right mt-5"
+                  className="m-0 mr-2"
+                  variant="primary"
+                  onClick={handleSubmit}
+                >
+                  Add Customer
+                </Button>
+
+                <Button
+                  className="m-0"
                   variant="outline-secondary"
                   onClick={handleCancel}
                 >
                   Cancel
-                </Button>
-
-                <Button
-                  className="float-right mr-2 mt-5"
-                  variant="primary"
-                  onClick={handleSubmit}
-                >
-                  Update Customer
                 </Button>
               </Col>
             </Row>

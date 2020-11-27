@@ -36,8 +36,8 @@ const fs = require("fs");
 const http = require("http");
 const https = require("https");
 const credentials = {
-  key: fs.readFileSync("./ssl/wildcard_klikz_us_private.key"),
-  cert: fs.readFileSync("./ssl/wildcard_klikz_us.crt"),
+  key: fs.readFileSync("./ssl/private.key"),
+  cert: fs.readFileSync("./ssl/public.crt"),
   ca: [
     fs.readFileSync("./ssl/CA_root.crt"),
     fs.readFileSync("./ssl/alphasslrootcabundle.crt"),

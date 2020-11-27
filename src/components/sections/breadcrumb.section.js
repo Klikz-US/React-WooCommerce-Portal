@@ -14,7 +14,7 @@ const BreadcrumSection = ({ breadcrumb }) => {
     <MDBCard className="mb-5">
       <MDBCardBody
         id="breadcrumb"
-        className="d-flex align-items-center justify-content-between"
+        className="d-flex align-items-center justify-content-between flex-wrap"
       >
         <MDBBreadcrumb className="m-0">
           <MDBBreadcrumbItem>
@@ -33,7 +33,7 @@ const BreadcrumSection = ({ breadcrumb }) => {
         </MDBBreadcrumb>
 
         {breadcrumb.btnLink && (
-          <MDBFormInline className="m-0">
+          <MDBFormInline className="mx-0 my-2">
             <Link
               to={breadcrumb.btnLink}
               className="btn m-0 bg-primary text-white"

@@ -17,10 +17,15 @@ export default function Navigation() {
 
   const location = useLocation();
 
+  const hideMenu = () => {
+    document.getElementById("navbar-toggler").classList.add("collapsed");
+    document.getElementById("responsive-navbar-nav").classList.remove("show");
+  };
+
   return (
     <>
-      <div className="w-100 p-5">
-        <img src={logo} className="img-fluid" alt="C2 Keep" />
+      <div className="w-100 p-3 collapse-hide">
+        <img src={logo} className="img-fluid" alt="CleanAir Engineering" />
       </div>
 
       <Link
@@ -28,6 +33,7 @@ export default function Navigation() {
         className={`btn w-100 px-4 py-3 m-0 mb-1 text-left ${
           location.pathname === "/" ? "bg-info text-white" : "bg-white"
         }`}
+        onClick={hideMenu}
       >
         <FcHome size="24" style={{ verticalAlign: "bottom" }} />
         <span className="ml-2" style={{ fontSize: "16px" }}>
@@ -41,6 +47,7 @@ export default function Navigation() {
           className={`btn w-100 px-4 py-3 m-0 mb-1 text-left ${
             location.pathname === "/users" ? "bg-info text-white" : "bg-white"
           }`}
+          onClick={hideMenu}
         >
           <FcCustomerSupport size="24" style={{ verticalAlign: "bottom" }} />
           <span className="ml-2" style={{ fontSize: "16px" }}>
@@ -54,6 +61,7 @@ export default function Navigation() {
         className={`btn w-100 px-4 py-3 m-0 mb-1 text-left ${
           location.pathname === "/customers" ? "bg-info text-white" : "bg-white"
         }`}
+        onClick={hideMenu}
       >
         <FcContacts size="24" style={{ verticalAlign: "bottom" }} />
         <span className="ml-2" style={{ fontSize: "16px" }}>
@@ -66,6 +74,7 @@ export default function Navigation() {
         className={`btn w-100 px-4 py-3 m-0 mb-1 text-left ${
           location.pathname === "/products" ? "bg-info text-white" : "bg-white"
         }`}
+        onClick={hideMenu}
       >
         <FcApproval size="24" style={{ verticalAlign: "bottom" }} />
         <span className="ml-2" style={{ fontSize: "16px" }}>
@@ -78,6 +87,7 @@ export default function Navigation() {
         className={`btn w-100 px-4 py-3 m-0 mb-1 text-left ${
           location.pathname === "/orders" ? "bg-info text-white" : "bg-white"
         }`}
+        onClick={hideMenu}
       >
         <FcCurrencyExchange size="24" style={{ verticalAlign: "bottom" }} />
         <span className="ml-2" style={{ fontSize: "16px" }}>
@@ -90,6 +100,7 @@ export default function Navigation() {
         className={`btn w-100 px-4 py-3 m-0 mb-1 text-left ${
           location.pathname === "/activity" ? "bg-info text-white" : "bg-white"
         }`}
+        onClick={hideMenu}
       >
         <FcBullish size="24" style={{ verticalAlign: "bottom" }} />
         <span className="ml-2" style={{ fontSize: "16px" }}>

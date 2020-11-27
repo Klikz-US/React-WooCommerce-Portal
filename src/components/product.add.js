@@ -348,7 +348,7 @@ export default function ProductAdd() {
                 )}
 
                 <Row>
-                  <Col>
+                  <Col lg={6}>
                     {/* <Form.Group>
                       <Form.Label>Product Categories</Form.Label>
                       {categoryList(allCategories, currentCategories)}
@@ -362,7 +362,7 @@ export default function ProductAdd() {
                     </Form.Group>
                   </Col>
 
-                  <Col>
+                  <Col lg={6}>
                     <Form.Group>
                       <Form.Label>Product SKU</Form.Label>
                       <Form.Control id="sku" name="sku" type="text" {...sku} />
@@ -451,21 +451,21 @@ export default function ProductAdd() {
             </Card>
 
             <Row>
-              <Col>
+              <Col className="d-flex pt-5">
                 <Button
-                  className="float-right mt-5"
-                  variant="outline-secondary"
-                  onClick={handleCancel}
-                >
-                  Cancel
-                </Button>
-
-                <Button
-                  className="float-right mr-2 mt-5"
+                  className="m-0 mr-2"
                   variant="primary"
                   onClick={handleSubmit}
                 >
                   Add Product
+                </Button>
+
+                <Button
+                  className="m-0"
+                  variant="outline-secondary"
+                  onClick={handleCancel}
+                >
+                  Cancel
                 </Button>
               </Col>
             </Row>
