@@ -20,7 +20,7 @@ import {
   customerSearchService,
 } from "../services/customer.service";
 
-import BreadcrumSection from "./sections/BreadcrumSection";
+import BreadcrumSection from "./sections/breadcrumb.section";
 import Pagination from "../utils/pagination.util";
 import { useFormInput } from "../utils/form-input.util";
 
@@ -64,7 +64,7 @@ export default function CustomerList() {
         customerTotal.data.forEach((total) => {
           customerTotalNum += total.total;
         });
-        setTotalPages(parseInt(customerTotalNum / 20));
+        setTotalPages(parseInt(customerTotalNum / 20) + 1);
       }
     }
     async function fetchData() {
@@ -102,7 +102,7 @@ export default function CustomerList() {
             customerTotal.data.forEach((total) => {
               customerTotalNum += total.total;
             });
-            setTotalPages(parseInt(customerTotalNum / 20));
+            setTotalPages(parseInt(customerTotalNum / 20) + 1);
           }
         }
         async function fetchData() {

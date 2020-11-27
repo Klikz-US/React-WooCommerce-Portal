@@ -16,7 +16,7 @@ import {
   orderSearchService,
 } from "../services/order.service";
 
-import BreadcrumSection from "./sections/BreadcrumSection";
+import BreadcrumSection from "./sections/breadcrumb.section";
 import Pagination from "../utils/pagination.util";
 import { useFormInput } from "../utils/form-input.util";
 
@@ -60,7 +60,7 @@ export default function OrderList() {
         orderTotal.data.forEach((total) => {
           orderTotalNum += total.total;
         });
-        setTotalPages(parseInt(orderTotalNum / 20));
+        setTotalPages(parseInt(orderTotalNum / 20) + 1);
       }
     }
     async function fetchData() {

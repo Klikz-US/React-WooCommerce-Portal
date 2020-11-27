@@ -16,7 +16,7 @@ import {
   activitySearchService,
 } from "../services/activity.service";
 
-import BreadcrumSection from "./sections/BreadcrumSection";
+import BreadcrumSection from "./sections/breadcrumb.section";
 import Pagination from "../utils/pagination.util";
 import { useFormInput } from "../utils/form-input.util";
 
@@ -56,7 +56,7 @@ export default function ActivityList() {
       if (activityTotal.error) {
         setPageError("Server Error! Please retry...");
       } else {
-        setTotalPages(parseInt(activityTotal.data.count / 20));
+        setTotalPages(parseInt(activityTotal.data.count / 20) + 1);
       }
     }
     async function fetchData() {

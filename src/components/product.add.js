@@ -13,7 +13,7 @@ import {
   productAllTagsService,
   productAllAttributesService,
 } from "../services/product.service";
-import BreadcrumSection from "./sections/BreadcrumSection";
+import BreadcrumSection from "./sections/breadcrumb.section";
 import BarLoader from "react-spinners/BarLoader";
 
 export default function ProductAdd() {
@@ -349,12 +349,12 @@ export default function ProductAdd() {
 
                 <Row>
                   <Col>
-                    <Form.Group>
+                    {/* <Form.Group>
                       <Form.Label>Product Categories</Form.Label>
                       {categoryList(allCategories, currentCategories)}
                     </Form.Group>
 
-                    <hr />
+                    <hr /> */}
 
                     <Form.Group>
                       <Form.Label>Product Tags</Form.Label>
@@ -432,7 +432,7 @@ export default function ProductAdd() {
                       />
                     </Form.Group>
 
-                    <Form.Check
+                    {/* <Form.Check
                       type="switch"
                       id="option"
                       label="Additional Product Options"
@@ -444,7 +444,7 @@ export default function ProductAdd() {
                       <Form.Group>
                         {attributeList(allAttributes, currentAttributes)}
                       </Form.Group>
-                    )}
+                    )} */}
                   </Col>
                 </Row>
               </Card.Body>

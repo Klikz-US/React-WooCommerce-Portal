@@ -12,7 +12,7 @@ import {
   customerGetService,
   customerUpdateService,
 } from "../services/customer.service";
-import BreadcrumSection from "./sections/BreadcrumSection";
+import BreadcrumSection from "./sections/breadcrumb.section";
 import BarLoader from "react-spinners/BarLoader";
 
 export default function CustomerEdit() {

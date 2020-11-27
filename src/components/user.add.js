@@ -9,7 +9,7 @@ import { setAuthToken } from "../services/auth.service";
 import { useFormInput } from "../utils/form-input.util";
 import { useFormSelect } from "../utils/form-select.util";
 import { userRegisterService } from "../services/user.service";
-import BreadcrumSection from "./sections/BreadcrumSection";
+import BreadcrumSection from "./sections/breadcrumb.section";
 
 import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
 

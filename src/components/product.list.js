@@ -21,7 +21,7 @@ import {
   productSearchService,
 } from "../services/product.service";
 
-import BreadcrumSection from "./sections/BreadcrumSection";
+import BreadcrumSection from "./sections/breadcrumb.section";
 import Pagination from "../utils/pagination.util";
 import { useFormInput } from "../utils/form-input.util";
 
@@ -65,7 +65,7 @@ export default function ProductList() {
         productTotal.data.forEach((total) => {
           productTotalNum += total.total;
         });
-        setTotalPages(parseInt(productTotalNum / 20));
+        setTotalPages(parseInt(productTotalNum / 20) + 1);
       }
     }
     async function fetchData() {
@@ -103,7 +103,7 @@ export default function ProductList() {
             productTotal.data.forEach((total) => {
               productTotalNum += total.total;
             });
-            setTotalPages(parseInt(productTotalNum / 20));
+            setTotalPages(parseInt(productTotalNum / 20) + 1);
           }
         }
         async function fetchData() {

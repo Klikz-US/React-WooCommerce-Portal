@@ -40,6 +40,6 @@ exports.routesConfig = function (app) {
   ]);
   app.get("/admin/products/attributes", [
     Authentication.authMiddleware,
-    Controller.getTags,
+    Controller.getAttributes,
   ]);
 };

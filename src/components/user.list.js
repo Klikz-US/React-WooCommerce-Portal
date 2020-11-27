@@ -10,7 +10,7 @@ import {
 import { setAuthToken } from "../services/auth.service";
 import { userDeleteService } from "../services/user.service";
 
-import BreadcrumSection from "./sections/BreadcrumSection";
+import BreadcrumSection from "./sections/breadcrumb.section";
 
 import { MdPhoneForwarded } from "react-icons/md";
 import { FaEnvelopeOpenText } from "react-icons/fa";

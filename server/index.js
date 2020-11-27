@@ -69,3 +69,6 @@ OrdersRouter.routesConfig(app);
 
 const ActivityRouter = require("./activity/routes");
 ActivityRouter.routesConfig(app);
+
+const ReportRouter = require("./reports/routes");
+ReportRouter.routesConfig(app);
