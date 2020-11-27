@@ -120,9 +120,11 @@ export default function ActivityList() {
         </tr>
       );
     } else {
-      return props.activities.map(function (activity, index) {
-        return <Activity activity={activity} key={index} />;
-      });
+      if (props.activities !== undefined) {
+        return props.activities.map(function (activity, index) {
+          return <Activity activity={activity} key={index} />;
+        });
+      }
     }
   };
 

@@ -5,7 +5,7 @@ const https_port = process.env.HTTPS_PORT;
 const allowed_domains = [
   "http://localhost:3000",
   "https://*.klikz.us",
-  "https://cleanair.klikz.us",
+  "https://cleanairportal.klikz.us",
 ];
 
 const express = require("express");
