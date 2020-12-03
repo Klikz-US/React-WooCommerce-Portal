@@ -280,7 +280,7 @@ export default function OrderList() {
               <thead className="bg-success text-white">
                 <tr>
                   <th>Order</th>
-                  <th>Cusomer</th>
+                  <th>Customer</th>
                   <th>Status</th>
                   <th>Shipping</th>
                   <th>Tax</th>

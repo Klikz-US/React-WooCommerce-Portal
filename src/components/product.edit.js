@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
 import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
 import Carousel from "react-bootstrap/Carousel";
+import Image from "react-bootstrap/Image";
 
 import { verifyTokenAsync } from "../actions/auth-async.action";
 import { setAuthToken } from "../services/auth.service";
@@ -11,9 +12,15 @@ import { useFormInput } from "../utils/form-input.util";
 import {
   productGetService,
   productUpdateService,
+  productAllCategoriesService,
+  productAllTagsService,
+  productAllAttributesService,
 } from "../services/product.service";
 import BreadcrumSection from "./sections/breadcrumb.section";
 import BarLoader from "react-spinners/BarLoader";
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Tooltip from "react-bootstrap/Tooltip";
+import { FaEdit, FaRegSave } from "react-icons/fa";
 
 export default function ProductEdit() {
   /*
@@ -44,6 +51,9 @@ export default function ProductEdit() {
       width: "",
     },
     weight: "",
+    tags: [],
+    categories: [],
+    attributes: [],
   });
 
   const history = useHistory();
@@ -58,17 +68,63 @@ export default function ProductEdit() {
   const width = useFormInput(product.dimensions.width);
   const weight = useFormInput(product.weight);
 
+  const [currentTags, setCurrentTags] = useState([]);
+  const [currentCategories, setCurrentCategories] = useState([]);
+  const [currentAttributes, setCurrentAttributes] = useState([]);
+
+  const [allTags, setAllTags] = useState([]);
+  const [allCategories, setAllCategories] = useState([]);
+  const [allAttributes, setAllAttributes] = useState([]);
+
+  const [showTagsForm, setShowTagsForm] = useState(false);
+  const [showCategoriesForm, setShowCategoriesForm] = useState(false);
+  const [showAttributesForm, setShowAttributesForm] = useState(false);
+
+  const [productPhotos, setProductPhotos] = useState([]);
+  const [productPhotoPaths, setProductPhotoPaths] = useState([]);
+
   useEffect(() => {
-    async function getData() {
+    async function fetchProductData() {
+      setPageLoading(true);
+
       const productData = await productGetService(id);
       if (productData.error) {
         setPageError("Server Error! Please retry...");
       } else {
         setProduct((product) => ({ ...product, ...productData.data }));
+        setCurrentTags(productData.data.tags);
+        setCurrentCategories(productData.data.categories);
+        setCurrentAttributes(productData.data.attributes);
       }
+
       setPageLoading(false);
     }
-    getData();
+
+    async function fetchAllTags() {
+      const tags = await productAllTagsService();
+      if (!tags.error) {
+        setAllTags(tags.data);
+      }
+    }
+
+    async function fetchAllCategories() {
+      const categories = await productAllCategoriesService();
+      if (!categories.error) {
+        setAllCategories(categories.data);
+      }
+    }
+
+    async function fetchAllAttributes() {
+      const attributes = await productAllAttributesService();
+      if (!attributes.error) {
+        setAllAttributes(attributes.data);
+      }
+    }
+
+    fetchProductData();
+    fetchAllTags();
+    fetchAllCategories();
+    fetchAllAttributes();
   }, [dispatch, id]);
 
   const handleSubmit = (e) => {
@@ -85,6 +141,9 @@ export default function ProductEdit() {
         width: width.value,
       },
       weight: weight.value,
+      tags: currentTags,
+      categories: currentCategories,
+      attributes: currentAttributes,
     };
 
     async function fetchData() {
@@ -131,30 +190,203 @@ export default function ProductEdit() {
     }
   };
 
-  const categoryList = (categories) => {
-    if (categories !== undefined) {
-      return categories.map(function (category, index) {
-        return <p key={index}>{category.name}</p>;
-      });
+  const photoUpdate = (e) => {
+    e.preventDefault();
+
+    const photos = e.target.files;
+    if (photos) {
+      setProductPhotos(photos);
+
+      // let paths = [];
+      // for (let i = 0; i < photos.length; i++) {
+      //   const photo = photos[i];
+      //   paths.push(
+      //     "/uploads/photo/" +
+      //       photo.name.split(".")[photo.name.split(".").length - 1]
+      //   );
+      // }
+      // setProductPhotoPaths(paths);
     }
   };
 
-  const tagList = (tags) => {
-    if (tags !== undefined) {
-      return tags.map(function (tag, index) {
-        return <p key={index}>{tag.name}</p>;
-      });
+  const imagePreview = (photos) => {
+    let photosArry = [];
+    for (let i = 0; i < photos.length; i++) {
+      const photo = photos[i];
+      photosArry.push(photo);
     }
+
+    return photosArry.map((photo, index) => {
+      return (
+        <div className="wrapper w-50">
+          <Image
+            src={URL.createObjectURL(photo)}
+            width="100%"
+            height="auto"
+            thumbnail
+            key={index}
+          />
+        </div>
+      );
+    });
   };
 
-  const attrList = (attributes) => {
-    if (attributes !== undefined) {
-      return attributes.map(function (attribute, index) {
+  const handleCategoryUpdate = (e) => {
+    var checkedCategories = [];
+    var checkedCheckboxes = document.getElementsByName("category");
+    checkedCheckboxes.forEach((checkedCheckbox) => {
+      console.log(allCategories);
+      console.log(checkedCheckbox);
+      if (checkedCheckbox.checked) {
+        for (let i = 0; i < allCategories.length; i++) {
+          if (
+            allCategories[i].id.toString() === checkedCheckbox.value.toString()
+          ) {
+            checkedCategories.push(allCategories[i]);
+            break;
+          }
+        }
+      }
+    });
+    setCurrentCategories(checkedCategories);
+  };
+
+  const categoryList = () => {
+    if (showCategoriesForm) {
+      return allCategories.map(function (allCategory, index) {
+        let checked = false;
+        currentCategories.forEach((currentCategory) => {
+          if (parseInt(allCategory.id) === parseInt(currentCategory.id)) {
+            checked = true;
+          }
+        });
+
         return (
-          <div key={index}>
+          <Form.Check
+            className="mr-5"
+            type="checkbox"
+            name="category"
+            value={allCategory.id}
+            label={allCategory.name}
+            checked={!!checked}
+            onChange={handleCategoryUpdate}
+            key={index}
+          />
+        );
+      });
+    } else {
+      return currentCategories.map((currentCategory, index) => {
+        return (
+          <p className="mb-1" key={index}>
+            {currentCategory.name}
+          </p>
+        );
+      });
+    }
+  };
+
+  const handleTagUpdate = (e) => {
+    var checkedTags = [];
+    var checkedCheckboxes = document.getElementsByName("tag");
+    checkedCheckboxes.forEach((checkedCheckbox) => {
+      if (checkedCheckbox.checked) {
+        for (let i = 0; i < allTags.length; i++) {
+          if (allTags[i].id.toString() === checkedCheckbox.value.toString()) {
+            checkedTags.push(allTags[i]);
+            break;
+          }
+        }
+      }
+    });
+    setCurrentTags(checkedTags);
+  };
+
+  const tagList = () => {
+    if (showTagsForm) {
+      return allTags.map(function (allTag, index) {
+        let checked = false;
+        currentTags.forEach((currentTag) => {
+          if (parseInt(allTag.id) === parseInt(currentTag.id)) {
+            checked = true;
+          }
+        });
+
+        return (
+          <Form.Check
+            className="mr-5"
+            type="checkbox"
+            name="tag"
+            value={allTag.id}
+            label={allTag.name}
+            checked={!!checked}
+            onChange={handleTagUpdate}
+            key={index}
+          />
+        );
+      });
+    } else {
+      return currentTags.map((currentTag, index) => {
+        return (
+          <p className="mb-1" key={index}>
+            {currentTag.name}
+          </p>
+        );
+      });
+    }
+  };
+
+  const handleAttributeUpdate = (e) => {
+    var checkedAttributes = [];
+    var checkedCheckboxes = document.getElementsByName("attribute");
+    checkedCheckboxes.forEach((checkedCheckbox) => {
+      if (checkedCheckbox.checked) {
+        for (let i = 0; i < allAttributes.length; i++) {
+          if (
+            allAttributes[i].id.toString() === checkedCheckbox.value.toString()
+          ) {
+            checkedAttributes.push(allAttributes[i]);
+            break;
+          }
+        }
+      }
+    });
+    setCurrentAttributes(checkedAttributes);
+  };
+
+  const attrList = () => {
+    if (showAttributesForm) {
+      return allAttributes.map(function (allAttribute, index) {
+        let checked = false;
+        currentAttributes.forEach((currentAttribute) => {
+          if (parseInt(allAttribute.id) === parseInt(currentAttribute.id)) {
+            checked = true;
+          }
+        });
+
+        return (
+          <Form.Check
+            className="mr-5"
+            type="checkbox"
+            name="attribute"
+            value={allAttribute.id}
+            label={allAttribute.name}
+            checked={!!checked}
+            onChange={handleAttributeUpdate}
+            key={index}
+          />
+        );
+      });
+    } else {
+      return currentAttributes.map(function (currentAttribute, index) {
+        return (
+          <div key={index} className="mb-2">
             <Row>
-              <Col>{attribute.name}</Col>
-              <Col>{optionList(attribute.options)}</Col>
+              <Col>
+                <small style={{ backgroundColor: "#eeeeee" }}>
+                  {currentAttribute.name}
+                </small>
+              </Col>
+              <Col>{optionList(currentAttribute.options)}</Col>
             </Row>
           </div>
         );
@@ -191,7 +423,7 @@ export default function ProductEdit() {
         <Form autoComplete="off">
           <Container>
             <Card className="h-100 shadow">
-              <Card.Header className="bg-danger text-white">
+              <Card.Header className="bg-info text-white">
                 <h5 className="m-0 text-center">Product Information</h5>
               </Card.Header>
               <Card.Body>
@@ -244,23 +476,95 @@ export default function ProductEdit() {
                       {imageList(product.images)}
                     </Carousel>
 
+                    <Form.File custom>
+                      <Form.File.Input
+                        name="productPhoto"
+                        onChange={photoUpdate}
+                        multiple
+                      />
+                      <Form.File.Label data-browse="Upload">
+                        Max. 512mb. Type: .jpg / .jpeg / .png / .gif
+                      </Form.File.Label>
+                    </Form.File>
+
                     <hr />
 
-                    <Form.Label>Product Categories</Form.Label>
+                    <Form.Label className="w-100 d-flex">
+                      <span>Product Categories</span>
+                      <span
+                        className="ml-auto"
+                        style={{ cursor: "pointer" }}
+                        onClick={() =>
+                          setShowCategoriesForm(!showCategoriesForm)
+                        }
+                      >
+                        {showCategoriesForm ? (
+                          <OverlayTrigger
+                            key="saveCategories"
+                            placement="top"
+                            overlay={
+                              <Tooltip id="tooltip-saveCategories">
+                                Save Changes
+                              </Tooltip>
+                            }
+                          >
+                            <FaRegSave color="#33B5E5" />
+                          </OverlayTrigger>
+                        ) : (
+                          <OverlayTrigger
+                            key="editCategories"
+                            placement="top"
+                            overlay={
+                              <Tooltip id="tooltip-editCategories">
+                                Edit Categories
+                              </Tooltip>
+                            }
+                          >
+                            <FaEdit color="#FF3547" />
+                          </OverlayTrigger>
+                        )}
+                      </span>
+                    </Form.Label>
                     <div>{categoryList(product.categories)}</div>
 
                     <hr />
 
-                    <Form.Label>Product Tags</Form.Label>
-                    <div>{tagList(product.tags)}</div>
+                    <Form.Label className="w-100 d-flex">
+                      <span>Product Tags</span>
+                      <span
+                        className="ml-auto"
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setShowTagsForm(!showTagsForm)}
+                      >
+                        {showTagsForm ? (
+                          <OverlayTrigger
+                            key="saveTags"
+                            placement="top"
+                            overlay={
+                              <Tooltip id="tooltip-saveTags">
+                                Save Changes
+                              </Tooltip>
+                            }
+                          >
+                            <FaRegSave color="#33B5E5" />
+                          </OverlayTrigger>
+                        ) : (
+                          <OverlayTrigger
+                            key="editTags"
+                            placement="top"
+                            overlay={
+                              <Tooltip id="tooltip-editTags">Edit Tags</Tooltip>
+                            }
+                          >
+                            <FaEdit color="#FF3547" />
+                          </OverlayTrigger>
+                        )}
+                      </span>
+                    </Form.Label>
+                    {tagList()}
                   </Col>
 
                   <Col lg={6}>
-                    <Form.Label>Product Type</Form.Label>
-                    <div>
-                      <p className="text-capitalize">{product.type}</p>
-                    </div>
-
                     <Form.Group>
                       <Form.Label>Product SKU</Form.Label>
                       <Form.Control id="sku" name="sku" type="text" {...sku} />
@@ -330,8 +634,56 @@ export default function ProductEdit() {
                       />
                     </Form.Group>
 
-                    <Form.Label>Product Options</Form.Label>
-                    <div>{attrList(product.attributes)}</div>
+                    <Form.Label>Product Type</Form.Label>
+                    <div>
+                      <p className="text-capitalize">{product.type}</p>
+                    </div>
+
+                    <Form.Label className="w-100 d-flex">
+                      <span>Product Attributes</span>
+                      <span
+                        className="ml-auto"
+                        style={{ cursor: "pointer" }}
+                        onClick={() =>
+                          setShowAttributesForm(!showAttributesForm)
+                        }
+                      >
+                        {showAttributesForm ? (
+                          <OverlayTrigger
+                            key="saveAttr"
+                            placement="top"
+                            overlay={
+                              <Tooltip id="tooltip-saveAttr">
+                                Save Changes
+                              </Tooltip>
+                            }
+                          >
+                            <FaRegSave color="#33B5E5" />
+                          </OverlayTrigger>
+                        ) : (
+                          <OverlayTrigger
+                            key="editAttr"
+                            placement="top"
+                            overlay={
+                              <Tooltip id="tooltip-editAttr">
+                                Edit Attributes
+                              </Tooltip>
+                            }
+                          >
+                            <FaEdit color="#FF3547" />
+                          </OverlayTrigger>
+                        )}
+                      </span>
+                    </Form.Label>
+                    <div
+                      style={{
+                        overflowX: "hidden",
+                        overflowY: "auto",
+                        maxHeight: "500px",
+                      }}
+                    >
+                      {attrList()}
+                    </div>
                   </Col>
                 </Row>
               </Card.Body>
