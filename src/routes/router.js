@@ -21,6 +21,8 @@ import CustomerList from "../components/customer.list";
 import CustomerAdd from "../components/customer.add";
 import CustomerEdit from "../components/customer.edit";
 import OrderList from "../components/order.list";
+import OrderAdd from "../components/order.add";
+import OrderEdit from "../components/order.edit";
 
 export default function MainRouter() {
   const auth_obj = useSelector((state) => state.auth);
@@ -126,6 +128,22 @@ export default function MainRouter() {
                 exact
                 component={OrderList}
                 isAuthenticated={isAuthenticated}
+              />
+
+              <PrivateRoute
+                path="/orders/add"
+                exact
+                component={OrderAdd}
+                isAuthenticated={isAuthenticated}
+                isAdmin={isAdmin}
+              />
+
+              <PrivateRoute
+                path="/orders/edit/:id"
+                exact
+                component={OrderEdit}
+                isAuthenticated={isAuthenticated}
+                isAdmin={isAdmin}
               />
 
               <PrivateRoute

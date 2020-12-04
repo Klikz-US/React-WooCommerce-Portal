@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useHistory, Link } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
 import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
+import Carousel from "react-bootstrap/Carousel";
+// import Image from "react-bootstrap/Image";
 
 import { verifyTokenAsync } from "../actions/auth-async.action";
 import { setAuthToken } from "../services/auth.service";
@@ -12,11 +14,15 @@ import {
   productAllCategoriesService,
   productAllTagsService,
   productAllAttributesService,
+  productPhotoAddService,
 } from "../services/product.service";
 import BreadcrumSection from "./sections/breadcrumb.section";
 import BarLoader from "react-spinners/BarLoader";
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Tooltip from "react-bootstrap/Tooltip";
+import { FaEdit, FaRegSave, FaRegTrashAlt } from "react-icons/fa";
 
-export default function ProductAdd() {
+export default function ProductEdit() {
   /*
    * Private Page Token Verification Module.
    */
@@ -34,71 +40,103 @@ export default function ProductAdd() {
   }, [expiredAt, token, dispatch]);
   /* ----------------------- */
 
-  const [allCategories, setAllCategories] = useState([]);
+  const { id } = useParams();
+  const [product, setProduct] = useState({
+    sku: "",
+    name: "",
+    price: "",
+    dimensions: {
+      height: "",
+      length: "",
+      width: "",
+    },
+    weight: "",
+    tags: [],
+    categories: [],
+    attributes: [],
+    images: [],
+  });
+
+  const history = useHistory();
+  const [pageError, setPageError] = useState("");
+  const [pageLoading, setPageLoading] = useState(false);
+
+  const sku = useFormInput(product.sku);
+  const name = useFormInput(product.name);
+  const price = useFormInput(product.price);
+  const height = useFormInput(product.dimensions.height);
+  const length = useFormInput(product.dimensions.length);
+  const width = useFormInput(product.dimensions.width);
+  const weight = useFormInput(product.weight);
+
+  const [currentTags, setCurrentTags] = useState([]);
+  const [currentCategories, setCurrentCategories] = useState([]);
+  const [currentAttributes, setCurrentAttributes] = useState([]);
+
   const [allTags, setAllTags] = useState([]);
+  const [allCategories, setAllCategories] = useState([]);
   const [allAttributes, setAllAttributes] = useState([]);
+
+  const [showTagsForm, setShowTagsForm] = useState(false);
+  const [showCategoriesForm, setShowCategoriesForm] = useState(false);
+  const [showAttributesForm, setShowAttributesForm] = useState(false);
+
+  const [productImages, setProductImages] = useState([]);
+
   useEffect(() => {
-    async function fetchData() {
+    async function fetchAllTags() {
+      setPageLoading(true);
+      const tags = await productAllTagsService();
+      if (!tags.error) {
+        setAllTags(tags.data);
+      }
+      setPageLoading(false);
+    }
+
+    async function fetchAllCategories() {
       setPageLoading(true);
       const categories = await productAllCategoriesService();
       if (!categories.error) {
         setAllCategories(categories.data);
       }
+      setPageLoading(false);
+    }
 
-      const tags = await productAllTagsService();
-      if (!tags.error) {
-        setAllTags(tags.data);
-      }
-
+    async function fetchAllAttributes() {
+      setPageLoading(true);
       const attributes = await productAllAttributesService();
       if (!attributes.error) {
         setAllAttributes(attributes.data);
       }
       setPageLoading(false);
     }
-    fetchData();
-  }, [dispatch]);
 
-  const [currentCategories, setCurrentCategories] = useState([]);
-  const [currentTags, setCurrentTags] = useState([]);
-  const [currentAttributes, setCurrentAttributes] = useState([]);
-  const [hasOptions, setHasOptions] = useState(false);
-
-  const history = useHistory();
-  const [pageError, setPageError] = useState("");
-  const [pageLoading, setPageLoading] = useState(false);
-  const [productSuccess, setProductSuccess] = useState(false);
-
-  const [productId, setProductId] = useState("");
-  const sku = useFormInput("");
-  const name = useFormInput("");
-  const price = useFormInput("");
-  const height = useFormInput("");
-  const length = useFormInput("");
-  const width = useFormInput("");
-  const weight = useFormInput("");
-
-  const product = {
-    id: productId,
-    sku: sku.value,
-    name: name.value,
-    price: price.value,
-    regular_price: price.value,
-    dimensions: {
-      height: height.value,
-      length: length.value,
-      width: width.value,
-    },
-    weight: weight.value,
-    status: "draft",
-    categories: currentCategories,
-    tags: currentTags,
-    attributes: currentAttributes,
-    type: hasOptions ? "variable" : "simple",
-  };
+    fetchAllTags();
+    fetchAllCategories();
+    fetchAllAttributes();
+  }, [dispatch, id]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    productImages.forEach((productImage) => {});
+
+    const product = {
+      sku: sku.value,
+      name: name.value,
+      price: price.value,
+      regular_price: price.value,
+      dimensions: {
+        height: height.value,
+        length: length.value,
+        width: width.value,
+      },
+      weight: weight.value,
+      tags: currentTags,
+      categories: currentCategories,
+      attributes: currentAttributes,
+      images: productImages,
+    };
 
     async function fetchData() {
       setPageLoading(true);
@@ -109,48 +147,11 @@ export default function ProductAdd() {
       if (result.error) {
         setPageError("Server Error! Please retry...");
       } else {
-        setProductId(result.data.id);
-        setCurrentCategories(result.data.categories);
-        setCurrentTags(result.data.tags);
-        setCurrentAttributes(result.data.attributes);
-        setProductSuccess(true);
+        setProduct((product) => ({ ...product, ...result.data }));
       }
       setPageLoading(false);
     }
     fetchData();
-  };
-
-  const handleCategoryUpdate = (e) => {
-    var checkedCategories = [];
-    var checkedCheckboxes = document.getElementsByName("category");
-    checkedCheckboxes.forEach((checkedCheckbox) => {
-      if (checkedCheckbox.checked) {
-        checkedCategories.push({ id: checkedCheckbox.value });
-      }
-    });
-    setCurrentCategories(checkedCategories);
-  };
-
-  const handleTagUpdate = (e) => {
-    var checkedTags = [];
-    var checkedCheckboxes = document.getElementsByName("tag");
-    checkedCheckboxes.forEach((checkedCheckbox) => {
-      if (checkedCheckbox.checked) {
-        checkedTags.push({ id: checkedCheckbox.value });
-      }
-    });
-    setCurrentTags(checkedTags);
-  };
-
-  const handleAttributeUpdate = (e) => {
-    var checkedAttributes = [];
-    var checkedCheckboxes = document.getElementsByName("attribute");
-    checkedCheckboxes.forEach((checkedCheckbox) => {
-      if (checkedCheckbox.checked) {
-        checkedAttributes.push({ id: checkedCheckbox.value });
-      }
-    });
-    setCurrentAttributes(checkedAttributes);
   };
 
   const handleCancel = (e) => {
@@ -158,83 +159,294 @@ export default function ProductAdd() {
     history.goBack();
   };
 
-  const categoryList = (allCategories, categories) => {
-    if (allCategories !== undefined) {
-      return allCategories.map(function (category, index) {
-        let checked = false;
-        if (categories !== undefined) {
-          categories.forEach((current_category) => {
-            if (parseInt(category.id) === parseInt(current_category.id)) {
-              checked = true;
-            }
-          });
+  const imageTrash = (index) => {
+    let updatedImages = [];
+    for (let i = 0; i < productImages.length; i++) {
+      if (i !== index) {
+        updatedImages.push(productImages[i]);
+      }
+    }
+
+    setProductImages(updatedImages);
+  };
+
+  const imageList = (images) => {
+    if (images !== undefined) {
+      return images.map(function (image, index) {
+        return (
+          <Carousel.Item key={index} className="text-center h-100">
+            <div className="h-100 d-flex justify-content-center align-items-center position-relative">
+              <img
+                src={image.preview ? image.preview : image.src}
+                alt={image.alt ? image.alt : image.name}
+                width="auto"
+                height="auto"
+                style={{
+                  maxHeight: "400px",
+                  maxWidth: "100%",
+                }}
+              />
+            </div>
+            <span
+              className="position-absolute"
+              style={{
+                top: "10px",
+                right: "10px",
+                zIndex: "999",
+                cursor: "pointer",
+              }}
+              onClick={() => imageTrash(index)}
+            >
+              <OverlayTrigger
+                key="trashImage"
+                placement="top"
+                overlay={
+                  <Tooltip id="tooltip-trashImage">Delete Image</Tooltip>
+                }
+              >
+                <FaRegTrashAlt color="#FF3547" />
+              </OverlayTrigger>
+            </span>
+          </Carousel.Item>
+        );
+      });
+    }
+  };
+
+  const photoUpdate = (e) => {
+    e.preventDefault();
+    const today = new Date();
+
+    let newUploadedImages = [];
+    for (let i = 0; i < e.target.files.length; i++) {
+      newUploadedImages.push(e.target.files[i]);
+    }
+
+    newUploadedImages.forEach((newUploadedImage) => {
+      async function process() {
+        const photoData = new FormData();
+        photoData.append(
+          "name",
+          moment(today).format("HHmmss") + newUploadedImage.name
+        );
+        photoData.append("productPhotoData", newUploadedImage);
+
+        setPageLoading(true);
+        const result = await productPhotoAddService(photoData);
+        if (result.error) {
+          setPageError("Image Upload Error!");
+        } else {
+          console.log(result);
+          setPageLoading(false);
         }
+      }
+      process();
+    });
+
+    let array = [];
+    for (let i = 0; i < e.target.files.length; i++) {
+      const photo = e.target.files[i];
+      const photoPreviewURL = URL.createObjectURL(photo);
+      const photoUploadURL =
+        "https://cleanairportal.wpengine.com/wp-content/uploads/products/" +
+        moment(today).format("HHmmss") +
+        photo.name;
+      array.push({
+        name: moment(today).format("HHmmss") + photo.name,
+        src: photoUploadURL,
+        preview: photoPreviewURL,
+      });
+    }
+
+    setProductImages([...array, ...productImages]);
+  };
+
+  const handleCategoryUpdate = (e) => {
+    var checkedCategories = [];
+    var checkedCheckboxes = document.getElementsByName("category");
+    checkedCheckboxes.forEach((checkedCheckbox) => {
+      console.log(allCategories);
+      console.log(checkedCheckbox);
+      if (checkedCheckbox.checked) {
+        for (let i = 0; i < allCategories.length; i++) {
+          if (
+            allCategories[i].id.toString() === checkedCheckbox.value.toString()
+          ) {
+            checkedCategories.push(allCategories[i]);
+            break;
+          }
+        }
+      }
+    });
+    setCurrentCategories(checkedCategories);
+  };
+
+  const categoryList = () => {
+    if (showCategoriesForm) {
+      return allCategories.map(function (allCategory, index) {
+        let checked = false;
+        currentCategories.forEach((currentCategory) => {
+          if (parseInt(allCategory.id) === parseInt(currentCategory.id)) {
+            checked = true;
+          }
+        });
+
         return (
           <Form.Check
-            className="mr-5 category"
+            className="mr-5"
             type="checkbox"
             name="category"
-            value={category.id}
-            label={category.name}
+            value={allCategory.id}
+            label={allCategory.name}
             checked={!!checked}
             onChange={handleCategoryUpdate}
             key={index}
           />
         );
       });
-    }
-  };
-
-  const tagList = (allTags, tags) => {
-    if (allTags !== undefined) {
-      return allTags.map(function (tag, index) {
-        let checked = false;
-        if (tags !== undefined) {
-          tags.forEach((current_tag) => {
-            if (parseInt(tag.id) === parseInt(current_tag.id)) {
-              checked = true;
-            }
-          });
-        }
+    } else {
+      return currentCategories.map((currentCategory, index) => {
         return (
-          <Form.Check
-            className="mr-5 category"
-            type="checkbox"
-            name="tag"
-            value={tag.id}
-            label={tag.name}
-            checked={!!checked}
-            onChange={handleTagUpdate}
-            key={index}
-          />
+          <p className="mb-1" key={index}>
+            {currentCategory.name}
+          </p>
         );
       });
     }
   };
 
-  const attributeList = (allAttributes, attributes) => {
-    if (allAttributes !== undefined) {
-      return allAttributes.map(function (attribute, index) {
-        let checked = false;
-        if (attributes !== undefined) {
-          attributes.forEach((current_attribute) => {
-            if (parseInt(attribute.id) === parseInt(current_attribute.id)) {
-              checked = true;
-            }
-          });
+  const handleTagUpdate = (e) => {
+    var checkedTags = [];
+    var checkedCheckboxes = document.getElementsByName("tag");
+    checkedCheckboxes.forEach((checkedCheckbox) => {
+      if (checkedCheckbox.checked) {
+        for (let i = 0; i < allTags.length; i++) {
+          if (allTags[i].id.toString() === checkedCheckbox.value.toString()) {
+            checkedTags.push(allTags[i]);
+            break;
+          }
         }
+      }
+    });
+    setCurrentTags(checkedTags);
+  };
+
+  const tagList = () => {
+    if (showTagsForm) {
+      return allTags.map(function (allTag, index) {
+        let checked = false;
+        currentTags.forEach((currentTag) => {
+          if (parseInt(allTag.id) === parseInt(currentTag.id)) {
+            checked = true;
+          }
+        });
+
         return (
-          <div key={index}>
+          <div className="mb-2" key={index}>
             <Form.Check
-              className="mr-5 category"
+              className="mr-5"
               type="checkbox"
-              name="attribute"
-              value={attribute.id}
-              label={attribute.name}
+              name="tag"
+              value={allTag.id}
+              label={
+                allTag.name === "beyond-product"
+                  ? 'Add notification "Call 888-212-0890 for Inquiries."'
+                  : allTag.name === "buy-only"
+                  ? "Make a product to buy only"
+                  : allTag.name === "buy-or-rent"
+                  ? "Make a product to buy or rent"
+                  : allTag.name === "call-for-po"
+                  ? 'Add notification "Call 847-654-4680 Now for Purchase Options."'
+                  : allTag.name === "dont-sell"
+                  ? "Listed in sales but doesn't show the price."
+                  : allTag.name === "rental-only"
+                  ? "Make a product to rental only"
+                  : ""
+              }
               checked={!!checked}
-              onChange={handleAttributeUpdate}
+              onChange={handleTagUpdate}
             />
-            {checked && <>{optionList(attribute.options)}</>}
+          </div>
+        );
+      });
+    } else {
+      return currentTags.map((currentTag, index) => {
+        return (
+          <div className="mb-2" key={index}>
+            <p className="mb-0">
+              {currentTag.name === "beyond-product"
+                ? 'Add notification "Call 888-212-0890 for Inquiries."'
+                : currentTag.name === "buy-only"
+                ? "Make a product to buy only"
+                : currentTag.name === "buy-or-rent"
+                ? "Make a product to buy or rent"
+                : currentTag.name === "call-for-po"
+                ? 'Add notification "Call 847-654-4680 Now for Purchase Options."'
+                : currentTag.name === "dont-sell"
+                ? "Listed in sales but doesn't show the price."
+                : currentTag.name === "rental-only"
+                ? "Make a product to rental only"
+                : ""}
+            </p>
+          </div>
+        );
+      });
+    }
+  };
+
+  const handleAttributeUpdate = (e) => {
+    var checkedAttributes = [];
+    var checkedCheckboxes = document.getElementsByName("attribute");
+    checkedCheckboxes.forEach((checkedCheckbox) => {
+      if (checkedCheckbox.checked) {
+        for (let i = 0; i < allAttributes.length; i++) {
+          if (
+            allAttributes[i].id.toString() === checkedCheckbox.value.toString()
+          ) {
+            checkedAttributes.push(allAttributes[i]);
+            break;
+          }
+        }
+      }
+    });
+    setCurrentAttributes(checkedAttributes);
+  };
+
+  const attrList = () => {
+    if (showAttributesForm) {
+      return allAttributes.map(function (allAttribute, index) {
+        let checked = false;
+        currentAttributes.forEach((currentAttribute) => {
+          if (parseInt(allAttribute.id) === parseInt(currentAttribute.id)) {
+            checked = true;
+          }
+        });
+
+        return (
+          <Form.Check
+            className="mr-5"
+            type="checkbox"
+            name="attribute"
+            value={allAttribute.id}
+            label={allAttribute.name}
+            checked={!!checked}
+            onChange={handleAttributeUpdate}
+            key={index}
+          />
+        );
+      });
+    } else {
+      return currentAttributes.map(function (currentAttribute, index) {
+        return (
+          <div key={index} className="mb-2">
+            <Row>
+              <Col>
+                <small style={{ backgroundColor: "#eeeeee" }}>
+                  {currentAttribute.name}
+                </small>
+              </Col>
+              <Col>{optionList(currentAttribute.options)}</Col>
+            </Row>
           </div>
         );
       });
@@ -254,27 +466,23 @@ export default function ProductAdd() {
     }
   };
 
-  const handleHasOptionsChange = () => {
-    setHasOptions(!hasOptions);
-  };
-
   return (
     <>
       <BreadcrumSection
         breadcrumb={{
           parentPath: "Products",
           parentLink: "/products",
-          activePath: "Add New Product",
+          activePath: "Add Product",
         }}
       />
 
       <Container>
-        <h1 className="m-5 text-center">Add Product</h1>
+        <h1 className="m-5 text-center">Add New Product</h1>
 
         <Form autoComplete="off">
           <Container>
             <Card className="h-100 shadow">
-              <Card.Header className="bg-danger text-white">
+              <Card.Header className="bg-info text-white">
                 <h5 className="m-0 text-center">Product Information</h5>
               </Card.Header>
               <Card.Body>
@@ -313,53 +521,125 @@ export default function ProductAdd() {
                   </div>
                 )}
 
-                {productSuccess && (
-                  <div
-                    className="d-flex flex-column position-absolute w-100 h-100"
-                    style={{
-                      top: "0",
-                      left: "0",
-                      backgroundColor: "rgba(255, 255, 255, .7)",
-                      zIndex: "1",
-                    }}
-                  >
-                    <div
-                      className="mt-5 p-4 text-center bg-white shadow-lg"
-                      style={{ width: "640px", margin: "auto" }}
-                    >
-                      <p>
-                        The product has been created as a draft mode
-                        successfully.
-                      </p>
-                      <Link
-                        to={`/products/edit/${product.id}`}
-                        className="btn bg-success text-white"
-                      >
-                        View Product
-                      </Link>
-                      <Button
-                        onClick={() => setProductSuccess(false)}
-                        className="btn"
-                      >
-                        Close
-                      </Button>
-                    </div>
-                  </div>
-                )}
-
                 <Row>
                   <Col lg={6}>
-                    <Form.Group>
-                      <Form.Label>Product Categories</Form.Label>
-                      {categoryList(allCategories, currentCategories)}
-                    </Form.Group>
+                    <Carousel
+                      style={{
+                        height: "400px",
+                        border: "1px solid #ccc",
+                        boxShadow: "inset 0 0 10px rgba(0, 0, 0, 0.15)",
+                        padding: "10px",
+                      }}
+                      interval={null}
+                    >
+                      {imageList(productImages)}
+                    </Carousel>
+
+                    <Form.File custom>
+                      <Form.File.Input
+                        name="productPhoto"
+                        onChange={photoUpdate}
+                        multiple
+                      />
+                      <Form.File.Label data-browse="Upload">
+                        Max. 512mb. Type: .jpg / .jpeg / .png / .gif
+                      </Form.File.Label>
+                    </Form.File>
 
                     <hr />
 
-                    <Form.Group>
-                      <Form.Label>Product Tags</Form.Label>
-                      {tagList(allTags, currentTags)}
-                    </Form.Group>
+                    <Form.Label className="w-100 d-flex">
+                      <span>Product Categories</span>
+                      <span
+                        className="ml-auto"
+                        style={{ cursor: "pointer" }}
+                        onClick={() =>
+                          setShowCategoriesForm(!showCategoriesForm)
+                        }
+                      >
+                        {showCategoriesForm ? (
+                          <OverlayTrigger
+                            key="saveCategories"
+                            placement="top"
+                            overlay={
+                              <Tooltip id="tooltip-saveCategories">
+                                Save Changes
+                              </Tooltip>
+                            }
+                          >
+                            <FaRegSave color="#33B5E5" />
+                          </OverlayTrigger>
+                        ) : (
+                          <OverlayTrigger
+                            key="editCategories"
+                            placement="top"
+                            overlay={
+                              <Tooltip id="tooltip-editCategories">
+                                Edit Categories
+                              </Tooltip>
+                            }
+                          >
+                            <FaEdit color="#FF3547" />
+                          </OverlayTrigger>
+                        )}
+                      </span>
+                    </Form.Label>
+                    <div
+                      style={{
+                        overflowX: "hidden",
+                        overflowY: "auto",
+                        maxHeight: "500px",
+                      }}
+                    >
+                      {categoryList()}
+                    </div>
+
+                    <hr />
+
+                    <Form.Label className="w-100 d-flex">
+                      <span>Product Types</span>
+                      <span
+                        className="ml-auto"
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setShowTagsForm(!showTagsForm)}
+                      >
+                        {showTagsForm ? (
+                          <OverlayTrigger
+                            key="saveTags"
+                            placement="top"
+                            overlay={
+                              <Tooltip id="tooltip-saveTags">
+                                Save Changes
+                              </Tooltip>
+                            }
+                          >
+                            <FaRegSave color="#33B5E5" />
+                          </OverlayTrigger>
+                        ) : (
+                          <OverlayTrigger
+                            key="editTags"
+                            placement="top"
+                            overlay={
+                              <Tooltip id="tooltip-editTags">
+                                Edit Product Types
+                              </Tooltip>
+                            }
+                          >
+                            <FaEdit color="#FF3547" />
+                          </OverlayTrigger>
+                        )}
+                      </span>
+                    </Form.Label>
+
+                    <div
+                      style={{
+                        overflowX: "hidden",
+                        overflowY: "auto",
+                        maxHeight: "500px",
+                      }}
+                    >
+                      {tagList()}
+                    </div>
                   </Col>
 
                   <Col lg={6}>
@@ -383,7 +663,7 @@ export default function ProductAdd() {
                       <Form.Control
                         id="price"
                         name="price"
-                        type="text"
+                        type="number"
                         {...price}
                       />
                     </Form.Group>
@@ -392,59 +672,45 @@ export default function ProductAdd() {
 
                     <Form.Row>
                       <Form.Group as={Col}>
-                        <Form.Label>Height</Form.Label>
+                        <Form.Label>Height (cm)</Form.Label>
                         <Form.Control
                           id="height"
                           name="height"
-                          type="text"
+                          type="number"
                           {...height}
                         />
                       </Form.Group>
 
                       <Form.Group as={Col}>
-                        <Form.Label>Length</Form.Label>
+                        <Form.Label>Length (cm)</Form.Label>
                         <Form.Control
                           id="length"
                           name="length"
-                          type="text"
+                          type="number"
                           {...length}
                         />
                       </Form.Group>
 
                       <Form.Group as={Col}>
-                        <Form.Label>Width</Form.Label>
+                        <Form.Label>Width (cm)</Form.Label>
                         <Form.Control
                           id="width"
                           name="width"
-                          type="text"
+                          type="number"
                           {...width}
                         />
                       </Form.Group>
                     </Form.Row>
 
                     <Form.Group>
-                      <Form.Label>Weight</Form.Label>
+                      <Form.Label>Weight (kg)</Form.Label>
                       <Form.Control
                         id="weight"
                         name="weight"
-                        type="text"
+                        type="number"
                         {...weight}
                       />
                     </Form.Group>
-
-                    <Form.Check
-                      type="switch"
-                      id="option"
-                      label="Additional Product Options"
-                      checked={hasOptions}
-                      onChange={handleHasOptionsChange}
-                    />
-
-                    {hasOptions && (
-                      <Form.Group>
-                        {attributeList(allAttributes, currentAttributes)}
-                      </Form.Group>
-                    )}
                   </Col>
                 </Row>
               </Card.Body>
@@ -457,7 +723,7 @@ export default function ProductAdd() {
                   variant="primary"
                   onClick={handleSubmit}
                 >
-                  Add Product
+                  Apply
                 </Button>
 
                 <Button

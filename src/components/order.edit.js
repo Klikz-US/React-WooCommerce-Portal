@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
 import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
 import csc from "country-state-city";
 
+import { useFormSelect } from "../utils/form-select.util";
 import { verifyTokenAsync } from "../actions/auth-async.action";
 import { setAuthToken } from "../services/auth.service";
 import { useFormInput } from "../utils/form-input.util";
-import { customerAddService } from "../services/customer.service";
+import { orderGetService, orderUpdateService } from "../services/order.service";
 import BreadcrumSection from "./sections/breadcrumb.section";
 import BarLoader from "react-spinners/BarLoader";
 
-export default function CustomerAdd() {
+export default function OrderEdit() {
   /*
    * Private Page Token Verification Module.
    */
@@ -30,61 +31,103 @@ export default function CustomerAdd() {
   }, [expiredAt, token, dispatch]);
   /* ----------------------- */
 
+  const { id } = useParams();
+  const [order, setOrder] = useState({
+    number: "",
+  });
+
   const history = useHistory();
   const [pageError, setPageError] = useState("");
-  const [pageLoading, setPageLoading] = useState(false);
+  const [pageLoading, setPageLoading] = useState(true);
 
-  const email = useFormInput("");
-  const first_name = useFormInput("");
-  const last_name = useFormInput("");
-  const billing_address_1 = useFormInput("");
-  const billing_address_2 = useFormInput("");
-  const billing_city = useFormInput("");
-  const billing_state = useFormInput("");
-  const billing_postcode = useFormInput("");
-  const billing_country = useFormInput("US");
-  const shipping_address_1 = useFormInput("");
-  const shipping_address_2 = useFormInput("");
-  const shipping_city = useFormInput("");
-  const shipping_state = useFormInput("");
-  const shipping_postcode = useFormInput("");
-  const shipping_country = useFormInput("US");
+  const billing_address_1 = useFormInput(
+    order.billing === undefined ? "" : order.billing.address_1
+  );
+  const billing_address_2 = useFormInput(
+    order.billing === undefined ? "" : order.billing.address_2
+  );
+  const billing_city = useFormInput(
+    order.billing === undefined ? "" : order.billing.city
+  );
+  const billing_state = useFormInput(
+    order.billing === undefined ? "" : order.billing.state
+  );
+  const billing_postcode = useFormInput(
+    order.billing === undefined ? "" : order.billing.postcode
+  );
+  const billing_country = useFormInput(
+    order.billing === undefined ? "" : order.billing.country
+  );
+  const shipping_address_1 = useFormInput(
+    order.shipping === undefined ? "" : order.shipping.address_1
+  );
+  const shipping_address_2 = useFormInput(
+    order.shipping === undefined ? "" : order.shipping.address_2
+  );
+  const shipping_city = useFormInput(
+    order.shipping === undefined ? "" : order.shipping.city
+  );
+  const shipping_state = useFormInput(
+    order.shipping === undefined ? "" : order.shipping.state
+  );
+  const shipping_postcode = useFormInput(
+    order.shipping === undefined ? "" : order.shipping.postcode
+  );
+  const shipping_country = useFormInput(
+    order.shipping === undefined ? "" : order.shipping.country
+  );
 
-  const customer = {
-    email: email.value,
-    first_name: first_name.value,
-    last_name: last_name.value,
-    billing: {
-      address_1: billing_address_1.value,
-      address_2: billing_address_2.value,
-      city: billing_city.value,
-      state: billing_state.value,
-      postcode: billing_postcode.value,
-      country: billing_country.value,
-    },
-    shipping: {
-      address_1: shipping_address_1.value,
-      address_2: shipping_address_2.value,
-      city: shipping_city.value,
-      state: shipping_state.value,
-      postcode: shipping_postcode.value,
-      country: shipping_country.value,
-    },
-  };
+  const status = useFormSelect(
+    order.status === undefined ? "processing" : order.status
+  );
+
+  useEffect(() => {
+    async function getData() {
+      const orderData = await orderGetService(id);
+      if (orderData.error) {
+        setPageError("Server Error! Please retry...");
+      } else {
+        setOrder(orderData.data);
+        console.log(orderData.data);
+      }
+      setPageLoading(false);
+    }
+    getData();
+  }, [dispatch, id]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    const order = {
+      status: status.selected,
+      billing: {
+        address_1: billing_address_1.value,
+        address_2: billing_address_2.value,
+        city: billing_city.value,
+        state: billing_state.value,
+        postcode: billing_postcode.value,
+        country: billing_country.value,
+      },
+      shipping: {
+        address_1: shipping_address_1.value,
+        address_2: shipping_address_2.value,
+        city: shipping_city.value,
+        state: shipping_state.value,
+        postcode: shipping_postcode.value,
+        country: shipping_country.value,
+      },
+    };
+
     async function fetchData() {
       setPageLoading(true);
-      const result = await customerAddService({
-        ...customer,
+      const result = await orderUpdateService(id, {
+        ...order,
         auth_user: auth_obj.user,
       });
       if (result.error) {
-        setPageError("Server Error! Please retry...");
+        setPageError("Unable to update this order. Internal Server Error.");
       } else {
-        history.push("/customers");
+        setOrder((order) => ({ ...order, ...result.data }));
       }
       setPageLoading(false);
     }
@@ -116,20 +159,20 @@ export default function CustomerAdd() {
     <>
       <BreadcrumSection
         breadcrumb={{
-          parentPath: "Customers",
-          parentLink: "/customers",
-          activePath: "New Customer",
+          parentPath: "Orders",
+          parentLink: "/orders",
+          activePath: "Edit Order",
         }}
       />
 
       <Container>
-        <h1 className="m-5 text-center">New Customer</h1>
+        <h1 className="m-5 text-center">Edit Order</h1>
 
         <Form autoComplete="off">
           <Container>
             <Card className="h-100 shadow">
               <Card.Header className="bg-danger text-white">
-                <h5 className="m-0 text-center">Customer Information</h5>
+                <h5 className="m-0 text-center">Order Information</h5>
               </Card.Header>
               <Card.Body>
                 {pageLoading && (
@@ -170,32 +213,94 @@ export default function CustomerAdd() {
                 <Row>
                   <Col lg={6}>
                     <Form.Group>
-                      <Form.Label>Customer Email</Form.Label>
-                      <Form.Control
-                        id="email"
-                        name="email"
-                        type="email"
-                        {...email}
-                      />
+                      <Form.Label>Order Number</Form.Label>
+                      <p>{order.number}</p>
                     </Form.Group>
 
                     <Form.Group>
-                      <Form.Label>First Name</Form.Label>
-                      <Form.Control
-                        id="first_name"
-                        name="first_name"
-                        type="text"
-                        {...first_name}
-                      />
+                      <Form.Label>Payment Method</Form.Label>
+                      <p>{order.payment_method_title}</p>
                     </Form.Group>
 
                     <Form.Group>
-                      <Form.Label>Last Name</Form.Label>
-                      <Form.Control
-                        id="last_name"
-                        name="last_name"
-                        type="text"
-                        {...last_name}
+                      <Form.Label>Tax</Form.Label>
+                      <p>{order.total_tax}</p>
+                    </Form.Group>
+
+                    <Form.Group>
+                      <Form.Label>Shipping</Form.Label>
+                      <p>{order.shipping_total}</p>
+                    </Form.Group>
+
+                    <Form.Group>
+                      <Form.Label>Order Total</Form.Label>
+                      <p>{order.total}</p>
+                    </Form.Group>
+
+                    <Form.Group>
+                      <Form.Label>Order Status</Form.Label>
+                      <Form.Check
+                        className="mr-5"
+                        type="radio"
+                        name="status"
+                        value="pending"
+                        label="Pending"
+                        checked={status.selected === "pending"}
+                        {...status}
+                      />
+                      <Form.Check
+                        className="mr-5"
+                        type="radio"
+                        name="status"
+                        value="on-hold"
+                        label="On Hold"
+                        checked={status.selected === "on-hold"}
+                        {...status}
+                      />
+                      <Form.Check
+                        className="mr-5"
+                        type="radio"
+                        name="status"
+                        value="completed"
+                        label="Completed"
+                        checked={status.selected === "completed"}
+                        {...status}
+                      />
+                      <Form.Check
+                        className="mr-5"
+                        type="radio"
+                        name="status"
+                        value="cancelled"
+                        label="Cancelled"
+                        checked={status.selected === "cancelled"}
+                        {...status}
+                      />
+                      <Form.Check
+                        className="mr-5"
+                        type="radio"
+                        name="status"
+                        value="refunded"
+                        label="Refunded"
+                        checked={status.selected === "refunded"}
+                        {...status}
+                      />
+                      <Form.Check
+                        className="mr-5"
+                        type="radio"
+                        name="status"
+                        value="failed"
+                        label="Failed"
+                        checked={status.selected === "failed"}
+                        {...status}
+                      />
+                      <Form.Check
+                        className="mr-5"
+                        type="radio"
+                        name="status"
+                        value="trash"
+                        label="Trash"
+                        checked={status.selected === "trash"}
+                        {...status}
                       />
                     </Form.Group>
                   </Col>
@@ -262,6 +367,8 @@ export default function CustomerAdd() {
                         </Form.Control>
                       </Form.Group>
                     </Form.Row>
+
+                    <hr />
 
                     <Form.Label>Billing Address</Form.Label>
                     <Form.Group>
@@ -336,7 +443,7 @@ export default function CustomerAdd() {
                   variant="primary"
                   onClick={handleSubmit}
                 >
-                  Add Customer
+                  Update
                 </Button>
 
                 <Button

@@ -83,36 +83,3 @@ export const orderSearchService = async (req) => {
     };
   }
 };
-
-export const orderAllCategoriesService = async () => {
-  try {
-    return await axios.get(`${window.$server_url}/admin/orders/categories`);
-  } catch (err) {
-    return {
-      error: true,
-      errMsg: err.message,
-    };
-  }
-};
-
-export const orderAllTagsService = async () => {
-  try {
-    return await axios.get(`${window.$server_url}/admin/orders/tags`);
-  } catch (err) {
-    return {
-      error: true,
-      errMsg: err.message,
-    };
-  }
-};
-
-export const orderAllAttributesService = async () => {
-  try {
-    return await axios.get(`${window.$server_url}/admin/orders/attributes`);
-  } catch (err) {
-    return {
-      error: true,
-      errMsg: err.message,
-    };
-  }
-};

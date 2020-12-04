@@ -1,8 +1,8 @@
 const WooCommerceRestApi = require("@woocommerce/woocommerce-rest-api").default;
 const WooCommerce = new WooCommerceRestApi({
-  url: "https://www.cleanair.com/",
-  consumerKey: "ck_920be0506bbf6a6c54744e8f0aa88b9695645af8",
-  consumerSecret: "cs_816b29db6e1baa1f83ecacdfe11a0ab8265f430f",
+  url: "https://cleanairportal.wpengine.com/",
+  consumerKey: "ck_86f6086e182c8ac6bf95429b1ee5993b996ffd23",
+  consumerSecret: "cs_7624fbf93ff239f08686727adb9b020a066f79e9",
   version: "wc/v3",
 });
 
@@ -112,6 +112,7 @@ exports.add = (req, res) => {
         }
       })
       .catch((err) => {
+        console.log(err);
         res.status(500).send("Server Error");
       });
   }

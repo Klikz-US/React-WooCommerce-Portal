@@ -356,40 +356,52 @@ export default function ProductEdit() {
         });
 
         return (
-          <Form.Check
-            className="mr-5"
-            type="checkbox"
-            name="tag"
-            value={allTag.id}
-            label={allTag.name}
-            checked={!!checked}
-            onChange={handleTagUpdate}
-            key={index}
-          />
+          <div className="mb-2" key={index}>
+            <Form.Check
+              className="mr-5"
+              type="checkbox"
+              name="tag"
+              value={allTag.id}
+              label={
+                allTag.name === "beyond-product"
+                  ? 'Add notification "Call 888-212-0890 for Inquiries."'
+                  : allTag.name === "buy-only"
+                  ? "Make a product to buy only"
+                  : allTag.name === "buy-or-rent"
+                  ? "Make a product to buy or rent"
+                  : allTag.name === "call-for-po"
+                  ? 'Add notification "Call 847-654-4680 Now for Purchase Options."'
+                  : allTag.name === "dont-sell"
+                  ? "Listed in sales but doesn't show the price."
+                  : allTag.name === "rental-only"
+                  ? "Make a product to rental only"
+                  : ""
+              }
+              checked={!!checked}
+              onChange={handleTagUpdate}
+            />
+          </div>
         );
       });
     } else {
       return currentTags.map((currentTag, index) => {
         return (
-          <div className="mb-2">
-            <p key={index} className="mb-0">
-              {currentTag.name}
-            </p>
-            <small className="text-muted">
+          <div className="mb-2" key={index}>
+            <p className="mb-0">
               {currentTag.name === "beyond-product"
                 ? 'Add notification "Call 888-212-0890 for Inquiries."'
                 : currentTag.name === "buy-only"
-                ? "Tag to make a product to buy only"
+                ? "Make a product to buy only"
                 : currentTag.name === "buy-or-rent"
-                ? "Tag to make a product to buy or rent"
+                ? "Make a product to buy or rent"
                 : currentTag.name === "call-for-po"
                 ? 'Add notification "Call 847-654-4680 Now for Purchase Options."'
                 : currentTag.name === "dont-sell"
-                ? "For products that listed on sale but doesn't show the price."
+                ? "Listed in sales but doesn't show the price."
                 : currentTag.name === "rental-only"
-                ? "Tag to make a product to rental only"
+                ? "Make a product to rental only"
                 : ""}
-            </small>
+            </p>
           </div>
         );
       });
@@ -586,12 +598,20 @@ export default function ProductEdit() {
                         )}
                       </span>
                     </Form.Label>
-                    <div>{categoryList(product.categories)}</div>
+                    <div
+                      style={{
+                        overflowX: "hidden",
+                        overflowY: "auto",
+                        maxHeight: "500px",
+                      }}
+                    >
+                      {categoryList()}
+                    </div>
 
                     <hr />
 
                     <Form.Label className="w-100 d-flex">
-                      <span>Product Tags</span>
+                      <span>Product Types</span>
                       <span
                         className="ml-auto"
                         style={{ cursor: "pointer" }}
@@ -614,7 +634,9 @@ export default function ProductEdit() {
                             key="editTags"
                             placement="top"
                             overlay={
-                              <Tooltip id="tooltip-editTags">Edit Tags</Tooltip>
+                              <Tooltip id="tooltip-editTags">
+                                Edit Product Types
+                              </Tooltip>
                             }
                           >
                             <FaEdit color="#FF3547" />
@@ -622,7 +644,16 @@ export default function ProductEdit() {
                         )}
                       </span>
                     </Form.Label>
-                    {tagList()}
+
+                    <div
+                      style={{
+                        overflowX: "hidden",
+                        overflowY: "auto",
+                        maxHeight: "500px",
+                      }}
+                    >
+                      {tagList()}
+                    </div>
                   </Col>
 
                   <Col lg={6}>
@@ -646,7 +677,7 @@ export default function ProductEdit() {
                       <Form.Control
                         id="price"
                         name="price"
-                        type="text"
+                        type="number"
                         {...price}
                       />
                     </Form.Group>
@@ -655,42 +686,42 @@ export default function ProductEdit() {
 
                     <Form.Row>
                       <Form.Group as={Col}>
-                        <Form.Label>Height</Form.Label>
+                        <Form.Label>Height (cm)</Form.Label>
                         <Form.Control
                           id="height"
                           name="height"
-                          type="text"
+                          type="number"
                           {...height}
                         />
                       </Form.Group>
 
                       <Form.Group as={Col}>
-                        <Form.Label>Length</Form.Label>
+                        <Form.Label>Length (cm)</Form.Label>
                         <Form.Control
                           id="length"
                           name="length"
-                          type="text"
+                          type="number"
                           {...length}
                         />
                       </Form.Group>
 
                       <Form.Group as={Col}>
-                        <Form.Label>Width</Form.Label>
+                        <Form.Label>Width (cm)</Form.Label>
                         <Form.Control
                           id="width"
                           name="width"
-                          type="text"
+                          type="number"
                           {...width}
                         />
                       </Form.Group>
                     </Form.Row>
 
                     <Form.Group>
-                      <Form.Label>Weight</Form.Label>
+                      <Form.Label>Weight (kg)</Form.Label>
                       <Form.Control
                         id="weight"
                         name="weight"
-                        type="text"
+                        type="number"
                         {...weight}
                       />
                     </Form.Group>
@@ -699,6 +730,8 @@ export default function ProductEdit() {
                     <div>
                       <p className="text-capitalize">{product.type}</p>
                     </div>
+
+                    <hr />
 
                     <Form.Label className="w-100 d-flex">
                       <span>Product Attributes</span>

@@ -89,7 +89,9 @@ export const productSearchService = async (req) => {
 
 export const productAllCategoriesService = async () => {
   try {
-    return await axios.get(`${window.$server_url}/admin/products/categories`);
+    return await axios.get(
+      `${window.$server_url}/admin/products/categories/all`
+    );
   } catch (err) {
     return {
       error: true,
@@ -100,7 +102,7 @@ export const productAllCategoriesService = async () => {
 
 export const productAllTagsService = async () => {
   try {
-    return await axios.get(`${window.$server_url}/admin/products/tags`);
+    return await axios.get(`${window.$server_url}/admin/products/tags/all`);
   } catch (err) {
     return {
       error: true,
@@ -111,7 +113,9 @@ export const productAllTagsService = async () => {
 
 export const productAllAttributesService = async () => {
   try {
-    return await axios.get(`${window.$server_url}/admin/products/attributes`);
+    return await axios.get(
+      `${window.$server_url}/admin/products/attributes/all`
+    );
   } catch (err) {
     return {
       error: true,

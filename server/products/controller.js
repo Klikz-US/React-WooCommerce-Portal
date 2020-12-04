@@ -126,6 +126,7 @@ exports.add = (req, res) => {
         }
       })
       .catch((err) => {
+        console.log(err);
         res.status(500).send("Server Error");
       });
   }
@@ -167,13 +168,14 @@ exports.getCategories = (req, res) => {
   process();
 };
 
-exports.getTags = (req, res) => {
+exports.getAllTags = (req, res) => {
   async function process() {
-    WooCommerce.get("products/tags")
+    WooCommerce.get("products/tags?per_page=99")
       .then((tags) => {
         if (!tags) {
           res.status(404).send("No Tag");
         } else {
+          console.log(tags.data);
           res.json(tags.data);
         }
       })

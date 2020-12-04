@@ -5,14 +5,15 @@ import moment from "moment";
 import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
 import csc from "country-state-city";
 
+import { useFormSelect } from "../utils/form-select.util";
 import { verifyTokenAsync } from "../actions/auth-async.action";
 import { setAuthToken } from "../services/auth.service";
 import { useFormInput } from "../utils/form-input.util";
-import { customerAddService } from "../services/customer.service";
+import { orderAddService } from "../services/order.service";
 import BreadcrumSection from "./sections/breadcrumb.section";
 import BarLoader from "react-spinners/BarLoader";
 
-export default function CustomerAdd() {
+export default function OrderAdd() {
   /*
    * Private Page Token Verification Module.
    */
@@ -34,9 +35,8 @@ export default function CustomerAdd() {
   const [pageError, setPageError] = useState("");
   const [pageLoading, setPageLoading] = useState(false);
 
-  const email = useFormInput("");
-  const first_name = useFormInput("");
-  const last_name = useFormInput("");
+  const payment_method = useFormSelect("");
+  const status = useFormSelect("");
   const billing_address_1 = useFormInput("");
   const billing_address_2 = useFormInput("");
   const billing_city = useFormInput("");
@@ -50,41 +50,43 @@ export default function CustomerAdd() {
   const shipping_postcode = useFormInput("");
   const shipping_country = useFormInput("US");
 
-  const customer = {
-    email: email.value,
-    first_name: first_name.value,
-    last_name: last_name.value,
-    billing: {
-      address_1: billing_address_1.value,
-      address_2: billing_address_2.value,
-      city: billing_city.value,
-      state: billing_state.value,
-      postcode: billing_postcode.value,
-      country: billing_country.value,
-    },
-    shipping: {
-      address_1: shipping_address_1.value,
-      address_2: shipping_address_2.value,
-      city: shipping_city.value,
-      state: shipping_state.value,
-      postcode: shipping_postcode.value,
-      country: shipping_country.value,
-    },
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    const order = {
+      payment_method: payment_method.selected,
+      status: status.selected,
+      set_paid: true,
+      billing: {
+        address_1: billing_address_1.value,
+        address_2: billing_address_2.value,
+        city: billing_city.value,
+        state: billing_state.value,
+        postcode: billing_postcode.value,
+        country: billing_country.value,
+      },
+      shipping: {
+        address_1: shipping_address_1.value,
+        address_2: shipping_address_2.value,
+        city: shipping_city.value,
+        state: shipping_state.value,
+        postcode: shipping_postcode.value,
+        country: shipping_country.value,
+      },
+      line_items: [],
+    };
+
     async function fetchData() {
       setPageLoading(true);
-      const result = await customerAddService({
-        ...customer,
+      console.log(order);
+      const result = await orderAddService({
+        ...order,
         auth_user: auth_obj.user,
       });
       if (result.error) {
         setPageError("Server Error! Please retry...");
       } else {
-        history.push("/customers");
+        history.push("/orders");
       }
       setPageLoading(false);
     }
@@ -116,20 +118,20 @@ export default function CustomerAdd() {
     <>
       <BreadcrumSection
         breadcrumb={{
-          parentPath: "Customers",
-          parentLink: "/customers",
-          activePath: "New Customer",
+          parentPath: "Orders",
+          parentLink: "/orders",
+          activePath: "New Order",
         }}
       />
 
       <Container>
-        <h1 className="m-5 text-center">New Customer</h1>
+        <h1 className="m-5 text-center">New Order</h1>
 
         <Form autoComplete="off">
           <Container>
             <Card className="h-100 shadow">
               <Card.Header className="bg-danger text-white">
-                <h5 className="m-0 text-center">Customer Information</h5>
+                <h5 className="m-0 text-center">Order Information</h5>
               </Card.Header>
               <Card.Body>
                 {pageLoading && (
@@ -170,32 +172,91 @@ export default function CustomerAdd() {
                 <Row>
                   <Col lg={6}>
                     <Form.Group>
-                      <Form.Label>Customer Email</Form.Label>
-                      <Form.Control
-                        id="email"
-                        name="email"
-                        type="email"
-                        {...email}
+                      <Form.Label>Payment Method</Form.Label>
+                      <Form.Check
+                        className="mr-5"
+                        type="radio"
+                        name="helcimjs"
+                        value="helcimjs"
+                        label="Credit Card"
+                        checked={payment_method.selected === "helcimjs"}
+                        {...payment_method}
+                      />
+                      <Form.Check
+                        className="mr-5"
+                        type="radio"
+                        name="paypal"
+                        value="paypal"
+                        label="PayPal"
+                        checked={payment_method.selected === "paypal"}
+                        {...payment_method}
                       />
                     </Form.Group>
 
                     <Form.Group>
-                      <Form.Label>First Name</Form.Label>
-                      <Form.Control
-                        id="first_name"
-                        name="first_name"
-                        type="text"
-                        {...first_name}
+                      <Form.Label>Order Status</Form.Label>
+                      <Form.Check
+                        className="mr-5"
+                        type="radio"
+                        name="status"
+                        value="pending"
+                        label="Pending"
+                        checked={status.selected === "pending"}
+                        {...status}
                       />
-                    </Form.Group>
-
-                    <Form.Group>
-                      <Form.Label>Last Name</Form.Label>
-                      <Form.Control
-                        id="last_name"
-                        name="last_name"
-                        type="text"
-                        {...last_name}
+                      <Form.Check
+                        className="mr-5"
+                        type="radio"
+                        name="status"
+                        value="on-hold"
+                        label="On Hold"
+                        checked={status.selected === "on-hold"}
+                        {...status}
+                      />
+                      <Form.Check
+                        className="mr-5"
+                        type="radio"
+                        name="status"
+                        value="completed"
+                        label="Completed"
+                        checked={status.selected === "completed"}
+                        {...status}
+                      />
+                      <Form.Check
+                        className="mr-5"
+                        type="radio"
+                        name="status"
+                        value="cancelled"
+                        label="Cancelled"
+                        checked={status.selected === "cancelled"}
+                        {...status}
+                      />
+                      <Form.Check
+                        className="mr-5"
+                        type="radio"
+                        name="status"
+                        value="refunded"
+                        label="Refunded"
+                        checked={status.selected === "refunded"}
+                        {...status}
+                      />
+                      <Form.Check
+                        className="mr-5"
+                        type="radio"
+                        name="status"
+                        value="failed"
+                        label="Failed"
+                        checked={status.selected === "failed"}
+                        {...status}
+                      />
+                      <Form.Check
+                        className="mr-5"
+                        type="radio"
+                        name="status"
+                        value="trash"
+                        label="Trash"
+                        checked={status.selected === "trash"}
+                        {...status}
                       />
                     </Form.Group>
                   </Col>
@@ -336,7 +397,7 @@ export default function CustomerAdd() {
                   variant="primary"
                   onClick={handleSubmit}
                 >
-                  Add Customer
+                  Add Order
                 </Button>
 
                 <Button

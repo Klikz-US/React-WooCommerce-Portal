@@ -30,16 +30,4 @@ exports.routesConfig = function (app) {
     Authentication.authMiddleware,
     Controller.search,
   ]);
-  app.get("/admin/orders/categories", [
-    Authentication.authMiddleware,
-    Controller.getCategories,
-  ]);
-  app.get("/admin/orders/tags", [
-    Authentication.authMiddleware,
-    Controller.getTags,
-  ]);
-  app.get("/admin/orders/attributes", [
-    Authentication.authMiddleware,
-    Controller.getTags,
-  ]);
 };

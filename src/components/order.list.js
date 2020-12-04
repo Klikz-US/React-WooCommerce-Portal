@@ -69,6 +69,7 @@ export default function OrderList() {
         setPageError("Server Error! Please retry...");
       } else {
         setOrders(orderList.data);
+        console.log(orderList.data);
       }
       setPageLoading(false);
     }
@@ -81,13 +82,22 @@ export default function OrderList() {
 
   const Order = (props) => (
     <tr>
-      <td>{props.order.number}</td>
+      <td>
+        <Link to={`/orders/edit/${props.order.number}`}>
+          {props.order.number}
+        </Link>
+      </td>
       <td>
         {props.order.customer_id === 0 ? (
           "Guest"
         ) : (
-          <Link to={"/customers/edit/" + props.order.customer_id}>
-            {props.order.customer_id}
+          <Link
+            to={"/customers/edit/" + props.order.customer_id}
+            className="text-capitalize"
+          >
+            {props.order.shipping.first_name +
+              " " +
+              props.order.shipping.last_name}
           </Link>
         )}
       </td>
@@ -95,6 +105,7 @@ export default function OrderList() {
       <td>{props.order.shipping_total}</td>
       <td>{props.order.total_tax}</td>
       <td>{props.order.total}</td>
+      <td>{props.order.payment_method_title}</td>
       <td>
         {props.order.billing.first_name} {props.order.billing.last_name}
         {", "}
@@ -215,6 +226,8 @@ export default function OrderList() {
           parentPath: "",
           parentLink: "",
           activePath: "Orders",
+          btnLink: "/orders/add",
+          btnText: "Add New Order",
         }}
       />
 
@@ -285,6 +298,7 @@ export default function OrderList() {
                   <th>Shipping</th>
                   <th>Tax</th>
                   <th>Total</th>
+                  <th style={{ width: "200px" }}>Payment Method</th>
                   <th style={{ width: "220px" }}>Billing Address</th>
                   <th style={{ width: "220px" }}>Shipping Address</th>
                   <th style={{ width: "110px" }}>Order Date</th>
