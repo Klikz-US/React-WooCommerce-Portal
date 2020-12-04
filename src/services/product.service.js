@@ -119,3 +119,14 @@ export const productAllAttributesService = async () => {
     };
   }
 };
+
+export const productPhotoAddService = async (photo) => {
+  try {
+    return await axios.post(`${window.$server_url}/admin/photos/add`, photo);
+  } catch (err) {
+    return {
+      error: true,
+      errMsg: err.message,
+    };
+  }
+};

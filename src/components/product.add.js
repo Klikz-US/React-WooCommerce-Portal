@@ -349,12 +349,12 @@ export default function ProductAdd() {
 
                 <Row>
                   <Col lg={6}>
-                    {/* <Form.Group>
+                    <Form.Group>
                       <Form.Label>Product Categories</Form.Label>
                       {categoryList(allCategories, currentCategories)}
                     </Form.Group>
 
-                    <hr /> */}
+                    <hr />
 
                     <Form.Group>
                       <Form.Label>Product Tags</Form.Label>
@@ -432,7 +432,7 @@ export default function ProductAdd() {
                       />
                     </Form.Group>
 
-                    {/* <Form.Check
+                    <Form.Check
                       type="switch"
                       id="option"
                       label="Additional Product Options"
@@ -444,7 +444,7 @@ export default function ProductAdd() {
                       <Form.Group>
                         {attributeList(allAttributes, currentAttributes)}
                       </Form.Group>
-                    )} */}
+                    )}
                   </Col>
                 </Row>
               </Card.Body>

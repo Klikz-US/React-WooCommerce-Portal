@@ -72,3 +72,6 @@ ActivityRouter.routesConfig(app);
 
 const ReportRouter = require("./reports/routes");
 ReportRouter.routesConfig(app);
+
+const PhotoRouter = require("./photos/routes");
+PhotoRouter.routesConfig(app);

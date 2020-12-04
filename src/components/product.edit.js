@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
 import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
 import Carousel from "react-bootstrap/Carousel";
-import Image from "react-bootstrap/Image";
+// import Image from "react-bootstrap/Image";
 
 import { verifyTokenAsync } from "../actions/auth-async.action";
 import { setAuthToken } from "../services/auth.service";
@@ -15,12 +15,13 @@ import {
   productAllCategoriesService,
   productAllTagsService,
   productAllAttributesService,
+  productPhotoAddService,
 } from "../services/product.service";
 import BreadcrumSection from "./sections/breadcrumb.section";
 import BarLoader from "react-spinners/BarLoader";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
-import { FaEdit, FaRegSave } from "react-icons/fa";
+import { FaEdit, FaRegSave, FaRegTrashAlt } from "react-icons/fa";
 
 export default function ProductEdit() {
   /*
@@ -54,6 +55,7 @@ export default function ProductEdit() {
     tags: [],
     categories: [],
     attributes: [],
+    images: [],
   });
 
   const history = useHistory();
@@ -80,8 +82,7 @@ export default function ProductEdit() {
   const [showCategoriesForm, setShowCategoriesForm] = useState(false);
   const [showAttributesForm, setShowAttributesForm] = useState(false);
 
-  const [productPhotos, setProductPhotos] = useState([]);
-  const [productPhotoPaths, setProductPhotoPaths] = useState([]);
+  const [productImages, setProductImages] = useState([]);
 
   useEffect(() => {
     async function fetchProductData() {
@@ -91,10 +92,12 @@ export default function ProductEdit() {
       if (productData.error) {
         setPageError("Server Error! Please retry...");
       } else {
+        console.log(productData.data);
         setProduct((product) => ({ ...product, ...productData.data }));
         setCurrentTags(productData.data.tags);
         setCurrentCategories(productData.data.categories);
         setCurrentAttributes(productData.data.attributes);
+        setProductImages(productData.data.images);
       }
 
       setPageLoading(false);
@@ -130,6 +133,8 @@ export default function ProductEdit() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    productImages.forEach((productImage) => {});
+
     const product = {
       sku: sku.value,
       name: name.value,
@@ -144,6 +149,7 @@ export default function ProductEdit() {
       tags: currentTags,
       categories: currentCategories,
       attributes: currentAttributes,
+      images: productImages,
     };
 
     async function fetchData() {
@@ -167,14 +173,25 @@ export default function ProductEdit() {
     history.goBack();
   };
 
+  const imageTrash = (index) => {
+    let updatedImages = [];
+    for (let i = 0; i < productImages.length; i++) {
+      if (i !== index) {
+        updatedImages.push(productImages[i]);
+      }
+    }
+
+    setProductImages(updatedImages);
+  };
+
   const imageList = (images) => {
     if (images !== undefined) {
       return images.map(function (image, index) {
         return (
           <Carousel.Item key={index} className="text-center h-100">
-            <div className="h-100 d-flex justify-content-center align-items-center">
+            <div className="h-100 d-flex justify-content-center align-items-center position-relative">
               <img
-                src={image.src}
+                src={image.preview ? image.preview : image.src}
                 alt={image.alt ? image.alt : image.name}
                 width="auto"
                 height="auto"
@@ -184,6 +201,26 @@ export default function ProductEdit() {
                 }}
               />
             </div>
+            <span
+              className="position-absolute"
+              style={{
+                top: "10px",
+                right: "10px",
+                zIndex: "999",
+                cursor: "pointer",
+              }}
+              onClick={() => imageTrash(index)}
+            >
+              <OverlayTrigger
+                key="trashImage"
+                placement="top"
+                overlay={
+                  <Tooltip id="tooltip-trashImage">Delete Image</Tooltip>
+                }
+              >
+                <FaRegTrashAlt color="#FF3547" />
+              </OverlayTrigger>
+            </span>
           </Carousel.Item>
         );
       });
@@ -192,43 +229,50 @@ export default function ProductEdit() {
 
   const photoUpdate = (e) => {
     e.preventDefault();
+    const today = new Date();
 
-    const photos = e.target.files;
-    if (photos) {
-      setProductPhotos(photos);
-
-      // let paths = [];
-      // for (let i = 0; i < photos.length; i++) {
-      //   const photo = photos[i];
-      //   paths.push(
-      //     "/uploads/photo/" +
-      //       photo.name.split(".")[photo.name.split(".").length - 1]
-      //   );
-      // }
-      // setProductPhotoPaths(paths);
-    }
-  };
-
-  const imagePreview = (photos) => {
-    let photosArry = [];
-    for (let i = 0; i < photos.length; i++) {
-      const photo = photos[i];
-      photosArry.push(photo);
+    let newUploadedImages = [];
+    for (let i = 0; i < e.target.files.length; i++) {
+      newUploadedImages.push(e.target.files[i]);
     }
 
-    return photosArry.map((photo, index) => {
-      return (
-        <div className="wrapper w-50">
-          <Image
-            src={URL.createObjectURL(photo)}
-            width="100%"
-            height="auto"
-            thumbnail
-            key={index}
-          />
-        </div>
-      );
+    newUploadedImages.forEach((newUploadedImage) => {
+      async function process() {
+        const photoData = new FormData();
+        photoData.append(
+          "name",
+          moment(today).format("HHmmss") + newUploadedImage.name
+        );
+        photoData.append("productPhotoData", newUploadedImage);
+
+        setPageLoading(true);
+        const result = await productPhotoAddService(photoData);
+        if (result.error) {
+          setPageError("Image Upload Error!");
+        } else {
+          console.log(result);
+          setPageLoading(false);
+        }
+      }
+      process();
     });
+
+    let array = [];
+    for (let i = 0; i < e.target.files.length; i++) {
+      const photo = e.target.files[i];
+      const photoPreviewURL = URL.createObjectURL(photo);
+      const photoUploadURL =
+        "https://cleanairportal.wpengine.com/wp-content/uploads/products/" +
+        moment(today).format("HHmmss") +
+        photo.name;
+      array.push({
+        name: moment(today).format("HHmmss") + photo.name,
+        src: photoUploadURL,
+        preview: photoPreviewURL,
+      });
+    }
+
+    setProductImages([...array, ...productImages]);
   };
 
   const handleCategoryUpdate = (e) => {
@@ -327,9 +371,26 @@ export default function ProductEdit() {
     } else {
       return currentTags.map((currentTag, index) => {
         return (
-          <p className="mb-1" key={index}>
-            {currentTag.name}
-          </p>
+          <div className="mb-2">
+            <p key={index} className="mb-0">
+              {currentTag.name}
+            </p>
+            <small className="text-muted">
+              {currentTag.name === "beyond-product"
+                ? 'Add notification "Call 888-212-0890 for Inquiries."'
+                : currentTag.name === "buy-only"
+                ? "Tag to make a product to buy only"
+                : currentTag.name === "buy-or-rent"
+                ? "Tag to make a product to buy or rent"
+                : currentTag.name === "call-for-po"
+                ? 'Add notification "Call 847-654-4680 Now for Purchase Options."'
+                : currentTag.name === "dont-sell"
+                ? "For products that listed on sale but doesn't show the price."
+                : currentTag.name === "rental-only"
+                ? "Tag to make a product to rental only"
+                : ""}
+            </small>
+          </div>
         );
       });
     }
@@ -473,7 +534,7 @@ export default function ProductEdit() {
                       }}
                       interval={null}
                     >
-                      {imageList(product.images)}
+                      {imageList(productImages)}
                     </Carousel>
 
                     <Form.File custom>
