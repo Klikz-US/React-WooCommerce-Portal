@@ -72,7 +72,6 @@ export default function CustomerList() {
       if (customerList.error) {
         setPageError("Server Error! Please retry...");
       } else {
-        console.log(customerList.data);
         setCustomers(customerList.data);
       }
       setPageLoading(false);

@@ -78,7 +78,6 @@ export default function OrderAdd() {
 
     async function fetchData() {
       setPageLoading(true);
-      console.log(order);
       const result = await orderAddService({
         ...order,
         auth_user: auth_obj.user,

@@ -175,7 +175,6 @@ exports.getAllTags = (req, res) => {
         if (!tags) {
           res.status(404).send("No Tag");
         } else {
-          console.log(tags.data);
           res.json(tags.data);
         }
       })

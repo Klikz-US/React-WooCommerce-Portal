@@ -88,7 +88,6 @@ export default function OrderEdit() {
         setPageError("Server Error! Please retry...");
       } else {
         setOrder(orderData.data);
-        console.log(orderData.data);
       }
       setPageLoading(false);
     }

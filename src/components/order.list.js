@@ -69,7 +69,6 @@ export default function OrderList() {
         setPageError("Server Error! Please retry...");
       } else {
         setOrders(orderList.data);
-        console.log(orderList.data);
       }
       setPageLoading(false);
     }

@@ -236,7 +236,6 @@ export default function ProductEdit() {
         if (result.error) {
           setPageError("Image Upload Error!");
         } else {
-          console.log(result);
           setPageLoading(false);
         }
       }
@@ -265,8 +264,6 @@ export default function ProductEdit() {
     var checkedCategories = [];
     var checkedCheckboxes = document.getElementsByName("category");
     checkedCheckboxes.forEach((checkedCheckbox) => {
-      console.log(allCategories);
-      console.log(checkedCheckbox);
       if (checkedCheckbox.checked) {
         for (let i = 0; i < allCategories.length; i++) {
           if (
