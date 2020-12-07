@@ -57,19 +57,6 @@ export default function Navigation() {
       )}
 
       <Link
-        to="/customers"
-        className={`btn w-100 px-4 py-3 m-0 mb-1 text-left ${
-          location.pathname === "/customers" ? "bg-info text-white" : "bg-white"
-        }`}
-        onClick={hideMenu}
-      >
-        <FcContacts size="24" style={{ verticalAlign: "bottom" }} />
-        <span className="ml-2" style={{ fontSize: "16px" }}>
-          Customers
-        </span>
-      </Link>
-
-      <Link
         to="/products"
         className={`btn w-100 px-4 py-3 m-0 mb-1 text-left ${
           location.pathname === "/products" ? "bg-info text-white" : "bg-white"
@@ -92,6 +79,19 @@ export default function Navigation() {
         <FcCurrencyExchange size="24" style={{ verticalAlign: "bottom" }} />
         <span className="ml-2" style={{ fontSize: "16px" }}>
           Orders
+        </span>
+      </Link>
+
+      <Link
+        to="/customers"
+        className={`btn w-100 px-4 py-3 m-0 mb-1 text-left ${
+          location.pathname === "/customers" ? "bg-info text-white" : "bg-white"
+        }`}
+        onClick={hideMenu}
+      >
+        <FcContacts size="24" style={{ verticalAlign: "bottom" }} />
+        <span className="ml-2" style={{ fontSize: "16px" }}>
+          Customers
         </span>
       </Link>
 

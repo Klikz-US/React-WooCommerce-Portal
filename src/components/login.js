@@ -52,7 +52,7 @@ export default function AccountLogin() {
 
             <Form autoComplete="off">
               <Form.Group>
-                <Form.Label>Email Address</Form.Label>
+                <Form.Label>Username</Form.Label>
                 <Form.Control
                   autoComplete="off"
                   id="email"

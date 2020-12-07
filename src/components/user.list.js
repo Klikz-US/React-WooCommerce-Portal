@@ -167,7 +167,7 @@ export default function UserList() {
               <thead className="bg-success text-white">
                 <tr>
                   <th>Name</th>
-                  <th>Email</th>
+                  <th>Username</th>
                   <th>Phone</th>
                   <th>Access</th>
                   <th>Action</th>

@@ -9,7 +9,6 @@ import Popover from "react-bootstrap/Popover";
 import Tooltip from "react-bootstrap/Tooltip";
 import { FaSearch, FaTrashAlt, FaEye, FaEdit } from "react-icons/fa";
 import { FcCancel } from "react-icons/fc";
-import BarLoader from "react-spinners/BarLoader";
 import noImage from "../assets/images/no-image.png";
 
 import { verifyTokenAsync } from "../actions/auth-async.action";
@@ -24,6 +23,7 @@ import {
 import BreadcrumSection from "./sections/breadcrumb.section";
 import Pagination from "../utils/pagination.util";
 import { useFormInput } from "../utils/form-input.util";
+import { PageLoading } from "../utils/pop-up.util";
 
 export default function ProductList() {
   /*
@@ -242,77 +242,57 @@ export default function ProductList() {
   );
 
   const productList = (products) => {
-    if (pageLoading || isSearching) {
-      return (
-        <tr>
-          <td>
-            <Container
-              className="py-5 text-center"
-              style={{ position: "absolute" }}
-            >
-              <BarLoader
-                css="margin: auto;"
-                size={100}
-                color={"#007cc3"}
-                loading={pageLoading || isSearching}
-              />
-            </Container>
-          </td>
-        </tr>
-      );
-    } else {
-      return products.map(function (product, index) {
-        product.type = "";
-        if (product.tags.length === 0) {
-          product.type = "Sell";
-        } else {
-          product.tags.forEach((tag) => {
-            switch (tag.slug) {
-              case "rental-only":
-                product.type === ""
-                  ? (product.type += "Rental")
-                  : (product.type += ", Rental");
-                break;
+    return products.map(function (product, index) {
+      product.type = "";
+      if (product.tags.length === 0) {
+        product.type = "Sell";
+      } else {
+        product.tags.forEach((tag) => {
+          switch (tag.slug) {
+            case "rental-only":
+              product.type === ""
+                ? (product.type += "Rental")
+                : (product.type += ", Rental");
+              break;
 
-              case "buy-only":
-                product.type === ""
-                  ? (product.type += "Sell")
-                  : (product.type += ", Sell");
-                break;
+            case "buy-only":
+              product.type === ""
+                ? (product.type += "Sell")
+                : (product.type += ", Sell");
+              break;
 
-              case "buy-or-rent":
-                product.type === ""
-                  ? (product.type += "Sell and Rent")
-                  : (product.type += ", Sell and Rent");
-                break;
+            case "buy-or-rent":
+              product.type === ""
+                ? (product.type += "Sell and Rent")
+                : (product.type += ", Sell and Rent");
+              break;
 
-              case "dont-sell":
-                product.type === ""
-                  ? (product.type += "Don't List Price")
-                  : (product.type += ", Don't List Price");
-                break;
+            case "dont-sell":
+              product.type === ""
+                ? (product.type += "Don't List Price")
+                : (product.type += ", Don't List Price");
+              break;
 
-              case "call-for-po":
-                product.type === ""
-                  ? (product.type += "Call for PO")
-                  : (product.type += ", Call for PO");
-                break;
+            case "call-for-po":
+              product.type === ""
+                ? (product.type += "Call for PO")
+                : (product.type += ", Call for PO");
+              break;
 
-              case "beyond-product":
-                product.type === ""
-                  ? (product.type += "Call for Inqueries")
-                  : (product.type += ", Call for Inqueries");
-                break;
+            case "beyond-product":
+              product.type === ""
+                ? (product.type += "Call for Inqueries")
+                : (product.type += ", Call for Inqueries");
+              break;
 
-              default:
-                break;
-            }
-          });
-        }
+            default:
+              break;
+          }
+        });
+      }
 
-        return <Product product={product} key={index} />;
-      });
-    }
+      return <Product product={product} key={index} />;
+    });
   };
 
   const handleSearch = (e) => {
@@ -454,6 +434,8 @@ export default function ProductList() {
           </Card>
         </Row>
       </Container>
+
+      <PageLoading pageLoading={pageLoading || isSearching} />
     </>
   );
 }

@@ -2,6 +2,10 @@ html {
   scroll-behavior: smooth;
 }
 
+main {
+  position: relative;
+}
+
 /**
  * Form
  */
@@ -73,9 +77,12 @@ div[data-test="table"] {
 }
 
 @media (min-width: 992px) {
-  .page-right header .navbar-expand-lg .navbar-brand,
-  .page-right header .navbar-expand-lg .mr-auto.navbar-nav {
-    display: none;
+  .custom--desktop-hide {
+    display: none !important;
+  }
+
+  .custom--desktop-padding-left-270 {
+    padding-left: 270px !important;
   }
 }
 
@@ -85,6 +92,14 @@ div[data-test="table"] {
   }
 
   #content .page-right {
+    padding-left: 0 !important;
+  }
+
+  .custom--mobile-hide {
+    display: none !important;
+  }
+
+  .custom--mobile-padding-left-0 {
     padding-left: 0 !important;
   }
 }

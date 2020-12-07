@@ -27,19 +27,15 @@ export default function Header() {
         expand="lg"
         className="ml-auto d-flex flex-row justify-content-end pr-4 bg-info"
       >
-        <Navbar.Brand>
-          <img
-            src={logo_white}
-            className="img-fluid"
-            alt="CleanAir Engineering"
-          />
+        <Navbar.Brand className="custom--desktop-hide mr-auto">
+          <img src={logo_white} alt="CleanAir Engineering" />
         </Navbar.Brand>
         <Navbar.Toggle
           id="navbar-toggler"
           aria-controls="responsive-navbar-nav"
         />
         <Navbar.Collapse id="responsive-navbar-nav">
-          <Nav className="mr-auto">
+          <Nav className="mr-auto custom--desktop-hide my-4">
             <Navigation />
           </Nav>
           <Nav className="ml-auto navbar-nav d-flex flex-row">

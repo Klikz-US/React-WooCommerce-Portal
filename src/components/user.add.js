@@ -131,17 +131,15 @@ export default function UserRegister() {
                       id="userName"
                       type="text"
                       {...name}
-                      placeholder="Enter Full Name"
                     />
                   </Form.Group>
 
                   <Form.Group>
-                    <Form.Label>Email</Form.Label>
+                    <Form.Label>Username</Form.Label>
                     <Form.Control
                       id="userEmail"
-                      type="email"
+                      type="text"
                       {...email}
-                      placeholder="Enter Email Address"
                     />
                   </Form.Group>
 
@@ -151,7 +149,6 @@ export default function UserRegister() {
                       id="userPhone"
                       type="text"
                       {...phone}
-                      placeholder="Enter Phone Number"
                     />
                   </Form.Group>
 
@@ -161,7 +158,6 @@ export default function UserRegister() {
                       id="userPass"
                       type="password"
                       {...password}
-                      placeholder="Enter Password"
                     />
                   </Form.Group>
 
@@ -171,7 +167,6 @@ export default function UserRegister() {
                       id="userPassConfirm"
                       type="password"
                       {...password_confirm}
-                      placeholder="Enter Password Again"
                     />
                   </Form.Group>
                 </Card.Body>

@@ -157,11 +157,10 @@ export default function UserEdit() {
                   </Form.Group>
 
                   <Form.Group>
-                    <Form.Label>Email</Form.Label>
+                    <Form.Label>Username</Form.Label>
                     <Form.Control
-                      type="email"
+                      type="text"
                       {...email}
-                      placeholder="Enter Email Address"
                     />
                   </Form.Group>
 
@@ -170,7 +169,6 @@ export default function UserEdit() {
                     <Form.Control
                       type="text"
                       {...phone}
-                      placeholder="Enter Phone Number"
                     />
                   </Form.Group>
                 </Card.Body>

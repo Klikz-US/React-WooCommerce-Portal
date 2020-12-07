@@ -4,11 +4,14 @@ import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
 import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
 import Carousel from "react-bootstrap/Carousel";
-// import Image from "react-bootstrap/Image";
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Tooltip from "react-bootstrap/Tooltip";
+
+import { FaEdit, FaRegSave, FaRegTrashAlt } from "react-icons/fa";
 
 import { verifyTokenAsync } from "../actions/auth-async.action";
 import { setAuthToken } from "../services/auth.service";
-import { useFormInput } from "../utils/form-input.util";
+
 import {
   productGetService,
   productUpdateService,
@@ -17,11 +20,10 @@ import {
   productAllAttributesService,
   productPhotoAddService,
 } from "../services/product.service";
+
 import BreadcrumSection from "./sections/breadcrumb.section";
-import BarLoader from "react-spinners/BarLoader";
-import OverlayTrigger from "react-bootstrap/OverlayTrigger";
-import Tooltip from "react-bootstrap/Tooltip";
-import { FaEdit, FaRegSave, FaRegTrashAlt } from "react-icons/fa";
+import { useFormInput } from "../utils/form-input.util";
+import { PageLoading, ThankyouPopup } from "../utils/pop-up.util";
 
 export default function ProductEdit() {
   /*
@@ -61,6 +63,7 @@ export default function ProductEdit() {
   const history = useHistory();
   const [pageError, setPageError] = useState("");
   const [pageLoading, setPageLoading] = useState(true);
+  const [showThankyou, setShowThankyou] = useState(false);
 
   const sku = useFormInput(product.sku);
   const name = useFormInput(product.name);
@@ -161,6 +164,7 @@ export default function ProductEdit() {
         setPageError("Server Error! Please retry...");
       } else {
         setProduct((product) => ({ ...product, ...result.data }));
+        setShowThankyou(true);
       }
       setPageLoading(false);
     }
@@ -496,25 +500,6 @@ export default function ProductEdit() {
                 <h5 className="m-0 text-center">Product Information</h5>
               </Card.Header>
               <Card.Body>
-                {pageLoading && (
-                  <div
-                    className="d-flex flex-column justify-content-center position-absolute w-100 h-100"
-                    style={{
-                      top: "0",
-                      left: "0",
-                      backgroundColor: "rgba(255, 255, 255, .7)",
-                      zIndex: "1",
-                    }}
-                  >
-                    <BarLoader
-                      css="margin: auto;"
-                      size={100}
-                      color={"#007cc3"}
-                      loading={pageLoading}
-                    />
-                  </div>
-                )}
-
                 {pageError && (
                   <div
                     className="d-flex flex-column position-absolute w-100 h-100"
@@ -801,6 +786,16 @@ export default function ProductEdit() {
           </Container>
         </Form>
       </Container>
+
+      <PageLoading pageLoading={pageLoading} />
+      <ThankyouPopup
+        showThankyou={showThankyou}
+        thankyouText="The produt has been successfully updated."
+        okText="View product list"
+        okLink="/products"
+        cancelText="Continue editing"
+        cancelLink={`/products/edit/${id}`}
+      />
     </>
   );
 }
