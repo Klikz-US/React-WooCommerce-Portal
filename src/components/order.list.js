@@ -6,7 +6,7 @@ import Table from "react-bootstrap/Table";
 import { Container, Row, Col, Form, Button, Card } from "react-bootstrap";
 import { FaSearch } from "react-icons/fa";
 import { FcCancel } from "react-icons/fc";
-import BarLoader from "react-spinners/BarLoader";
+import { PageLoading } from "../utils/pop-up.util";
 
 import { verifyTokenAsync } from "../actions/auth-async.action";
 import { setAuthToken } from "../services/auth.service";
@@ -142,29 +142,9 @@ export default function OrderList() {
   );
 
   const orderList = (orders) => {
-    if (pageLoading || isSearching) {
-      return (
-        <tr>
-          <td>
-            <Container
-              className="py-5 text-center"
-              style={{ position: "absolute" }}
-            >
-              <BarLoader
-                css="margin: auto;"
-                size={100}
-                color={"#007cc3"}
-                loading={pageLoading || isSearching}
-              />
-            </Container>
-          </td>
-        </tr>
-      );
-    } else {
-      return orders.map(function (order, index) {
-        return <Order order={order} key={index} />;
-      });
-    }
+    return orders.map(function (order, index) {
+      return <Order order={order} key={index} />;
+    });
   };
 
   const handleSearch = (e) => {
@@ -309,6 +289,8 @@ export default function OrderList() {
           </Card>
         </Row>
       </Container>
+
+      <PageLoading pageLoading={pageLoading || isSearching} />
     </>
   );
 }

@@ -9,7 +9,7 @@ import Popover from "react-bootstrap/Popover";
 import Tooltip from "react-bootstrap/Tooltip";
 import { FaSearch, FaTrashAlt, FaEdit } from "react-icons/fa";
 import { FcCancel } from "react-icons/fc";
-import BarLoader from "react-spinners/BarLoader";
+import { PageLoading } from "../utils/pop-up.util";
 
 import { verifyTokenAsync } from "../actions/auth-async.action";
 import { setAuthToken } from "../services/auth.service";
@@ -217,29 +217,9 @@ export default function CustomerList() {
   );
 
   const customerList = (customers) => {
-    if (pageLoading || isSearching) {
-      return (
-        <tr>
-          <td>
-            <Container
-              className="py-5 text-center"
-              style={{ position: "absolute" }}
-            >
-              <BarLoader
-                css="margin: auto;"
-                size={100}
-                color={"#007cc3"}
-                loading={pageLoading || isSearching}
-              />
-            </Container>
-          </td>
-        </tr>
-      );
-    } else {
-      return customers.map(function (customer, index) {
-        return <Customer customer={customer} key={index} />;
-      });
-    }
+    return customers.map(function (customer, index) {
+      return <Customer customer={customer} key={index} />;
+    });
   };
 
   const handleSearch = (e) => {
@@ -381,6 +361,8 @@ export default function CustomerList() {
           </Card>
         </Row>
       </Container>
+
+      <PageLoading pageLoading={pageLoading || isSearching} />
     </>
   );
 }

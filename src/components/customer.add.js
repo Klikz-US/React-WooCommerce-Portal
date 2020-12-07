@@ -10,7 +10,7 @@ import { setAuthToken } from "../services/auth.service";
 import { useFormInput } from "../utils/form-input.util";
 import { customerAddService } from "../services/customer.service";
 import BreadcrumSection from "./sections/breadcrumb.section";
-import BarLoader from "react-spinners/BarLoader";
+import { PageLoading, ThankyouPopup } from "../utils/pop-up.util";
 
 export default function CustomerAdd() {
   /*
@@ -30,9 +30,11 @@ export default function CustomerAdd() {
   }, [expiredAt, token, dispatch]);
   /* ----------------------- */
 
+  const [id, setId] = useState("");
   const history = useHistory();
   const [pageError, setPageError] = useState("");
   const [pageLoading, setPageLoading] = useState(false);
+  const [showThankyou, setShowThankyou] = useState(false);
 
   const email = useFormInput("");
   const first_name = useFormInput("");
@@ -84,7 +86,8 @@ export default function CustomerAdd() {
       if (result.error) {
         setPageError("Server Error! Please retry...");
       } else {
-        history.push("/customers");
+        setId(result.data.id);
+        setShowThankyou(true);
       }
       setPageLoading(false);
     }
@@ -132,25 +135,6 @@ export default function CustomerAdd() {
                 <h5 className="m-0 text-center">Customer Information</h5>
               </Card.Header>
               <Card.Body>
-                {pageLoading && (
-                  <div
-                    className="d-flex flex-column justify-content-center position-absolute w-100 h-100"
-                    style={{
-                      top: "0",
-                      left: "0",
-                      backgroundColor: "rgba(255, 255, 255, .7)",
-                      zIndex: "1",
-                    }}
-                  >
-                    <BarLoader
-                      css="margin: auto;"
-                      size={100}
-                      color={"#007cc3"}
-                      loading={pageLoading}
-                    />
-                  </div>
-                )}
-
                 {pageError && (
                   <div
                     className="d-flex flex-column position-absolute w-100 h-100"
@@ -351,6 +335,16 @@ export default function CustomerAdd() {
           </Container>
         </Form>
       </Container>
+
+      <PageLoading pageLoading={pageLoading} />
+      <ThankyouPopup
+        showThankyou={showThankyou}
+        thankyouText="The customer has been successfully created."
+        okText="View customer list"
+        okLink="/customers"
+        cancelText="Update customer"
+        cancelLink={`/customers/edit/${id}`}
+      />
     </>
   );
 }

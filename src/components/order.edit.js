@@ -11,7 +11,7 @@ import { setAuthToken } from "../services/auth.service";
 import { useFormInput } from "../utils/form-input.util";
 import { orderGetService, orderUpdateService } from "../services/order.service";
 import BreadcrumSection from "./sections/breadcrumb.section";
-import BarLoader from "react-spinners/BarLoader";
+import { PageLoading, ThankyouPopup } from "../utils/pop-up.util";
 
 export default function OrderEdit() {
   /*
@@ -39,6 +39,7 @@ export default function OrderEdit() {
   const history = useHistory();
   const [pageError, setPageError] = useState("");
   const [pageLoading, setPageLoading] = useState(true);
+  const [showThankyou, setShowThankyou] = useState(false);
 
   const billing_address_1 = useFormInput(
     order.billing === undefined ? "" : order.billing.address_1
@@ -127,6 +128,7 @@ export default function OrderEdit() {
         setPageError("Unable to update this order. Internal Server Error.");
       } else {
         setOrder((order) => ({ ...order, ...result.data }));
+        setShowThankyou(true);
       }
       setPageLoading(false);
     }
@@ -174,25 +176,6 @@ export default function OrderEdit() {
                 <h5 className="m-0 text-center">Order Information</h5>
               </Card.Header>
               <Card.Body>
-                {pageLoading && (
-                  <div
-                    className="d-flex flex-column justify-content-center position-absolute w-100 h-100"
-                    style={{
-                      top: "0",
-                      left: "0",
-                      backgroundColor: "rgba(255, 255, 255, .7)",
-                      zIndex: "1",
-                    }}
-                  >
-                    <BarLoader
-                      css="margin: auto;"
-                      size={100}
-                      color={"#007cc3"}
-                      loading={pageLoading}
-                    />
-                  </div>
-                )}
-
                 {pageError && (
                   <div
                     className="d-flex flex-column position-absolute w-100 h-100"
@@ -457,6 +440,16 @@ export default function OrderEdit() {
           </Container>
         </Form>
       </Container>
+
+      <PageLoading pageLoading={pageLoading} />
+      <ThankyouPopup
+        showThankyou={showThankyou}
+        thankyouText="The order has been successfully updated."
+        okText="View Order list"
+        okLink="/orders"
+        cancelText="Continue updating"
+        cancelLink={`/orders/edit/${id}`}
+      />
     </>
   );
 }
