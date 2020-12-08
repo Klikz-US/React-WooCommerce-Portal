@@ -890,11 +890,7 @@ export default function ProductEdit() {
                   Update
                 </Button>
 
-                <Button
-                  className="m-0"
-                  variant="outline-secondary"
-                  onClick={handleCancel}
-                >
+                <Button className="m-0" variant="white" onClick={handleCancel}>
                   Cancel
                 </Button>
               </Col>

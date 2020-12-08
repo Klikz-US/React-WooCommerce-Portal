@@ -164,7 +164,7 @@ export default function UserRegister() {
             <Col>
               <Button
                 className="float-right mt-5"
-                variant="outline-secondary"
+                variant="white"
                 onClick={handleCancel}
               >
                 Cancel
