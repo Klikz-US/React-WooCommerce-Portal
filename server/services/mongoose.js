@@ -2,8 +2,8 @@ require("dotenv").config();
 
 const mongoose = require("mongoose");
 
-const db_addr = process.env.DB_ADDR_PRODUCTION;
-// const db_addr = process.env.DB_ADDR;
+// const db_addr = process.env.DB_ADDR_PRODUCTION;
+const db_addr = process.env.DB_ADDR;
 let count = 0;
 
 const options = {
