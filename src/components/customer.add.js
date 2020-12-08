@@ -184,7 +184,7 @@ export default function CustomerAdd() {
 
   const handleCancel = (e) => {
     e.preventDefault();
-    history.goBack();
+    history.push("/customers");
   };
 
   const CountryOptions = (props) => (

@@ -188,7 +188,7 @@ export default function OrderAdd() {
 
   const handleCancel = (e) => {
     e.preventDefault();
-    history.goBack();
+    history.push("/orders");
   };
 
   const CountryOptions = (props) => (

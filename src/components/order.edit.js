@@ -213,7 +213,7 @@ export default function OrderEdit() {
 
   const handleCancel = (e) => {
     e.preventDefault();
-    history.goBack();
+    history.push("/orders");
   };
 
   const CountryOptions = (props) => (

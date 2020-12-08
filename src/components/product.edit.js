@@ -266,7 +266,7 @@ export default function ProductEdit() {
 
   const handleCancel = (e) => {
     e.preventDefault();
-    history.goBack();
+    history.push("/products");
   };
 
   const imageTrash = (index) => {
