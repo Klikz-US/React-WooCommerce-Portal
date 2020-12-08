@@ -14,6 +14,10 @@ exports.routesConfig = function (app) {
     Authentication.authMiddleware,
     Controller.getById,
   ]);
+  app.get("/admin/customers/orders/:_id", [
+    Authentication.authMiddleware,
+    Controller.getOrdersById,
+  ]);
   app.patch("/admin/customers/update/:_id", [
     Authentication.authMiddleware,
     Controller.editById,

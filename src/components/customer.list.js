@@ -18,6 +18,7 @@ import {
   customerGetListService,
   customerDeleteService,
   customerSearchService,
+  customerGetOrdersService,
 } from "../services/customer.service";
 
 import BreadcrumSection from "./sections/breadcrumb.section";
@@ -43,6 +44,7 @@ export default function CustomerList() {
   /* ----------------------- */
 
   const [customers, setCustomers] = useState([]);
+  const [orders, setOrders] = useState([]);
   const [pageLoading, setPageLoading] = useState(true);
   const [pageError, setPageError] = useState("");
 
@@ -69,11 +71,26 @@ export default function CustomerList() {
     }
     async function fetchData() {
       const customerList = await customerGetListService(activePage);
+
       if (customerList.error) {
         setPageError("Server Error! Please retry...");
       } else {
+        let ordersArry = [];
+        for (let i = 0; i < customerList.data.length; i++) {
+          if (customerList.data[i].is_paying_customer) {
+            const result = await customerGetOrdersService(
+              customerList.data[i].id
+            );
+            if (!result.error) {
+              ordersArry[i] = result.data;
+            }
+          }
+        }
+        setOrders(ordersArry);
+
         setCustomers(customerList.data);
       }
+
       setPageLoading(false);
     }
     if (!hasResult) {
@@ -123,6 +140,20 @@ export default function CustomerList() {
     funcDelete();
   };
 
+  const orderList = (orders) => {
+    if (orders !== undefined && orders.length !== 0) {
+      return orders.map((order, index) => {
+        return (
+          <Link to={`/orders/edit/${order.id}`} key={index}>
+            {order.id}
+          </Link>
+        );
+      });
+    } else {
+      return <></>;
+    }
+  };
+
   const Customer = (props) => (
     <tr>
       <td>
@@ -144,6 +175,7 @@ export default function CustomerList() {
           <span className="text-muted text-light">Unset</span>
         )}
       </td>
+      <td>{orderList(orders[props.index])}</td>
       <td>
         {props.customer.billing.address_1} {props.customer.billing.address_2}
         {", "} {props.customer.billing.city}
@@ -176,41 +208,43 @@ export default function CustomerList() {
               placement="top"
               overlay={<Tooltip id="tooltip-edit">Edit customer</Tooltip>}
             >
-              <FaEdit size="24" />
+              <FaEdit size="20" />
             </OverlayTrigger>
           </Link>
 
-          <OverlayTrigger
-            key="delete"
-            trigger="click"
-            placement="left"
-            overlay={
-              <Popover id="popover-basic">
-                <Popover.Title
-                  as="h3"
-                  className="text-danger font-weight-bold text-center"
-                >
-                  Are you sure?
-                </Popover.Title>
-                <Popover.Content className="text-center">
-                  <Button
-                    size="sm"
-                    variant="primary"
-                    className="text-center"
-                    onClick={() => handleDelete(props.customer.id)}
+          <span>
+            <OverlayTrigger
+              key="delete"
+              trigger="click"
+              placement="left"
+              overlay={
+                <Popover id="popover-basic">
+                  <Popover.Title
+                    as="h3"
+                    className="text-danger font-weight-bold text-center"
                   >
-                    Yes!
-                  </Button>
-                </Popover.Content>
-              </Popover>
-            }
-          >
-            <FaTrashAlt
-              size="24"
-              className="text-danger"
-              style={{ cursor: "pointer" }}
-            />
-          </OverlayTrigger>
+                    Are you sure?
+                  </Popover.Title>
+                  <Popover.Content className="text-center">
+                    <Button
+                      size="sm"
+                      variant="primary"
+                      className="text-center"
+                      onClick={() => handleDelete(props.customer.id)}
+                    >
+                      Yes!
+                    </Button>
+                  </Popover.Content>
+                </Popover>
+              }
+            >
+              <FaTrashAlt
+                size="18"
+                className="text-danger"
+                style={{ cursor: "pointer" }}
+              />
+            </OverlayTrigger>
+          </span>
         </div>
       </td>
     </tr>
@@ -218,7 +252,7 @@ export default function CustomerList() {
 
   const customerList = (customers) => {
     return customers.map(function (customer, index) {
-      return <Customer customer={customer} key={index} />;
+      return <Customer customer={customer} index={index} key={index} />;
     });
   };
 
@@ -349,9 +383,10 @@ export default function CustomerList() {
                   <th>Email</th>
                   <th style={{ width: "110px" }}>First Name</th>
                   <th style={{ width: "110px" }}>Last Name</th>
+                  <th style={{ width: "110px" }}>Orders</th>
                   <th style={{ width: "220px" }}>Billing Address</th>
                   <th style={{ width: "220px" }}>Shipping Address</th>
-                  <th style={{ width: "110px" }}>Created At</th>
+                  <th style={{ width: "140px" }}>Registered At</th>
                   <th style={{ width: "100px" }}>Action</th>
                 </tr>
               </thead>

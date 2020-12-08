@@ -35,6 +35,19 @@ export const customerGetService = async (_id) => {
   }
 };
 
+export const customerGetOrdersService = async (_id) => {
+  try {
+    return await axios.get(
+      `${window.$server_url}/admin/customers/orders/${_id}`
+    );
+  } catch (err) {
+    return {
+      error: true,
+      errMsg: err.message,
+    };
+  }
+};
+
 export const customerAddService = async (customer) => {
   try {
     return await axios.post(

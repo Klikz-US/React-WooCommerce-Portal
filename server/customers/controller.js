@@ -66,6 +66,24 @@ exports.getById = (req, res) => {
   process();
 };
 
+exports.getOrdersById = (req, res) => {
+  const _id = req.params._id;
+  async function process() {
+    WooCommerce.get("orders/?customer=" + _id)
+      .then((customer) => {
+        if (!customer) {
+          res.status(404).send("No Data");
+        } else {
+          res.json(customer.data);
+        }
+      })
+      .catch((err) => {
+        res.status(500).send("Server Error");
+      });
+  }
+  process();
+};
+
 exports.editById = (req, res) => {
   const _id = req.params._id;
   const data = req.body;
