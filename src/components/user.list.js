@@ -77,7 +77,9 @@ export default function UserList() {
   const User = (props) => (
     <tr>
       <td>
-        <Link to={"/users/edit/" + props.user._id}>{props.user.name}</Link>
+        <Link to={"/users/edit/" + props.user._id}>
+          {props.user.name} {props.you && "(You)"}
+        </Link>
       </td>
       <td>{props.user.email}</td>
       <td>{props.user.phone}</td>
@@ -129,7 +131,6 @@ export default function UserList() {
       );
     } else {
       return users.map(function (user, index) {
-        if (user._id === userId) return null;
         const replace_obj = {};
 
         switch (user.role) {
@@ -141,7 +142,13 @@ export default function UserList() {
             break;
         }
 
-        return <User user={{ ...user, ...replace_obj }} key={index} />;
+        return (
+          <User
+            user={{ ...user, ...replace_obj }}
+            you={user._id === userId}
+            key={index}
+          />
+        );
       });
     }
   };
