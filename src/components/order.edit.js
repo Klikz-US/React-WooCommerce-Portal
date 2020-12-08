@@ -120,16 +120,14 @@ export default function OrderEdit() {
 
     async function fetchData() {
       setPageLoading(true);
+
+      console.log(order);
       const result = await orderUpdateService(id, {
         ...order,
         auth_user: auth_obj.user,
       });
-      if (result.error) {
-        setPageError("Unable to update this order. Internal Server Error.");
-      } else {
-        setOrder((order) => ({ ...order, ...result.data }));
-        setShowThankyou(true);
-      }
+      setOrder((order) => ({ ...order, ...result.data }));
+      setShowThankyou(true);
       setPageLoading(false);
     }
     fetchData();

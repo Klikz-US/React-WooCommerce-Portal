@@ -143,6 +143,7 @@ export default function OrderList() {
 
   const orderList = (orders) => {
     return orders.map(function (order, index) {
+      console.log(order);
       return <Order order={order} key={index} />;
     });
   };

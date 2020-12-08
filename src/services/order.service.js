@@ -61,7 +61,7 @@ export const orderDeleteService = async (_id) => {
 
 export const orderUpdateService = async (id, order) => {
   try {
-    return await axios.patch(
+    return await axios.put(
       `${window.$server_url}/admin/orders/update/${id}`,
       order
     );

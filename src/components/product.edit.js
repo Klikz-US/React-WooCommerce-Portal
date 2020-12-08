@@ -144,8 +144,6 @@ export default function ProductEdit() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    productImages.forEach((productImage) => {});
-
     const product = {
       sku: sku.value,
       name: name.value,
@@ -822,7 +820,7 @@ export default function ProductEdit() {
                       />
                     </Form.Group>
 
-                    <Form.Label>Product Type</Form.Label>
+                    {/* <Form.Label>Product Type</Form.Label>
                     <div>
                       <p className="text-capitalize">{product.type}</p>
                     </div>
@@ -865,6 +863,7 @@ export default function ProductEdit() {
                         )}
                       </span>
                     </Form.Label>
+                    
                     <div
                       style={{
                         overflowX: "hidden",
@@ -873,7 +872,7 @@ export default function ProductEdit() {
                       }}
                     >
                       {attrList()}
-                    </div>
+                    </div> */}
                   </Col>
                 </Row>
               </Card.Body>

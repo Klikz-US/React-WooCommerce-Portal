@@ -31,8 +31,6 @@ export default function OrderAdd() {
   }, [expiredAt, token, dispatch]);
   /* ----------------------- */
 
-  const [id, setId] = useState("");
-
   const history = useHistory();
   const [pageError, setPageError] = useState("");
   const [pageLoading, setPageLoading] = useState(false);
@@ -58,6 +56,14 @@ export default function OrderAdd() {
 
     const order = {
       payment_method: payment_method.selected,
+      payment_method_title:
+        payment_method.selected === "paypal"
+          ? "PayPal"
+          : payment_method.selected === "helcimjs"
+          ? "Credit Card"
+          : payment_method.selected === "gazchap_wc_purchaseordergateway"
+          ? "Purchase Order"
+          : "Net 30",
       status: status.selected,
       set_paid: true,
       billing: {
@@ -81,16 +87,12 @@ export default function OrderAdd() {
 
     async function fetchData() {
       setPageLoading(true);
-      const result = await orderAddService({
+      await orderAddService({
         ...order,
         auth_user: auth_obj.user,
       });
-      if (result.error) {
-        setPageError("Server Error! Please retry...");
-      } else {
-        setId(result.data.id);
-        setShowThankyou(true);
-      }
+
+      setShowThankyou(true);
       setPageLoading(false);
     }
     fetchData();
@@ -128,9 +130,12 @@ export default function OrderAdd() {
                     Order List
                   </Link>
 
-                  <Link className="btn btn-primary" to={`/orders/edit/${id}`}>
-                    Edit Order
-                  </Link>
+                  <Button
+                    variant="white"
+                    onClick={() => setShowThankyou(false)}
+                  >
+                    Close
+                  </Button>
                 </Card.Body>
               </Card>
             </div>
@@ -256,6 +261,27 @@ export default function OrderAdd() {
                         value="paypal"
                         label="PayPal"
                         checked={payment_method.selected === "paypal"}
+                        {...payment_method}
+                      />
+                      <Form.Check
+                        className="mr-5"
+                        type="radio"
+                        name="gazchap_wc_purchaseordergateway"
+                        value="gazchap_wc_purchaseordergateway"
+                        label="Purchase Order"
+                        checked={
+                          payment_method.selected ===
+                          "gazchap_wc_purchaseordergateway"
+                        }
+                        {...payment_method}
+                      />
+                      <Form.Check
+                        className="mr-5"
+                        type="radio"
+                        name="net30"
+                        value="net30"
+                        label="Net 30"
+                        checked={payment_method.selected === "net30"}
                         {...payment_method}
                       />
                     </Form.Group>
