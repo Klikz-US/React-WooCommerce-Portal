@@ -112,7 +112,9 @@ export default function UserEdit() {
             </Col>
             <Col>
               <Card className="shadow">
-                <Card.Header className="bg-success text-white">
+                <Card.Header
+                  style={{ backgroundColor: "rgba(3, 169, 244, 0.6)" }}
+                >
                   <h5 className="m-0">User Information</h5>
                 </Card.Header>
 

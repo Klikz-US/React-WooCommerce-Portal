@@ -148,7 +148,9 @@ const ChartSection = (props) => {
     <MDBRow className="mb-4">
       <MDBCol md="12" className="mb-4">
         <MDBCard className="mb-4">
-          <MDBCardHeader>Monthly Sales Overview</MDBCardHeader>
+          <MDBCardHeader style={{ backgroundColor: "rgba(3, 169, 244, 0.6)" }}>
+            Monthly Sales Overview
+          </MDBCardHeader>
           <MDBCardBody>
             <Line data={salesDataLine} options={{ responsive: true }} />
           </MDBCardBody>
@@ -156,7 +158,9 @@ const ChartSection = (props) => {
       </MDBCol>
       <MDBCol md="12" lg="6" className="mb-4">
         <MDBCard className="mb-4">
-          <MDBCardHeader>Products Overview</MDBCardHeader>
+          <MDBCardHeader style={{ backgroundColor: "rgba(3, 169, 244, 0.6)" }}>
+            Products Overview
+          </MDBCardHeader>
           <MDBCardBody>
             <Doughnut
               data={productsDoughnut}
@@ -168,7 +172,9 @@ const ChartSection = (props) => {
       </MDBCol>
       <MDBCol md="12" lg="6" className="mb-4">
         <MDBCard className="mb-4">
-          <MDBCardHeader>Customers Overview</MDBCardHeader>
+          <MDBCardHeader style={{ backgroundColor: "rgba(3, 169, 244, 0.6)" }}>
+            Customers Overview
+          </MDBCardHeader>
           <MDBCardBody>
             <Doughnut
               data={customersDoughnut}

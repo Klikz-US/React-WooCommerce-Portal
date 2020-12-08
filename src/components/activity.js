@@ -186,8 +186,6 @@ export default function ActivityList() {
           parentPath: "",
           parentLink: "",
           activePath: "Activities",
-          btnLink: "/activities/add",
-          btnText: "Add New Activity",
         }}
       />
 
@@ -250,7 +248,7 @@ export default function ActivityList() {
               </div>
             )}
             <Table responsive className="m-0">
-              <thead className="bg-success text-white">
+              <thead style={{ backgroundColor: "rgba(3, 169, 244, 0.6)" }}>
                 <tr>
                   <th>User</th>
                   <th>Action</th>

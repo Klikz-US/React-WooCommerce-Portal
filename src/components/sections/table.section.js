@@ -47,7 +47,9 @@ const TableSection = (props) => {
     <MDBRow className="mb-4">
       <MDBCol sm="12" md="4">
         <MDBCard>
-          <MDBCardHeader>Available Shipping Methods</MDBCardHeader>
+          <MDBCardHeader style={{ backgroundColor: "rgba(3, 169, 244, 0.6)" }}>
+            Available Shipping Methods
+          </MDBCardHeader>
           <MDBCardBody>
             <MDBTable hover>
               <MDBTableHead color="blue-grey lighten-4">
@@ -63,7 +65,9 @@ const TableSection = (props) => {
       </MDBCol>
       <MDBCol sm="12" md="8" className="mb-4">
         <MDBCard>
-          <MDBCardHeader>Custom Tax Classes</MDBCardHeader>
+          <MDBCardHeader style={{ backgroundColor: "rgba(3, 169, 244, 0.6)" }}>
+            Custom Tax Classes
+          </MDBCardHeader>
           <MDBCardBody>
             <MDBTable hover>
               <MDBTableHead color="blue lighten-4">

@@ -270,7 +270,7 @@ export default function OrderList() {
               </div>
             )}
             <Table responsive className="m-0">
-              <thead className="bg-success text-white">
+              <thead style={{ backgroundColor: "rgba(3, 169, 244, 0.6)" }}>
                 <tr>
                   <th>Order</th>
                   <th>Customer</th>

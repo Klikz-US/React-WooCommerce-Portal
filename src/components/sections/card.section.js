@@ -46,7 +46,10 @@ const AdminCardSection2 = (props) => {
   return (
     <MDBRow className="mb-4">
       <MDBCol xl="4" md="6" className="mb-3">
-        <MDBCard color="primary-color" className="classic-admin-card">
+        <MDBCard
+          className="classic-admin-card"
+          style={{ backgroundColor: "rgba(3, 169, 244, 0.7)" }}
+        >
           <MDBCardBody>
             <div className="float-right">
               <MDBIcon far icon="money-bill-alt" />
@@ -76,7 +79,10 @@ const AdminCardSection2 = (props) => {
         </MDBCard>
       </MDBCol>
       <MDBCol xl="4" md="6" className="mb-3">
-        <MDBCard color="warning-color" className="classic-admin-card">
+        <MDBCard
+          style={{ backgroundColor: "rgba(3, 169, 244, 0.7)" }}
+          className="classic-admin-card"
+        >
           <MDBCardBody>
             <div className="float-right">
               <MDBIcon icon="chart-line" />
@@ -93,7 +99,7 @@ const AdminCardSection2 = (props) => {
               aria-valuenow="25"
               className="progress-bar bg grey darken-3"
               role="progressbar"
-              style={{ width: "25%" }}
+              style={{ width: diff_customers + "%" }}
             ></div>
           </div>
           <MDBCardBody>
@@ -106,7 +112,10 @@ const AdminCardSection2 = (props) => {
         </MDBCard>
       </MDBCol>
       <MDBCol xl="4" md="6" className="mb-3">
-        <MDBCard color="primary-color" className="classic-admin-card">
+        <MDBCard
+          style={{ backgroundColor: "rgba(3, 169, 244, 0.7)" }}
+          className="classic-admin-card"
+        >
           <MDBCardBody>
             <div className="float-right">
               <MDBIcon icon="chart-pie" />
@@ -123,7 +132,7 @@ const AdminCardSection2 = (props) => {
               aria-valuenow="75"
               className="progress-bar bg grey darken-3"
               role="progressbar"
-              style={{ width: "75%" }}
+              style={{ width: diff_orders + "%" }}
             ></div>
           </div>
           <MDBCardBody>

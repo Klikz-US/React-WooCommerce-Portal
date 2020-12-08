@@ -165,7 +165,9 @@ export default function OrderAdd() {
               }}
             >
               <Card className="shadow" style={{ maxWidth: "500px" }}>
-                <Card.Header className="bg-danger text-white">
+                <Card.Header
+                  style={{ backgroundColor: "rgba(3, 169, 244, 0.6)" }}
+                >
                   <h5 className="m-0 text-center">Error</h5>
                 </Card.Header>
 
@@ -221,7 +223,9 @@ export default function OrderAdd() {
         <Form autoComplete="off">
           <Container>
             <Card className="h-100 shadow">
-              <Card.Header className="bg-danger text-white">
+              <Card.Header
+                style={{ backgroundColor: "rgba(3, 169, 244, 0.6)" }}
+              >
                 <h5 className="m-0 text-center">Order Information</h5>
               </Card.Header>
               <Card.Body>

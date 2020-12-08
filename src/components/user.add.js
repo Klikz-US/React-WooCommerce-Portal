@@ -94,7 +94,9 @@ export default function UserRegister() {
             </Col>
             <Col>
               <Card className="shadow">
-                <Card.Header className="bg-success text-white">
+                <Card.Header
+                  style={{ backgroundColor: "rgba(3, 169, 244, 0.6)" }}
+                >
                   <h5 className="m-0">User Information</h5>
                 </Card.Header>
 
@@ -127,38 +129,22 @@ export default function UserRegister() {
 
                   <Form.Group>
                     <Form.Label>Name</Form.Label>
-                    <Form.Control
-                      id="userName"
-                      type="text"
-                      {...name}
-                    />
+                    <Form.Control id="userName" type="text" {...name} />
                   </Form.Group>
 
                   <Form.Group>
                     <Form.Label>Username</Form.Label>
-                    <Form.Control
-                      id="userEmail"
-                      type="text"
-                      {...email}
-                    />
+                    <Form.Control id="userEmail" type="text" {...email} />
                   </Form.Group>
 
                   <Form.Group>
                     <Form.Label>Phone</Form.Label>
-                    <Form.Control
-                      id="userPhone"
-                      type="text"
-                      {...phone}
-                    />
+                    <Form.Control id="userPhone" type="text" {...phone} />
                   </Form.Group>
 
                   <Form.Group>
                     <Form.Label>Password</Form.Label>
-                    <Form.Control
-                      id="userPass"
-                      type="password"
-                      {...password}
-                    />
+                    <Form.Control id="userPass" type="password" {...password} />
                   </Form.Group>
 
                   <Form.Group>
