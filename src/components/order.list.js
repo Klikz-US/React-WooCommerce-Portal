@@ -101,9 +101,9 @@ export default function OrderList() {
         )}
       </td>
       <td>{props.order.status}</td>
-      <td>{props.order.shipping_total}</td>
-      <td>{props.order.total_tax}</td>
-      <td>{props.order.total}</td>
+      <td>${props.order.shipping_total}</td>
+      <td>${props.order.total_tax}</td>
+      <td>${props.order.total}</td>
       <td>{props.order.payment_method_title}</td>
       <td>
         {props.order.billing.first_name} {props.order.billing.last_name}

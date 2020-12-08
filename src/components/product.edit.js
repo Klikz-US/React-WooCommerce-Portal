@@ -763,7 +763,7 @@ export default function ProductEdit() {
                       <Form.Check
                         type="switch"
                         id="track-inventory"
-                        label="Track Inventory?"
+                        label="Manage Stock?"
                         {...manage_stock}
                       />
                     </Form.Group>

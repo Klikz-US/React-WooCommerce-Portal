@@ -174,12 +174,16 @@ export default function ProductList() {
       </td>
       <td>
         {props.product.stock_quantity !== null &&
-        props.product.stock_status === "instock"
-          ? props.product.stock_quantity
-          : props.product.stock_status === "instock" ||
-            props.product.stock_status === "onbackorder"
-          ? "On backorder"
-          : "Out of stock"}
+        props.product.stock_status === "instock" ? (
+          props.product.stock_quantity
+        ) : props.product.stock_status === "instock" ||
+          props.product.stock_status === "onbackorder" ? (
+          <span style={{ color: "#7ad03a" }}>In stock</span>
+        ) : (
+          <span style={{ color: "#eaa600" }}>
+            Out of stock ( {props.product.stock_quantity} )
+          </span>
+        )}
       </td>
       <td>{props.product.type}</td>
       <td>
@@ -201,7 +205,7 @@ export default function ProductList() {
               placement="top"
               overlay={<Tooltip id="tooltip-preview">Preview on Store</Tooltip>}
             >
-              <FaEye size="26" />
+              <FaEye size="20" />
             </OverlayTrigger>
           </a>
 
@@ -211,41 +215,43 @@ export default function ProductList() {
               placement="top"
               overlay={<Tooltip id="tooltip-edit">Edit Product</Tooltip>}
             >
-              <FaEdit size="24" />
+              <FaEdit size="18" />
             </OverlayTrigger>
           </Link>
 
-          <OverlayTrigger
-            key="delete"
-            trigger="click"
-            placement="left"
-            overlay={
-              <Popover id="popover-basic">
-                <Popover.Title
-                  as="h3"
-                  className="text-danger font-weight-bold text-center"
-                >
-                  Are you sure?
-                </Popover.Title>
-                <Popover.Content className="text-center">
-                  <Button
-                    size="sm"
-                    variant="primary"
-                    className="text-center"
-                    onClick={() => handleDelete(props.product.id)}
+          <span>
+            <OverlayTrigger
+              key="delete"
+              trigger="click"
+              placement="left"
+              overlay={
+                <Popover id="popover-basic">
+                  <Popover.Title
+                    as="h3"
+                    className="text-danger font-weight-bold text-center"
                   >
-                    Yes!
-                  </Button>
-                </Popover.Content>
-              </Popover>
-            }
-          >
-            <FaTrashAlt
-              size="24"
-              className="text-danger"
-              style={{ cursor: "pointer" }}
-            />
-          </OverlayTrigger>
+                    Are you sure?
+                  </Popover.Title>
+                  <Popover.Content className="text-center">
+                    <Button
+                      size="sm"
+                      variant="primary"
+                      className="text-center"
+                      onClick={() => handleDelete(props.product.id)}
+                    >
+                      Yes!
+                    </Button>
+                  </Popover.Content>
+                </Popover>
+              }
+            >
+              <FaTrashAlt
+                size="18"
+                className="text-danger"
+                style={{ cursor: "pointer" }}
+              />
+            </OverlayTrigger>
+          </span>
         </div>
       </td>
     </tr>
@@ -432,11 +438,11 @@ export default function ProductList() {
                   <th>Image</th>
                   <th>SKU</th>
                   <th style={{ width: "240px" }}>Product Name</th>
-                  <th style={{ width: "140px" }}>Price</th>
+                  <th style={{ width: "80px" }}>Price</th>
                   <th style={{ width: "140px" }}>Stock</th>
                   <th style={{ width: "175px" }}>Product Type</th>
-                  <th>Last Modified</th>
-                  <th>Action</th>
+                  <th style={{ width: "150px" }}>Last Modified</th>
+                  <th style={{ width: "150px" }}>Action</th>
                 </tr>
               </thead>
 

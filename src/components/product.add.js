@@ -9,6 +9,7 @@ import Carousel from "react-bootstrap/Carousel";
 import { verifyTokenAsync } from "../actions/auth-async.action";
 import { setAuthToken } from "../services/auth.service";
 import { useFormInput } from "../utils/form-input.util";
+import { useFormSwitch } from "../utils/form-switch.util";
 import {
   productAddService,
   productAllCategoriesService,
@@ -45,6 +46,9 @@ export default function ProductEdit() {
     sku: "",
     name: "",
     price: "",
+    manage_stock: false,
+    stock_status: "instock",
+    stock_quantity: 0,
     dimensions: {
       height: "",
       length: "",
@@ -65,6 +69,10 @@ export default function ProductEdit() {
   const sku = useFormInput(product.sku);
   const name = useFormInput(product.name);
   const price = useFormInput(product.price);
+  const manage_stock = useFormSwitch(product.manage_stock);
+  const stock_quantity = useFormInput(
+    product.stock_quantity === null ? 0 : product.stock_quantity
+  );
   const height = useFormInput(product.dimensions.height);
   const length = useFormInput(product.dimensions.length);
   const width = useFormInput(product.dimensions.width);
@@ -127,6 +135,13 @@ export default function ProductEdit() {
       name: name.value,
       price: price.value,
       regular_price: price.value,
+      manage_stock: manage_stock.checked,
+      stock_status: manage_stock.checked
+        ? stock_quantity.value > 0
+          ? "instock"
+          : "outofstock"
+        : "onbackorder",
+      stock_quantity: manage_stock.checked ? stock_quantity.value : null,
       dimensions: {
         height: height.value,
         length: length.value,
@@ -723,6 +738,28 @@ export default function ProductEdit() {
                     </Form.Group>
 
                     <hr />
+
+                    <Form.Group>
+                      <Form.Label>Inventory</Form.Label>
+                      <Form.Check
+                        type="switch"
+                        id="track-inventory"
+                        label="Manage Stock?"
+                        {...manage_stock}
+                      />
+                    </Form.Group>
+
+                    {manage_stock.checked && (
+                      <Form.Group>
+                        <Form.Label>Quantity</Form.Label>
+                        <Form.Control
+                          id="stock_quantity"
+                          name="stock_quantity"
+                          type="number"
+                          {...stock_quantity}
+                        />
+                      </Form.Group>
+                    )}
 
                     <Form.Row>
                       <Form.Group as={Col}>
