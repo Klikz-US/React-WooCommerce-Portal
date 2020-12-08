@@ -1,19 +1,43 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useHistory, Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 import { Button } from "react-bootstrap";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
+import moment from "moment";
 import { FiLogOut, FiSettings } from "react-icons/fi";
 import logo_white from "./../assets/images/logo-white.png";
 
-import { userLogoutAsync } from "../actions/auth-async.action";
+import {
+  verifyTokenAsync,
+  userLogoutAsync,
+} from "../actions/auth-async.action";
+import { setAuthToken } from "../services/auth.service";
+
 import Navigation from "../components/navigation";
 
 export default function Header() {
+  /*
+   * Private Page Token Verification Module.
+   */
+  const auth_obj = useSelector((state) => state.auth);
+  const { token, expiredAt } = auth_obj;
   const dispatch = useDispatch();
+  useEffect(() => {
+    setAuthToken(token);
+    const verifyTokenTimer = setTimeout(() => {
+      dispatch(verifyTokenAsync(true));
+    }, moment(expiredAt).diff() - 10 * 1000);
+    return () => {
+      clearTimeout(verifyTokenTimer);
+    };
+  }, [expiredAt, token, dispatch]);
+  /* ----------------------- */
+
   const history = useHistory();
+
+  const { name } = auth_obj.user;
 
   const handleLogout = () => {
     dispatch(userLogoutAsync());
@@ -27,6 +51,9 @@ export default function Header() {
         expand="lg"
         className="ml-auto d-flex flex-row justify-content-end pr-4 bg-info"
       >
+        <h4 className="mr-auto text-white mb-0 px-lg-5 custom--mobile-hide">
+          <strong>Welcome, {name}</strong>
+        </h4>
         <Navbar.Brand className="custom--desktop-hide mr-auto">
           <img src={logo_white} alt="CleanAir Engineering" />
         </Navbar.Brand>

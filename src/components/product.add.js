@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
 import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
@@ -20,7 +20,7 @@ import BreadcrumSection from "./sections/breadcrumb.section";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 import { FaEdit, FaRegSave, FaRegTrashAlt } from "react-icons/fa";
-import { PageLoading, ThankyouPopup } from "../utils/pop-up.util";
+import { PageLoading } from "../utils/page-status.util";
 
 export default function ProductEdit() {
   /*
@@ -155,6 +155,79 @@ export default function ProductEdit() {
       setPageLoading(false);
     }
     fetchData();
+  };
+
+  const ThankyouPopup = () => {
+    return (
+      <>
+        {showThankyou && (
+          <div
+            className="position-absolute w-100 h-100"
+            style={{ zIndex: "1000", top: "0", left: "0", minHeight: "100vh" }}
+          >
+            <div
+              className="d-flex flex-column justify-content-center align-items-center w-100 h-100 px-3"
+              style={{
+                backgroundColor: "rgba(255, 255, 255, .8)",
+              }}
+            >
+              <Card className="shadow" style={{ maxWidth: "500px" }}>
+                <Card.Header className="bg-info text-white">
+                  <h5 className="m-0 text-center">Sucess</h5>
+                </Card.Header>
+
+                <Card.Body>
+                  <p className="text-muted">
+                    The product has been created successfully.
+                  </p>
+                  <Link className="btn btn-primary" to="/products">
+                    Product List
+                  </Link>
+
+                  <Link className="btn btn-primary" to={`/products/edit/${id}`}>
+                    Edit Product
+                  </Link>
+                </Card.Body>
+              </Card>
+            </div>
+          </div>
+        )}
+      </>
+    );
+  };
+
+  const PageError = (props) => {
+    return (
+      <>
+        {pageError && (
+          <div
+            className="position-absolute w-100 h-100"
+            style={{ zIndex: "1000", top: "0", left: "0", minHeight: "100vh" }}
+          >
+            <div
+              className="d-flex flex-column justify-content-center align-items-center w-100 h-100 px-3"
+              style={{
+                backgroundColor: "rgba(255, 255, 255, .8)",
+              }}
+            >
+              <Card className="shadow" style={{ maxWidth: "500px" }}>
+                <Card.Header className="bg-danger text-white">
+                  <h5 className="m-0 text-center">Error</h5>
+                </Card.Header>
+
+                <Card.Body>
+                  <p className="text-muted">{pageError}</p>
+
+                  <Button variant="white" onClick={() => setPageError("")}>
+                    Close
+                  </Button>
+                </Card.Body>
+              </Card>
+            </div>
+          </div>
+        )}
+      </>
+    );
   };
 
   const handleCancel = (e) => {
@@ -721,14 +794,8 @@ export default function ProductEdit() {
       </Container>
 
       <PageLoading pageLoading={pageLoading} />
-      <ThankyouPopup
-        showThankyou={showThankyou}
-        thankyouText="The produt has been successfully created."
-        okText="View product list"
-        okLink="/products"
-        cancelText="Update product"
-        cancelLink={`/products/edit/${id}`}
-      />
+      <PageError />
+      <ThankyouPopup />
     </>
   );
 }

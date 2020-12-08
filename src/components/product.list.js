@@ -23,7 +23,7 @@ import {
 import BreadcrumSection from "./sections/breadcrumb.section";
 import Pagination from "../utils/pagination.util";
 import { useFormInput } from "../utils/form-input.util";
-import { PageLoading } from "../utils/pop-up.util";
+import { PageLoading } from "../utils/page-status.util";
 
 export default function ProductList() {
   /*
@@ -74,6 +74,7 @@ export default function ProductList() {
         setPageError("Server Error! Please retry...");
       } else {
         setProducts(productList.data);
+        console.log(productList.data);
       }
       setPageLoading(false);
     }
@@ -170,6 +171,15 @@ export default function ProductList() {
       <td>{props.product.name}</td>
       <td>
         {props.product.price === "0" ? "Quote Only" : "$" + props.product.price}
+      </td>
+      <td>
+        {props.product.stock_quantity !== null &&
+        props.product.stock_status === "instock"
+          ? props.product.stock_quantity
+          : props.product.stock_status === "instock" ||
+            props.product.stock_status === "onbackorder"
+          ? "On backorder"
+          : "Out of stock"}
       </td>
       <td>{props.product.type}</td>
       <td>
@@ -421,8 +431,9 @@ export default function ProductList() {
                 <tr>
                   <th>Image</th>
                   <th>SKU</th>
-                  <th style={{ width: "320px" }}>Product Name</th>
+                  <th style={{ width: "240px" }}>Product Name</th>
                   <th style={{ width: "140px" }}>Price</th>
+                  <th style={{ width: "140px" }}>Stock</th>
                   <th style={{ width: "175px" }}>Product Type</th>
                   <th>Last Modified</th>
                   <th>Action</th>

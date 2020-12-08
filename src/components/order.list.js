@@ -6,7 +6,7 @@ import Table from "react-bootstrap/Table";
 import { Container, Row, Col, Form, Button, Card } from "react-bootstrap";
 import { FaSearch } from "react-icons/fa";
 import { FcCancel } from "react-icons/fc";
-import { PageLoading } from "../utils/pop-up.util";
+import { PageLoading } from "../utils/page-status.util";
 
 import { verifyTokenAsync } from "../actions/auth-async.action";
 import { setAuthToken } from "../services/auth.service";

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
 import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
@@ -13,7 +13,7 @@ import {
   customerUpdateService,
 } from "../services/customer.service";
 import BreadcrumSection from "./sections/breadcrumb.section";
-import { PageLoading, ThankyouPopup } from "../utils/pop-up.util";
+import { PageLoading } from "../utils/page-status.util";
 
 export default function CustomerEdit() {
   /*
@@ -138,6 +138,82 @@ export default function CustomerEdit() {
       setPageLoading(false);
     }
     fetchData();
+  };
+
+  const ThankyouPopup = () => {
+    return (
+      <>
+        {showThankyou && (
+          <div
+            className="position-absolute w-100 h-100"
+            style={{ zIndex: "1000", top: "0", left: "0", minHeight: "100vh" }}
+          >
+            <div
+              className="d-flex flex-column justify-content-center align-items-center w-100 h-100 px-3"
+              style={{
+                backgroundColor: "rgba(255, 255, 255, .8)",
+              }}
+            >
+              <Card className="shadow" style={{ maxWidth: "500px" }}>
+                <Card.Header className="bg-info text-white">
+                  <h5 className="m-0 text-center">Sucess</h5>
+                </Card.Header>
+
+                <Card.Body>
+                  <p className="text-muted">
+                    The customer has been updated successfully.
+                  </p>
+                  <Link className="btn btn-primary" to="/customers">
+                    Customer List
+                  </Link>
+
+                  <Button
+                    variant="white"
+                    onClick={() => setShowThankyou(false)}
+                  >
+                    Continue Editing
+                  </Button>
+                </Card.Body>
+              </Card>
+            </div>
+          </div>
+        )}
+      </>
+    );
+  };
+
+  const PageError = (props) => {
+    return (
+      <>
+        {pageError && (
+          <div
+            className="position-absolute w-100 h-100"
+            style={{ zIndex: "1000", top: "0", left: "0", minHeight: "100vh" }}
+          >
+            <div
+              className="d-flex flex-column justify-content-center align-items-center w-100 h-100 px-3"
+              style={{
+                backgroundColor: "rgba(255, 255, 255, .8)",
+              }}
+            >
+              <Card className="shadow" style={{ maxWidth: "500px" }}>
+                <Card.Header className="bg-danger text-white">
+                  <h5 className="m-0 text-center">Error</h5>
+                </Card.Header>
+
+                <Card.Body>
+                  <p className="text-muted">{pageError}</p>
+
+                  <Button variant="white" onClick={() => setPageError("")}>
+                    Close
+                  </Button>
+                </Card.Body>
+              </Card>
+            </div>
+          </div>
+        )}
+      </>
+    );
   };
 
   const handleCancel = (e) => {
@@ -384,14 +460,8 @@ export default function CustomerEdit() {
       </Container>
 
       <PageLoading pageLoading={pageLoading} />
-      <ThankyouPopup
-        showThankyou={showThankyou}
-        thankyouText="The customer has been successfully created."
-        okText="View customer list"
-        okLink="/customers"
-        cancelText="Update customer"
-        cancelLink={`/customers/edit/${id}`}
-      />
+      <PageError />
+      <ThankyouPopup />
     </>
   );
 }

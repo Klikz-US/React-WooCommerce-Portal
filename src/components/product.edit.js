@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
 import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
@@ -23,7 +23,8 @@ import {
 
 import BreadcrumSection from "./sections/breadcrumb.section";
 import { useFormInput } from "../utils/form-input.util";
-import { PageLoading, ThankyouPopup } from "../utils/pop-up.util";
+import { useFormSwitch } from "../utils/form-switch.util";
+import { PageLoading } from "../utils/page-status.util";
 
 export default function ProductEdit() {
   /*
@@ -48,6 +49,9 @@ export default function ProductEdit() {
     sku: "",
     name: "",
     price: "",
+    manage_stock: false,
+    stock_status: "instock",
+    stock_quantity: 0,
     dimensions: {
       height: "",
       length: "",
@@ -68,6 +72,10 @@ export default function ProductEdit() {
   const sku = useFormInput(product.sku);
   const name = useFormInput(product.name);
   const price = useFormInput(product.price);
+  const manage_stock = useFormSwitch(product.manage_stock);
+  const stock_quantity = useFormInput(
+    product.stock_quantity === null ? 0 : product.stock_quantity
+  );
   const height = useFormInput(product.dimensions.height);
   const length = useFormInput(product.dimensions.length);
   const width = useFormInput(product.dimensions.width);
@@ -95,6 +103,7 @@ export default function ProductEdit() {
       if (productData.error) {
         setPageError("Server Error! Please retry...");
       } else {
+        console.log(productData.data);
         setProduct((product) => ({ ...product, ...productData.data }));
         setCurrentTags(productData.data.tags);
         setCurrentCategories(productData.data.categories);
@@ -142,6 +151,13 @@ export default function ProductEdit() {
       name: name.value,
       price: price.value,
       regular_price: price.value,
+      manage_stock: manage_stock.checked,
+      stock_status: manage_stock.checked
+        ? stock_quantity.value > 0
+          ? "instock"
+          : "outofstock"
+        : "onbackorder",
+      stock_quantity: manage_stock.checked ? stock_quantity.value : null,
       dimensions: {
         height: height.value,
         length: length.value,
@@ -156,6 +172,7 @@ export default function ProductEdit() {
 
     async function fetchData() {
       setPageLoading(true);
+      console.log(product);
       const result = await productUpdateService(id, {
         ...product,
         auth_user: auth_obj.user,
@@ -169,6 +186,82 @@ export default function ProductEdit() {
       setPageLoading(false);
     }
     fetchData();
+  };
+
+  const ThankyouPopup = () => {
+    return (
+      <>
+        {showThankyou && (
+          <div
+            className="position-absolute w-100 h-100"
+            style={{ zIndex: "1000", top: "0", left: "0", minHeight: "100vh" }}
+          >
+            <div
+              className="d-flex flex-column justify-content-center align-items-center w-100 h-100 px-3"
+              style={{
+                backgroundColor: "rgba(255, 255, 255, .8)",
+              }}
+            >
+              <Card className="shadow" style={{ maxWidth: "500px" }}>
+                <Card.Header className="bg-info text-white">
+                  <h5 className="m-0 text-center">Sucess</h5>
+                </Card.Header>
+
+                <Card.Body>
+                  <p className="text-muted">
+                    The product has been updated successfully.
+                  </p>
+                  <Link className="btn btn-primary" to="/products">
+                    Product List
+                  </Link>
+
+                  <Button
+                    variant="white"
+                    onClick={() => setShowThankyou(false)}
+                  >
+                    Continue Editing
+                  </Button>
+                </Card.Body>
+              </Card>
+            </div>
+          </div>
+        )}
+      </>
+    );
+  };
+
+  const PageError = (props) => {
+    return (
+      <>
+        {pageError && (
+          <div
+            className="position-absolute w-100 h-100"
+            style={{ zIndex: "1000", top: "0", left: "0", minHeight: "100vh" }}
+          >
+            <div
+              className="d-flex flex-column justify-content-center align-items-center w-100 h-100 px-3"
+              style={{
+                backgroundColor: "rgba(255, 255, 255, .8)",
+              }}
+            >
+              <Card className="shadow" style={{ maxWidth: "500px" }}>
+                <Card.Header className="bg-danger text-white">
+                  <h5 className="m-0 text-center">Error</h5>
+                </Card.Header>
+
+                <Card.Body>
+                  <p className="text-muted">{pageError}</p>
+
+                  <Button variant="white" onClick={() => setPageError("")}>
+                    Close
+                  </Button>
+                </Card.Body>
+              </Card>
+            </div>
+          </div>
+        )}
+      </>
+    );
   };
 
   const handleCancel = (e) => {
@@ -665,6 +758,28 @@ export default function ProductEdit() {
 
                     <hr />
 
+                    <Form.Group>
+                      <Form.Label>Inventory</Form.Label>
+                      <Form.Check
+                        type="switch"
+                        id="track-inventory"
+                        label="Track Inventory?"
+                        {...manage_stock}
+                      />
+                    </Form.Group>
+
+                    {manage_stock.checked && (
+                      <Form.Group>
+                        <Form.Label>Quantity</Form.Label>
+                        <Form.Control
+                          id="stock_quantity"
+                          name="stock_quantity"
+                          type="number"
+                          {...stock_quantity}
+                        />
+                      </Form.Group>
+                    )}
+
                     <Form.Row>
                       <Form.Group as={Col}>
                         <Form.Label>Height (cm)</Form.Label>
@@ -788,14 +903,8 @@ export default function ProductEdit() {
       </Container>
 
       <PageLoading pageLoading={pageLoading} />
-      <ThankyouPopup
-        showThankyou={showThankyou}
-        thankyouText="The produt has been successfully updated."
-        okText="View product list"
-        okLink="/products"
-        cancelText="Continue editing"
-        cancelLink={`/products/edit/${id}`}
-      />
+      <PageError />
+      <ThankyouPopup />
     </>
   );
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
 import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
@@ -11,7 +11,7 @@ import { setAuthToken } from "../services/auth.service";
 import { useFormInput } from "../utils/form-input.util";
 import { orderAddService } from "../services/order.service";
 import BreadcrumSection from "./sections/breadcrumb.section";
-import { PageLoading, ThankyouPopup } from "../utils/pop-up.util";
+import { PageLoading } from "../utils/page-status.util";
 
 export default function OrderAdd() {
   /*
@@ -94,6 +94,89 @@ export default function OrderAdd() {
       setPageLoading(false);
     }
     fetchData();
+  };
+
+  const ThankyouPopup = () => {
+    return (
+      <>
+        {showThankyou && (
+          <div
+            className="position-absolute w-100 h-100"
+            style={{
+              zIndex: "1000",
+              top: "0",
+              left: "0",
+              minHeight: "100vh",
+            }}
+          >
+            <div
+              className="d-flex flex-column justify-content-center align-items-center w-100 h-100 px-3"
+              style={{
+                backgroundColor: "rgba(255, 255, 255, .8)",
+              }}
+            >
+              <Card className="shadow" style={{ maxWidth: "500px" }}>
+                <Card.Header className="bg-info text-white">
+                  <h5 className="m-0 text-center">Sucess</h5>
+                </Card.Header>
+
+                <Card.Body>
+                  <p className="text-muted">
+                    The order has been created successfully.
+                  </p>
+                  <Link className="btn btn-primary" to="/orders">
+                    Order List
+                  </Link>
+
+                  <Link className="btn btn-primary" to={`/orders/edit/${id}`}>
+                    Edit Order
+                  </Link>
+                </Card.Body>
+              </Card>
+            </div>
+          </div>
+        )}
+      </>
+    );
+  };
+
+  const PageError = (props) => {
+    return (
+      <>
+        {pageError && (
+          <div
+            className="position-absolute w-100 h-100"
+            style={{
+              zIndex: "1000",
+              top: "0",
+              left: "0",
+              minHeight: "100vh",
+            }}
+          >
+            <div
+              className="d-flex flex-column justify-content-center align-items-center w-100 h-100 px-3"
+              style={{
+                backgroundColor: "rgba(255, 255, 255, .8)",
+              }}
+            >
+              <Card className="shadow" style={{ maxWidth: "500px" }}>
+                <Card.Header className="bg-danger text-white">
+                  <h5 className="m-0 text-center">Error</h5>
+                </Card.Header>
+
+                <Card.Body>
+                  <p className="text-muted">{pageError}</p>
+
+                  <Button variant="white" onClick={() => setPageError("")}>
+                    Close
+                  </Button>
+                </Card.Body>
+              </Card>
+            </div>
+          </div>
+        )}
+      </>
+    );
   };
 
   const handleCancel = (e) => {
@@ -398,14 +481,8 @@ export default function OrderAdd() {
       </Container>
 
       <PageLoading pageLoading={pageLoading} />
-      <ThankyouPopup
-        showThankyou={showThankyou}
-        thankyouText="The order has been successfully created."
-        okText="View Order list"
-        okLink="/orders"
-        cancelText="Update Order"
-        cancelLink={`/orders/edit/${id}`}
-      />
+      <PageError />
+      <ThankyouPopup />
     </>
   );
 }

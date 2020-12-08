@@ -9,7 +9,7 @@ import Popover from "react-bootstrap/Popover";
 import Tooltip from "react-bootstrap/Tooltip";
 import { FaSearch, FaTrashAlt, FaEdit } from "react-icons/fa";
 import { FcCancel } from "react-icons/fc";
-import { PageLoading } from "../utils/pop-up.util";
+import { PageLoading } from "../utils/page-status.util";
 
 import { verifyTokenAsync } from "../actions/auth-async.action";
 import { setAuthToken } from "../services/auth.service";
