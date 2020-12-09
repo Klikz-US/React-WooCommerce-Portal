@@ -19,6 +19,7 @@ import {
 import BreadcrumSection from "./sections/breadcrumb.section";
 import Pagination from "../utils/pagination.util";
 import { useFormInput } from "../utils/form-input.util";
+import { convertArrayToObject } from "../utils/custom-functions.util";
 
 export default function OrderList() {
   /*
@@ -39,6 +40,7 @@ export default function OrderList() {
   /* ----------------------- */
 
   const [orders, setOrders] = useState([]);
+
   const [pageLoading, setPageLoading] = useState(true);
   const [pageError, setPageError] = useState("");
 
@@ -100,29 +102,10 @@ export default function OrderList() {
           </Link>
         )}
       </td>
-      <td>{props.order.status}</td>
-      <td>${props.order.shipping_total}</td>
-      <td>${props.order.total_tax}</td>
+      <td className="text-capitalize">{props.order.status}</td>
       <td>${props.order.total}</td>
       <td>{props.order.payment_method_title}</td>
       <td>
-        {props.order.billing.first_name} {props.order.billing.last_name}
-        {", "}
-        <br />
-        {props.order.billing.company}
-        {props.order.billing.company ? ", " : ""}
-        {props.order.billing.company && <br />}
-        {props.order.billing.address_1} {props.order.billing.address_2}
-        {", "} {props.order.billing.city}
-        {", "}
-        {props.order.billing.state} {props.order.billing.postcode}
-        {", "}
-        {props.order.billing.country}
-      </td>
-      <td>
-        {props.order.shipping.first_name} {props.order.shipping.last_name}
-        {", "}
-        <br />
         {props.order.shipping.company}
         {props.order.shipping.company ? ", " : ""}
         {props.order.shipping.company && <br />}
@@ -134,9 +117,31 @@ export default function OrderList() {
         {props.order.shipping.country}
       </td>
       <td>
-        {moment(new Date(props.order.date_created)).format(
-          "MMM DD, YYYY, hh:mm"
+        {props.shippingTrack && (
+          <>
+            <p className="mb-0 text-capitalize">
+              {props.shippingTrack.value[0].tracking_provider === "fedex"
+                ? "Fedex"
+                : props.shippingTrack.value[0].tracking_provider === "ups"
+                ? "UPS"
+                : props.shippingTrack.value[0].tracking_provider}
+            </p>
+            <a
+              href={
+                props.shippingTrack.value[0].tracking_provider === "fedex"
+                  ? `http://www.fedex.com/Tracking?action=track&tracknumbers=${props.shippingTrack.value[0].tracking_number}`
+                  : `http://wwwapps.ups.com/WebTracking/track?track=yes&trackNums=${props.shippingTrack.value[0].tracking_number}`
+              }
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {props.shippingTrack.value[0].tracking_number}
+            </a>
+          </>
         )}
+      </td>
+      <td>
+        {moment(new Date(props.order.date_created)).format("MMM D, YYYY")}
       </td>
     </tr>
   );
@@ -144,7 +149,15 @@ export default function OrderList() {
   const orderList = (orders) => {
     return orders.map(function (order, index) {
       console.log(order);
-      return <Order order={order} key={index} />;
+      const order_meta = convertArrayToObject(order.meta_data, "key");
+      console.log(order_meta._wc_shipment_tracking_items);
+      return (
+        <Order
+          order={order}
+          shippingTrack={order_meta._wc_shipment_tracking_items}
+          key={index}
+        />
+      );
     });
   };
 
@@ -275,13 +288,11 @@ export default function OrderList() {
                   <th>Order</th>
                   <th>Customer</th>
                   <th>Status</th>
-                  <th>Shipping</th>
-                  <th>Tax</th>
                   <th>Total</th>
                   <th style={{ width: "200px" }}>Payment Method</th>
-                  <th style={{ width: "220px" }}>Billing Address</th>
                   <th style={{ width: "220px" }}>Shipping Address</th>
-                  <th style={{ width: "110px" }}>Order Date</th>
+                  <th style={{ width: "160px" }}>Shipment Tracking</th>
+                  <th style={{ width: "120px" }}>Order Date</th>
                 </tr>
               </thead>
 

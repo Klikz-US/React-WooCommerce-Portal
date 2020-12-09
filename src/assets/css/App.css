@@ -9,7 +9,7 @@ main {
 /**
  * Form
  */
-label {
+.form-label {
   color: #000;
   font-weight: 500;
 }

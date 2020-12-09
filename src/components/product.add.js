@@ -21,6 +21,7 @@ import BreadcrumSection from "./sections/breadcrumb.section";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 import { FaEdit, FaRegSave, FaRegTrashAlt } from "react-icons/fa";
+import { MdLiveHelp } from "react-icons/md";
 import { PageLoading } from "../utils/page-status.util";
 
 export default function ProductEdit() {
@@ -432,7 +433,26 @@ export default function ProductEdit() {
         });
 
         return (
-          <div className="mb-2" key={index}>
+          <div
+            className="mb-2"
+            key={index}
+            style={{
+              order:
+                allTag.name === "beyond-product"
+                  ? "5"
+                  : allTag.name === "buy-only"
+                  ? "0"
+                  : allTag.name === "buy-or-rent"
+                  ? "2"
+                  : allTag.name === "call-for-po"
+                  ? "4"
+                  : allTag.name === "dont-sell"
+                  ? "3"
+                  : allTag.name === "rental-only"
+                  ? "1"
+                  : "6",
+            }}
+          >
             <Form.Check
               className="mr-5"
               type="checkbox"
@@ -462,7 +482,26 @@ export default function ProductEdit() {
     } else {
       return currentTags.map((currentTag, index) => {
         return (
-          <div className="mb-2" key={index}>
+          <div
+            className="mb-2"
+            key={index}
+            style={{
+              order:
+                currentTag.name === "beyond-product"
+                  ? "5"
+                  : currentTag.name === "buy-only"
+                  ? "0"
+                  : currentTag.name === "buy-or-rent"
+                  ? "2"
+                  : currentTag.name === "call-for-po"
+                  ? "4"
+                  : currentTag.name === "dont-sell"
+                  ? "3"
+                  : currentTag.name === "rental-only"
+                  ? "1"
+                  : "6",
+            }}
+          >
             <p className="mb-0">
               {currentTag.name === "beyond-product"
                 ? 'Add notification "Call 888-212-0890 for Inquiries."'
@@ -669,6 +708,24 @@ export default function ProductEdit() {
 
                     <Form.Label className="w-100 d-flex">
                       <span>Product Types</span>
+
+                      <span className="ml-2 mr-auto">
+                        <OverlayTrigger
+                          key="saveTags"
+                          placement="top"
+                          overlay={
+                            <Tooltip id="tooltip-saveTags">
+                              The option to make a product rental only, buy
+                              only, or both. And to remove price from a product
+                              or to add phone number below the add to cart
+                              button.
+                            </Tooltip>
+                          }
+                        >
+                          <MdLiveHelp color="#33B5E5" />
+                        </OverlayTrigger>
+                      </span>
+
                       <span
                         className="ml-auto"
                         style={{ cursor: "pointer" }}
@@ -703,6 +760,7 @@ export default function ProductEdit() {
                     </Form.Label>
 
                     <div
+                      className="d-flex flex-column"
                       style={{
                         overflowX: "hidden",
                         overflowY: "auto",

@@ -62,6 +62,65 @@ exports.getById = (req, res) => {
   process();
 };
 
+exports.getVariants = (req, res) => {
+  const _id = req.params._id;
+  async function process() {
+    WooCommerce.get("products/" + _id + "/variations?page=1&per_page=99")
+      .then((variations) => {
+        if (!variations) {
+          res.status(404).send("No Data");
+        } else {
+          console.log(variations.data);
+          res.json(variations.data);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(500).send(err);
+      });
+  }
+  process();
+};
+
+exports.updateVariants = (req, res) => {
+  const _id = req.params._id;
+  const variants = req.body;
+  async function process() {
+    try {
+      for (let i = 0; i < variants.length; i++) {
+        const variant = variants[i];
+        await WooCommerce.put(
+          "products/" + _id + "/variations/" + variant.id,
+          variant.data
+        );
+      }
+    } catch (error) {
+      res.status(500).send(error);
+    }
+
+    res.json("success");
+  }
+  process();
+};
+
+exports.createVariants = (req, res) => {
+  const _id = req.params._id;
+  const variants = req.body;
+  async function process() {
+    try {
+      for (let i = 0; i < variants.length; i++) {
+        const variant = variants[i];
+        await WooCommerce.post("products/" + _id + "/variations", variant.data);
+      }
+    } catch (error) {
+      res.status(500).send(error);
+    }
+
+    res.json("success");
+  }
+  process();
+};
+
 exports.editById = (req, res) => {
   const _id = req.params._id;
   const data = req.body;

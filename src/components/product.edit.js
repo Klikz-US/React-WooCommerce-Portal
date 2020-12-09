@@ -8,6 +8,7 @@ import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 
 import { FaEdit, FaRegSave, FaRegTrashAlt } from "react-icons/fa";
+import { MdLiveHelp } from "react-icons/md";
 
 import { verifyTokenAsync } from "../actions/auth-async.action";
 import { setAuthToken } from "../services/auth.service";
@@ -449,7 +450,26 @@ export default function ProductEdit() {
         });
 
         return (
-          <div className="mb-2" key={index}>
+          <div
+            className="mb-2"
+            key={index}
+            style={{
+              order:
+                allTag.name === "beyond-product"
+                  ? "5"
+                  : allTag.name === "buy-only"
+                  ? "0"
+                  : allTag.name === "buy-or-rent"
+                  ? "2"
+                  : allTag.name === "call-for-po"
+                  ? "4"
+                  : allTag.name === "dont-sell"
+                  ? "3"
+                  : allTag.name === "rental-only"
+                  ? "1"
+                  : "6",
+            }}
+          >
             <Form.Check
               className="mr-5"
               type="checkbox"
@@ -479,7 +499,26 @@ export default function ProductEdit() {
     } else {
       return currentTags.map((currentTag, index) => {
         return (
-          <div className="mb-2" key={index}>
+          <div
+            className="mb-2"
+            key={index}
+            style={{
+              order:
+                currentTag.name === "beyond-product"
+                  ? "5"
+                  : currentTag.name === "buy-only"
+                  ? "0"
+                  : currentTag.name === "buy-or-rent"
+                  ? "2"
+                  : currentTag.name === "call-for-po"
+                  ? "4"
+                  : currentTag.name === "dont-sell"
+                  ? "3"
+                  : currentTag.name === "rental-only"
+                  ? "1"
+                  : "6",
+            }}
+          >
             <p className="mb-0">
               {currentTag.name === "beyond-product"
                 ? 'Add notification "Call 888-212-0890 for Inquiries."'
@@ -502,6 +541,7 @@ export default function ProductEdit() {
   };
 
   const handleAttributeUpdate = (e) => {
+    console.log(e.target.value);
     var checkedAttributes = [];
     var checkedCheckboxes = document.getElementsByName("attribute");
     checkedCheckboxes.forEach((checkedCheckbox) => {
@@ -516,7 +556,8 @@ export default function ProductEdit() {
         }
       }
     });
-    setCurrentAttributes(checkedAttributes);
+    console.log(checkedAttributes);
+    // setCurrentAttributes(checkedAttributes);
   };
 
   const attrList = () => {
@@ -530,16 +571,19 @@ export default function ProductEdit() {
         });
 
         return (
-          <Form.Check
-            className="mr-5"
-            type="checkbox"
-            name="attribute"
-            value={allAttribute.id}
-            label={allAttribute.name}
-            checked={!!checked}
-            onChange={handleAttributeUpdate}
-            key={index}
-          />
+          <>
+            <Form.Check
+              className="mr-5"
+              type="checkbox"
+              name="attribute"
+              value={allAttribute.id}
+              label={allAttribute.name}
+              checked={!!checked}
+              onChange={handleAttributeUpdate}
+              key={index}
+            />
+            {}
+          </>
         );
       });
     } else {
@@ -686,6 +730,24 @@ export default function ProductEdit() {
 
                     <Form.Label className="w-100 d-flex">
                       <span>Product Types</span>
+
+                      <span className="ml-2 mr-auto">
+                        <OverlayTrigger
+                          key="saveTags"
+                          placement="top"
+                          overlay={
+                            <Tooltip id="tooltip-saveTags">
+                              The option to make a product rental only, buy
+                              only, or both. And to remove price from a product
+                              or to add phone number below the add to cart
+                              button.
+                            </Tooltip>
+                          }
+                        >
+                          <MdLiveHelp color="#33B5E5" />
+                        </OverlayTrigger>
+                      </span>
+
                       <span
                         className="ml-auto"
                         style={{ cursor: "pointer" }}
@@ -720,6 +782,7 @@ export default function ProductEdit() {
                     </Form.Label>
 
                     <div
+                      className="d-flex flex-column"
                       style={{
                         overflowX: "hidden",
                         overflowY: "auto",
@@ -822,7 +885,7 @@ export default function ProductEdit() {
                       />
                     </Form.Group>
 
-                    {/* <Form.Label>Product Type</Form.Label>
+                    <Form.Label>Product Type</Form.Label>
                     <div>
                       <p className="text-capitalize">{product.type}</p>
                     </div>
@@ -865,7 +928,7 @@ export default function ProductEdit() {
                         )}
                       </span>
                     </Form.Label>
-                    
+
                     <div
                       style={{
                         overflowX: "hidden",
@@ -874,7 +937,7 @@ export default function ProductEdit() {
                       }}
                     >
                       {attrList()}
-                    </div> */}
+                    </div>
                   </Col>
                 </Row>
               </Card.Body>

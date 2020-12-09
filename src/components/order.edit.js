@@ -34,6 +34,26 @@ export default function OrderEdit() {
   const { id } = useParams();
   const [order, setOrder] = useState({
     number: "",
+    billing: {
+      first_name: "",
+      last_name: "",
+      address_1: "",
+      address_2: "",
+      city: "",
+      state: "",
+      postcode: "",
+      country: "US",
+    },
+    shipping: {
+      first_name: "",
+      last_name: "",
+      address_1: "",
+      address_2: "",
+      city: "",
+      state: "",
+      postcode: "",
+      country: "US",
+    },
   });
 
   const history = useHistory();
@@ -41,42 +61,22 @@ export default function OrderEdit() {
   const [pageLoading, setPageLoading] = useState(true);
   const [showThankyou, setShowThankyou] = useState(false);
 
-  const billing_address_1 = useFormInput(
-    order.billing === undefined ? "" : order.billing.address_1
-  );
-  const billing_address_2 = useFormInput(
-    order.billing === undefined ? "" : order.billing.address_2
-  );
-  const billing_city = useFormInput(
-    order.billing === undefined ? "" : order.billing.city
-  );
-  const billing_state = useFormInput(
-    order.billing === undefined ? "" : order.billing.state
-  );
-  const billing_postcode = useFormInput(
-    order.billing === undefined ? "" : order.billing.postcode
-  );
-  const billing_country = useFormInput(
-    order.billing === undefined ? "" : order.billing.country
-  );
-  const shipping_address_1 = useFormInput(
-    order.shipping === undefined ? "" : order.shipping.address_1
-  );
-  const shipping_address_2 = useFormInput(
-    order.shipping === undefined ? "" : order.shipping.address_2
-  );
-  const shipping_city = useFormInput(
-    order.shipping === undefined ? "" : order.shipping.city
-  );
-  const shipping_state = useFormInput(
-    order.shipping === undefined ? "" : order.shipping.state
-  );
-  const shipping_postcode = useFormInput(
-    order.shipping === undefined ? "" : order.shipping.postcode
-  );
-  const shipping_country = useFormInput(
-    order.shipping === undefined ? "" : order.shipping.country
-  );
+  const billing_first_name = useFormInput(order.billing.first_name);
+  const billing_last_name = useFormInput(order.billing.last_name);
+  const billing_address_1 = useFormInput(order.billing.address_1);
+  const billing_address_2 = useFormInput(order.billing.address_2);
+  const billing_city = useFormInput(order.billing.city);
+  const billing_state = useFormInput(order.billing.state);
+  const billing_postcode = useFormInput(order.billing.postcode);
+  const billing_country = useFormInput(order.billing.country);
+  const shipping_first_name = useFormInput(order.shipping.first_name);
+  const shipping_last_name = useFormInput(order.shipping.last_name);
+  const shipping_address_1 = useFormInput(order.shipping.address_1);
+  const shipping_address_2 = useFormInput(order.shipping.address_2);
+  const shipping_city = useFormInput(order.shipping.city);
+  const shipping_state = useFormInput(order.shipping.state);
+  const shipping_postcode = useFormInput(order.shipping.postcode);
+  const shipping_country = useFormInput(order.shipping.country);
 
   const status = useFormSelect(
     order.status === undefined ? "processing" : order.status
@@ -88,6 +88,7 @@ export default function OrderEdit() {
       if (orderData.error) {
         setPageError("Server Error! Please retry...");
       } else {
+        console.log(orderData.data);
         setOrder(orderData.data);
       }
       setPageLoading(false);
@@ -284,23 +285,30 @@ export default function OrderEdit() {
 
                     <Form.Group>
                       <Form.Label>Tax</Form.Label>
-                      <p>{order.total_tax}</p>
+                      <p>${order.total_tax}</p>
                     </Form.Group>
 
                     <Form.Group>
                       <Form.Label>Shipping</Form.Label>
-                      <p>{order.shipping_total}</p>
+                      <p>
+                        ${order.shipping_total}
+                        {" - "}
+                        {order.shipping_lines !== undefined &&
+                          order.shipping_lines[0].method_title}
+                      </p>
                     </Form.Group>
 
                     <Form.Group>
                       <Form.Label>Order Total</Form.Label>
-                      <p>{order.total}</p>
+                      <p>${order.total}</p>
                     </Form.Group>
+
+                    <hr />
 
                     <Form.Group>
                       <Form.Label>Order Status</Form.Label>
                       <Form.Check
-                        className="mr-5"
+                        className="mb-2"
                         type="radio"
                         name="status"
                         value="pending"
@@ -309,7 +317,7 @@ export default function OrderEdit() {
                         {...status}
                       />
                       <Form.Check
-                        className="mr-5"
+                        className="mb-2"
                         type="radio"
                         name="status"
                         value="on-hold"
@@ -318,7 +326,7 @@ export default function OrderEdit() {
                         {...status}
                       />
                       <Form.Check
-                        className="mr-5"
+                        className="mb-2"
                         type="radio"
                         name="status"
                         value="completed"
@@ -327,7 +335,7 @@ export default function OrderEdit() {
                         {...status}
                       />
                       <Form.Check
-                        className="mr-5"
+                        className="mb-2"
                         type="radio"
                         name="status"
                         value="cancelled"
@@ -336,7 +344,7 @@ export default function OrderEdit() {
                         {...status}
                       />
                       <Form.Check
-                        className="mr-5"
+                        className="mb-2"
                         type="radio"
                         name="status"
                         value="refunded"
@@ -345,7 +353,7 @@ export default function OrderEdit() {
                         {...status}
                       />
                       <Form.Check
-                        className="mr-5"
+                        className="mb-2"
                         type="radio"
                         name="status"
                         value="failed"
@@ -354,7 +362,7 @@ export default function OrderEdit() {
                         {...status}
                       />
                       <Form.Check
-                        className="mr-5"
+                        className="mb-2"
                         type="radio"
                         name="status"
                         value="trash"
@@ -367,12 +375,36 @@ export default function OrderEdit() {
 
                   <Col lg={6}>
                     <Form.Label>Shipping Address</Form.Label>
+
+                    <Form.Row>
+                      <Form.Group as={Col}>
+                        <Form.Control
+                          id="shipping_first_name"
+                          name="shipping_first_name"
+                          type="text"
+                          {...shipping_first_name}
+                          placeholder="First Name"
+                        />
+                      </Form.Group>
+
+                      <Form.Group as={Col}>
+                        <Form.Control
+                          id="shipping_last_name"
+                          name="shipping_last_name"
+                          type="text"
+                          {...shipping_last_name}
+                          placeholder="Last Name"
+                        />
+                      </Form.Group>
+                    </Form.Row>
+
                     <Form.Group>
                       <Form.Control
                         id="shipping_address_1"
                         name="shipping_address_1"
                         type="text"
                         {...shipping_address_1}
+                        placeholder="Street Address 1"
                       />
                     </Form.Group>
 
@@ -382,6 +414,7 @@ export default function OrderEdit() {
                         name="shipping_address_2"
                         type="text"
                         {...shipping_address_2}
+                        placeholder="Street Address 2"
                       />
                     </Form.Group>
 
@@ -392,6 +425,7 @@ export default function OrderEdit() {
                           name="shipping_city"
                           type="text"
                           {...shipping_city}
+                          placeholder="City"
                         />
                       </Form.Group>
 
@@ -413,6 +447,7 @@ export default function OrderEdit() {
                           name="shipping_postcode"
                           type="text"
                           {...shipping_postcode}
+                          placeholder="Zip Code"
                         />
                       </Form.Group>
 
@@ -431,12 +466,36 @@ export default function OrderEdit() {
                     <hr />
 
                     <Form.Label>Billing Address</Form.Label>
+
+                    <Form.Row>
+                      <Form.Group as={Col}>
+                        <Form.Control
+                          id="billing_first_name"
+                          name="billing_first_name"
+                          type="text"
+                          {...billing_first_name}
+                          placeholder="First Name"
+                        />
+                      </Form.Group>
+
+                      <Form.Group as={Col}>
+                        <Form.Control
+                          id="billing_last_name"
+                          name="billing_last_name"
+                          type="text"
+                          {...billing_last_name}
+                          placeholder="Last Name"
+                        />
+                      </Form.Group>
+                    </Form.Row>
+
                     <Form.Group>
                       <Form.Control
                         id="billing_address_1"
                         name="billing_address_1"
                         type="text"
                         {...billing_address_1}
+                        placeholder="Stree Address 1"
                       />
                     </Form.Group>
 
@@ -446,6 +505,7 @@ export default function OrderEdit() {
                         name="billing_address_2"
                         type="text"
                         {...billing_address_2}
+                        placeholder="Stree Address 2"
                       />
                     </Form.Group>
 
@@ -456,6 +516,7 @@ export default function OrderEdit() {
                           name="billing_city"
                           type="text"
                           {...billing_city}
+                          placeholder="City"
                         />
                       </Form.Group>
 
@@ -477,6 +538,7 @@ export default function OrderEdit() {
                           name="billing_postcode"
                           type="text"
                           {...billing_postcode}
+                          placeholder="Zip Code"
                         />
                       </Form.Group>
 

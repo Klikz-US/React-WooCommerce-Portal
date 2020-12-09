@@ -35,6 +35,47 @@ export const productGetService = async (_id) => {
   }
 };
 
+export const productGetVariantsService = async (_id) => {
+  try {
+    return await axios.get(
+      `${window.$server_url}/admin/products/${_id}/variations`
+    );
+  } catch (err) {
+    return {
+      error: true,
+      errMsg: err.message,
+    };
+  }
+};
+
+export const productUpdateVariantsService = async (_id, variants) => {
+  try {
+    return await axios.patch(
+      `${window.$server_url}/admin/products/${_id}/variations/update`,
+      { variants: variants }
+    );
+  } catch (err) {
+    return {
+      error: true,
+      errMsg: err.message,
+    };
+  }
+};
+
+export const productCreateVariantsService = async (_id, variants) => {
+  try {
+    return await axios.post(
+      `${window.$server_url}/admin/products/${_id}/variations/create`,
+      { variants: variants }
+    );
+  } catch (err) {
+    return {
+      error: true,
+      errMsg: err.message,
+    };
+  }
+};
+
 export const productAddService = async (product) => {
   try {
     return await axios.post(

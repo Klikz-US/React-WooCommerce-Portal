@@ -38,12 +38,16 @@ export default function OrderAdd() {
 
   const payment_method = useFormSelect("");
   const status = useFormSelect("");
+  const billing_first_name = useFormInput("");
+  const billing_last_name = useFormInput("");
   const billing_address_1 = useFormInput("");
   const billing_address_2 = useFormInput("");
   const billing_city = useFormInput("");
   const billing_state = useFormInput("");
   const billing_postcode = useFormInput("");
   const billing_country = useFormInput("US");
+  const shipping_first_name = useFormInput("");
+  const shipping_last_name = useFormInput("");
   const shipping_address_1 = useFormInput("");
   const shipping_address_2 = useFormInput("");
   const shipping_city = useFormInput("");
@@ -67,6 +71,8 @@ export default function OrderAdd() {
       status: status.selected,
       set_paid: true,
       billing: {
+        first_name: billing_first_name.value,
+        last_name: billing_last_name.value,
         address_1: billing_address_1.value,
         address_2: billing_address_2.value,
         city: billing_city.value,
@@ -75,6 +81,8 @@ export default function OrderAdd() {
         country: billing_country.value,
       },
       shipping: {
+        first_name: shipping_first_name.value,
+        last_name: shipping_last_name.value,
         address_1: shipping_address_1.value,
         address_2: shipping_address_2.value,
         city: shipping_city.value,
@@ -250,7 +258,7 @@ export default function OrderAdd() {
                     <Form.Group>
                       <Form.Label>Payment Method</Form.Label>
                       <Form.Check
-                        className="mr-5"
+                        className="mb-2"
                         type="radio"
                         name="helcimjs"
                         value="helcimjs"
@@ -259,7 +267,7 @@ export default function OrderAdd() {
                         {...payment_method}
                       />
                       <Form.Check
-                        className="mr-5"
+                        className="mb-2"
                         type="radio"
                         name="paypal"
                         value="paypal"
@@ -268,7 +276,7 @@ export default function OrderAdd() {
                         {...payment_method}
                       />
                       <Form.Check
-                        className="mr-5"
+                        className="mb-2"
                         type="radio"
                         name="gazchap_wc_purchaseordergateway"
                         value="gazchap_wc_purchaseordergateway"
@@ -280,7 +288,7 @@ export default function OrderAdd() {
                         {...payment_method}
                       />
                       <Form.Check
-                        className="mr-5"
+                        className="mb-2"
                         type="radio"
                         name="net30"
                         value="net30"
@@ -290,10 +298,12 @@ export default function OrderAdd() {
                       />
                     </Form.Group>
 
+                    <hr />
+
                     <Form.Group>
                       <Form.Label>Order Status</Form.Label>
                       <Form.Check
-                        className="mr-5"
+                        className="mb-2"
                         type="radio"
                         name="status"
                         value="pending"
@@ -302,7 +312,7 @@ export default function OrderAdd() {
                         {...status}
                       />
                       <Form.Check
-                        className="mr-5"
+                        className="mb-2"
                         type="radio"
                         name="status"
                         value="on-hold"
@@ -311,7 +321,7 @@ export default function OrderAdd() {
                         {...status}
                       />
                       <Form.Check
-                        className="mr-5"
+                        className="mb-2"
                         type="radio"
                         name="status"
                         value="completed"
@@ -320,7 +330,7 @@ export default function OrderAdd() {
                         {...status}
                       />
                       <Form.Check
-                        className="mr-5"
+                        className="mb-2"
                         type="radio"
                         name="status"
                         value="cancelled"
@@ -329,7 +339,7 @@ export default function OrderAdd() {
                         {...status}
                       />
                       <Form.Check
-                        className="mr-5"
+                        className="mb-2"
                         type="radio"
                         name="status"
                         value="refunded"
@@ -338,7 +348,7 @@ export default function OrderAdd() {
                         {...status}
                       />
                       <Form.Check
-                        className="mr-5"
+                        className="mb-2"
                         type="radio"
                         name="status"
                         value="failed"
@@ -347,7 +357,7 @@ export default function OrderAdd() {
                         {...status}
                       />
                       <Form.Check
-                        className="mr-5"
+                        className="mb-2"
                         type="radio"
                         name="status"
                         value="trash"
@@ -360,12 +370,36 @@ export default function OrderAdd() {
 
                   <Col lg={6}>
                     <Form.Label>Shipping Address</Form.Label>
+
+                    <Form.Row>
+                      <Form.Group as={Col}>
+                        <Form.Control
+                          id="shipping_first_name"
+                          name="shipping_first_name"
+                          type="text"
+                          {...shipping_first_name}
+                          placeholder="First Name"
+                        />
+                      </Form.Group>
+
+                      <Form.Group as={Col}>
+                        <Form.Control
+                          id="shipping_last_name"
+                          name="shipping_last_name"
+                          type="text"
+                          {...shipping_last_name}
+                          placeholder="Last Name"
+                        />
+                      </Form.Group>
+                    </Form.Row>
+
                     <Form.Group>
                       <Form.Control
                         id="shipping_address_1"
                         name="shipping_address_1"
                         type="text"
                         {...shipping_address_1}
+                        placeholder="Street Address 1"
                       />
                     </Form.Group>
 
@@ -375,6 +409,7 @@ export default function OrderAdd() {
                         name="shipping_address_2"
                         type="text"
                         {...shipping_address_2}
+                        placeholder="Street Address 2"
                       />
                     </Form.Group>
 
@@ -385,6 +420,7 @@ export default function OrderAdd() {
                           name="shipping_city"
                           type="text"
                           {...shipping_city}
+                          placeholder="City"
                         />
                       </Form.Group>
 
@@ -406,6 +442,7 @@ export default function OrderAdd() {
                           name="shipping_postcode"
                           type="text"
                           {...shipping_postcode}
+                          placeholder="Zip Code"
                         />
                       </Form.Group>
 
@@ -421,13 +458,39 @@ export default function OrderAdd() {
                       </Form.Group>
                     </Form.Row>
 
+                    <hr />
+
                     <Form.Label>Billing Address</Form.Label>
+
+                    <Form.Row>
+                      <Form.Group as={Col}>
+                        <Form.Control
+                          id="billing_first_name"
+                          name="billing_first_name"
+                          type="text"
+                          {...billing_first_name}
+                          placeholder="First Name"
+                        />
+                      </Form.Group>
+
+                      <Form.Group as={Col}>
+                        <Form.Control
+                          id="billing_last_name"
+                          name="billing_last_name"
+                          type="text"
+                          {...billing_last_name}
+                          placeholder="Last Name"
+                        />
+                      </Form.Group>
+                    </Form.Row>
+
                     <Form.Group>
                       <Form.Control
                         id="billing_address_1"
                         name="billing_address_1"
                         type="text"
                         {...billing_address_1}
+                        placeholder="Stree Address 1"
                       />
                     </Form.Group>
 
@@ -437,6 +500,7 @@ export default function OrderAdd() {
                         name="billing_address_2"
                         type="text"
                         {...billing_address_2}
+                        placeholder="Stree Address 2"
                       />
                     </Form.Group>
 
@@ -447,6 +511,7 @@ export default function OrderAdd() {
                           name="billing_city"
                           type="text"
                           {...billing_city}
+                          placeholder="City"
                         />
                       </Form.Group>
 
@@ -468,6 +533,7 @@ export default function OrderAdd() {
                           name="billing_postcode"
                           type="text"
                           {...billing_postcode}
+                          placeholder="Zip Code"
                         />
                       </Form.Group>
 

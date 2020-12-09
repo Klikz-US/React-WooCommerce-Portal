@@ -14,6 +14,18 @@ exports.routesConfig = function (app) {
     Authentication.authMiddleware,
     Controller.getById,
   ]);
+  app.get("/admin/products/:_id/variations", [
+    Authentication.authMiddleware,
+    Controller.getVariants,
+  ]);
+  app.patch("/admin/products/:_id/variations/update", [
+    Authentication.authMiddleware,
+    Controller.updateVariants,
+  ]);
+  app.post("/admin/products/:_id/variations/create", [
+    Authentication.authMiddleware,
+    Controller.createVariants,
+  ]);
   app.patch("/admin/products/update/:_id", [
     Authentication.authMiddleware,
     Controller.editById,
