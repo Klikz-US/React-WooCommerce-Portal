@@ -11,7 +11,10 @@ import { FaSearch, FaTrashAlt, FaEye, FaEdit } from "react-icons/fa";
 import { FcCancel } from "react-icons/fc";
 import noImage from "../assets/images/no-image.png";
 
-import { verifyTokenAsync } from "../actions/auth-async.action";
+import {
+  verifyTokenAsync,
+  userLogoutAsync,
+} from "../actions/auth-async.action";
 import { setAuthToken } from "../services/auth.service";
 import {
   productGetTotal,
@@ -59,7 +62,7 @@ export default function ProductList() {
     async function fetchTotal() {
       const productTotal = await productGetTotal();
       if (productTotal.error) {
-        setPageError("Server Error! Please retry...");
+        dispatch(userLogoutAsync());
       } else {
         let productTotalNum = 0;
         productTotal.data.forEach((total) => {
@@ -71,7 +74,7 @@ export default function ProductList() {
     async function fetchData() {
       const productList = await productGetListService(activePage);
       if (productList.error) {
-        setPageError("Server Error! Please retry...");
+        dispatch(userLogoutAsync());
       } else {
         setProducts(productList.data);
       }

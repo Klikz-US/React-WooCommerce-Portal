@@ -8,7 +8,10 @@ import { FaSearch } from "react-icons/fa";
 import { FcCancel } from "react-icons/fc";
 import BarLoader from "react-spinners/BarLoader";
 
-import { verifyTokenAsync } from "../actions/auth-async.action";
+import {
+  verifyTokenAsync,
+  userLogoutAsync,
+} from "../actions/auth-async.action";
 import { setAuthToken } from "../services/auth.service";
 import {
   activityGetTotal,
@@ -40,7 +43,6 @@ export default function ActivityList() {
 
   const [activities, setActivities] = useState([]);
   const [pageLoading, setPageLoading] = useState(true);
-  const [pageError, setPageError] = useState("");
 
   const [activePage, setActivePage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -54,7 +56,7 @@ export default function ActivityList() {
     async function fetchTotal() {
       const activityTotal = await activityGetTotal();
       if (activityTotal.error) {
-        setPageError("Server Error! Please retry...");
+        dispatch(userLogoutAsync());
       } else {
         setTotalPages(parseInt(activityTotal.data.count / 20) + 1);
       }
@@ -62,7 +64,7 @@ export default function ActivityList() {
     async function fetchData() {
       const activityList = await activityGetListService(activePage);
       if (activityList.error) {
-        setPageError("Server Error! Please retry...");
+        dispatch(userLogoutAsync());
       } else {
         setActivities(activityList.data);
       }
@@ -234,19 +236,6 @@ export default function ActivityList() {
 
         <Row>
           <Card className="w-100">
-            {pageError && (
-              <div
-                className="d-flex flex-column position-absolute w-100 h-100"
-                style={{
-                  top: "0",
-                  left: "0",
-                  backgroundColor: "rgba(255, 255, 255, .7)",
-                  zIndex: "1",
-                }}
-              >
-                <p className="mt-5 pt-5 text-danger text-center">{pageError}</p>
-              </div>
-            )}
             <Table responsive className="m-0">
               <thead style={{ backgroundColor: "rgba(3, 169, 244, 0.6)" }}>
                 <tr>

@@ -5,7 +5,10 @@ import moment from "moment";
 import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
 import csc from "country-state-city";
 
-import { verifyTokenAsync } from "../actions/auth-async.action";
+import {
+  verifyTokenAsync,
+  userLogoutAsync,
+} from "../actions/auth-async.action";
 import { setAuthToken } from "../services/auth.service";
 import { useFormInput } from "../utils/form-input.util";
 import {
@@ -90,7 +93,7 @@ export default function CustomerEdit() {
     async function getData() {
       const customerData = await customerGetService(id);
       if (customerData.error) {
-        setPageError("Server Error! Please retry...");
+        dispatch(userLogoutAsync());
       } else {
         setCustomer((customer) => ({ ...customer, ...customerData.data }));
       }

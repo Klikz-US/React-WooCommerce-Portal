@@ -10,7 +10,10 @@ import Tooltip from "react-bootstrap/Tooltip";
 import { FaEdit, FaRegSave, FaRegTrashAlt } from "react-icons/fa";
 import { MdLiveHelp } from "react-icons/md";
 
-import { verifyTokenAsync } from "../actions/auth-async.action";
+import {
+  verifyTokenAsync,
+  userLogoutAsync,
+} from "../actions/auth-async.action";
 import { setAuthToken } from "../services/auth.service";
 
 import {
@@ -102,7 +105,7 @@ export default function ProductEdit() {
 
       const productData = await productGetService(id);
       if (productData.error) {
-        setPageError("Server Error! Please retry...");
+        dispatch(userLogoutAsync());
       } else {
         setProduct((product) => ({ ...product, ...productData.data }));
         setCurrentTags(productData.data.tags);

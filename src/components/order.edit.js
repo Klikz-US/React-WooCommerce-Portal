@@ -6,7 +6,10 @@ import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
 import csc from "country-state-city";
 
 import { useFormSelect } from "../utils/form-select.util";
-import { verifyTokenAsync } from "../actions/auth-async.action";
+import {
+  verifyTokenAsync,
+  userLogoutAsync,
+} from "../actions/auth-async.action";
 import { setAuthToken } from "../services/auth.service";
 import { useFormInput } from "../utils/form-input.util";
 import { orderGetService, orderUpdateService } from "../services/order.service";
@@ -86,7 +89,7 @@ export default function OrderEdit() {
     async function getData() {
       const orderData = await orderGetService(id);
       if (orderData.error) {
-        setPageError("Server Error! Please retry...");
+        dispatch(userLogoutAsync());
       } else {
         setOrder(orderData.data);
       }

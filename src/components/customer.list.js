@@ -11,7 +11,10 @@ import { FaSearch, FaTrashAlt, FaEdit } from "react-icons/fa";
 import { FcCancel } from "react-icons/fc";
 import { PageLoading } from "../utils/page-status.util";
 
-import { verifyTokenAsync } from "../actions/auth-async.action";
+import {
+  verifyTokenAsync,
+  userLogoutAsync,
+} from "../actions/auth-async.action";
 import { setAuthToken } from "../services/auth.service";
 import {
   customerGetTotal,
@@ -60,7 +63,7 @@ export default function CustomerList() {
     async function fetchTotal() {
       const customerTotal = await customerGetTotal();
       if (customerTotal.error) {
-        setPageError("Server Error! Please retry...");
+        dispatch(userLogoutAsync());
       } else {
         let customerTotalNum = 0;
         customerTotal.data.forEach((total) => {
@@ -73,7 +76,7 @@ export default function CustomerList() {
       const customerList = await customerGetListService(activePage);
 
       if (customerList.error) {
-        setPageError("Server Error! Please retry...");
+        dispatch(userLogoutAsync());
       } else {
         let ordersArry = [];
         for (let i = 0; i < customerList.data.length; i++) {

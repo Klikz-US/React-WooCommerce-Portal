@@ -8,7 +8,10 @@ import { FaSearch } from "react-icons/fa";
 import { FcCancel } from "react-icons/fc";
 import { PageLoading } from "../utils/page-status.util";
 
-import { verifyTokenAsync } from "../actions/auth-async.action";
+import {
+  verifyTokenAsync,
+  userLogoutAsync,
+} from "../actions/auth-async.action";
 import { setAuthToken } from "../services/auth.service";
 import {
   orderGetTotal,
@@ -42,7 +45,6 @@ export default function OrderList() {
   const [orders, setOrders] = useState([]);
 
   const [pageLoading, setPageLoading] = useState(true);
-  const [pageError, setPageError] = useState("");
 
   const [activePage, setActivePage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -56,7 +58,7 @@ export default function OrderList() {
     async function fetchTotal() {
       const orderTotal = await orderGetTotal();
       if (orderTotal.error) {
-        setPageError("Server Error! Please retry...");
+        dispatch(userLogoutAsync());
       } else {
         let orderTotalNum = 0;
         orderTotal.data.forEach((total) => {
@@ -68,7 +70,7 @@ export default function OrderList() {
     async function fetchData() {
       const orderList = await orderGetListService(activePage);
       if (orderList.error) {
-        setPageError("Server Error! Please retry...");
+        dispatch(userLogoutAsync());
       } else {
         setOrders(orderList.data);
       }
@@ -267,19 +269,6 @@ export default function OrderList() {
 
         <Row>
           <Card className="w-100">
-            {pageError && (
-              <div
-                className="d-flex flex-column position-absolute w-100 h-100"
-                style={{
-                  top: "0",
-                  left: "0",
-                  backgroundColor: "rgba(255, 255, 255, .7)",
-                  zIndex: "1",
-                }}
-              >
-                <p className="mt-5 pt-5 text-danger text-center">{pageError}</p>
-              </div>
-            )}
             <Table responsive className="m-0">
               <thead style={{ backgroundColor: "rgba(3, 169, 244, 0.6)" }}>
                 <tr>
