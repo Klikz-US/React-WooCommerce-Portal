@@ -619,7 +619,7 @@ export default function ProductEdit() {
                     <hr />
 
                     <Form.Label className="w-100 d-flex">
-                      <span>Product Types</span>
+                      <span>Transaction Types</span>
 
                       <span className="ml-2 mr-auto">
                         <OverlayTrigger
@@ -627,10 +627,12 @@ export default function ProductEdit() {
                           placement="top"
                           overlay={
                             <Tooltip id="tooltip-saveTags">
-                              The option to make a product rental only, buy
-                              only, or both. And to remove price from a product
-                              or to add phone number below the add to cart
-                              button.
+                              Transaction Types defines how a product is sold to
+                              the customer. In this section, you must select one
+                              of the following. Buy, Rent, Both (buy and rent),
+                              Call For Price, or No Price Displayed. This
+                              determines the type of transactions offered for
+                              specific products.
                             </Tooltip>
                           }
                         >
