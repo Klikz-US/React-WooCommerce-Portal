@@ -16,8 +16,6 @@ exports.login = (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
 
-  activity.add({ username: req.body.email }, "user login", {});
-
   if (!email || !password) {
     return handleResponse(
       req,
