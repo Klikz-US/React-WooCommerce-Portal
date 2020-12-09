@@ -1,4 +1,5 @@
 const activity = require("../activity/controller");
+const note = require("../note/controller");
 
 const WooCommerceRestApi = require("@woocommerce/woocommerce-rest-api").default;
 const WooCommerce = new WooCommerceRestApi({

@@ -62,6 +62,8 @@ export default function ProductEdit() {
     categories: [],
     attributes: [],
     images: [],
+    description: "",
+    noteToErin: "",
   });
 
   const history = useHistory();
@@ -80,6 +82,8 @@ export default function ProductEdit() {
   const length = useFormInput(product.dimensions.length);
   const width = useFormInput(product.dimensions.width);
   const weight = useFormInput(product.weight);
+  const description = useFormInput(product.description);
+  const noteToErin = useFormInput(product.noteToErin);
 
   const [currentTags, setCurrentTags] = useState([]);
   const [currentCategories, setCurrentCategories] = useState([]);
@@ -150,6 +154,8 @@ export default function ProductEdit() {
         width: width.value,
       },
       weight: weight.value,
+      description: description.value,
+      noteToErin: noteToErin.value,
       tags: currentTags,
       categories: currentCategories,
       images: productImages,
@@ -791,6 +797,27 @@ export default function ProductEdit() {
                         name="weight"
                         type="number"
                         {...weight}
+                      />
+                    </Form.Group>
+
+                    <Form.Group>
+                      <Form.Label>Description</Form.Label>
+                      <Form.Control
+                        as="textarea"
+                        id="description"
+                        name="description"
+                        {...description}
+                        style={{ height: "240px" }}
+                      />
+                    </Form.Group>
+
+                    <Form.Group>
+                      <Form.Label>Note to Erin</Form.Label>
+                      <Form.Control
+                        as="textarea"
+                        id="noteToErin"
+                        name="noteToErin"
+                        {...noteToErin}
                       />
                     </Form.Group>
                   </Col>
