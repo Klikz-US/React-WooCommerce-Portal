@@ -18,7 +18,6 @@ import {
   productUpdateService,
   productAllCategoriesService,
   productAllTagsService,
-  productAllAttributesService,
   productPhotoAddService,
 } from "../services/product.service";
 
@@ -84,15 +83,12 @@ export default function ProductEdit() {
 
   const [currentTags, setCurrentTags] = useState([]);
   const [currentCategories, setCurrentCategories] = useState([]);
-  const [currentAttributes, setCurrentAttributes] = useState([]);
 
   const [allTags, setAllTags] = useState([]);
   const [allCategories, setAllCategories] = useState([]);
-  const [allAttributes, setAllAttributes] = useState([]);
 
   const [showTagsForm, setShowTagsForm] = useState(false);
   const [showCategoriesForm, setShowCategoriesForm] = useState(false);
-  const [showAttributesForm, setShowAttributesForm] = useState(false);
 
   const [productImages, setProductImages] = useState([]);
 
@@ -108,7 +104,6 @@ export default function ProductEdit() {
         setProduct((product) => ({ ...product, ...productData.data }));
         setCurrentTags(productData.data.tags);
         setCurrentCategories(productData.data.categories);
-        setCurrentAttributes(productData.data.attributes);
         setProductImages(productData.data.images);
       }
 
@@ -129,17 +124,9 @@ export default function ProductEdit() {
       }
     }
 
-    async function fetchAllAttributes() {
-      const attributes = await productAllAttributesService();
-      if (!attributes.error) {
-        setAllAttributes(attributes.data);
-      }
-    }
-
     fetchProductData();
     fetchAllTags();
     fetchAllCategories();
-    fetchAllAttributes();
   }, [dispatch, id]);
 
   const handleSubmit = (e) => {
@@ -165,7 +152,6 @@ export default function ProductEdit() {
       weight: weight.value,
       tags: currentTags,
       categories: currentCategories,
-      attributes: currentAttributes,
       images: productImages,
     };
 
@@ -540,83 +526,6 @@ export default function ProductEdit() {
     }
   };
 
-  const handleAttributeUpdate = (e) => {
-    console.log(e.target.value);
-    var checkedAttributes = [];
-    var checkedCheckboxes = document.getElementsByName("attribute");
-    checkedCheckboxes.forEach((checkedCheckbox) => {
-      if (checkedCheckbox.checked) {
-        for (let i = 0; i < allAttributes.length; i++) {
-          if (
-            allAttributes[i].id.toString() === checkedCheckbox.value.toString()
-          ) {
-            checkedAttributes.push(allAttributes[i]);
-            break;
-          }
-        }
-      }
-    });
-    console.log(checkedAttributes);
-    // setCurrentAttributes(checkedAttributes);
-  };
-
-  const attrList = () => {
-    if (showAttributesForm) {
-      return allAttributes.map(function (allAttribute, index) {
-        let checked = false;
-        currentAttributes.forEach((currentAttribute) => {
-          if (parseInt(allAttribute.id) === parseInt(currentAttribute.id)) {
-            checked = true;
-          }
-        });
-
-        return (
-          <>
-            <Form.Check
-              className="mr-5"
-              type="checkbox"
-              name="attribute"
-              value={allAttribute.id}
-              label={allAttribute.name}
-              checked={!!checked}
-              onChange={handleAttributeUpdate}
-              key={index}
-            />
-            {}
-          </>
-        );
-      });
-    } else {
-      return currentAttributes.map(function (currentAttribute, index) {
-        return (
-          <div key={index} className="mb-2">
-            <Row>
-              <Col>
-                <small style={{ backgroundColor: "#eeeeee" }}>
-                  {currentAttribute.name}
-                </small>
-              </Col>
-              <Col>{optionList(currentAttribute.options)}</Col>
-            </Row>
-          </div>
-        );
-      });
-    }
-  };
-
-  const optionList = (options) => {
-    if (options !== undefined) {
-      return options.map(function (option, index) {
-        return (
-          <small key={index}>
-            {index === 0 ? "" : ", "}
-            {option}
-          </small>
-        );
-      });
-    }
-  };
-
   return (
     <>
       <BreadcrumSection
@@ -884,60 +793,6 @@ export default function ProductEdit() {
                         {...weight}
                       />
                     </Form.Group>
-
-                    <Form.Label>Product Type</Form.Label>
-                    <div>
-                      <p className="text-capitalize">{product.type}</p>
-                    </div>
-
-                    <hr />
-
-                    <Form.Label className="w-100 d-flex">
-                      <span>Product Attributes</span>
-                      <span
-                        className="ml-auto"
-                        style={{ cursor: "pointer" }}
-                        onClick={() =>
-                          setShowAttributesForm(!showAttributesForm)
-                        }
-                      >
-                        {showAttributesForm ? (
-                          <OverlayTrigger
-                            key="saveAttr"
-                            placement="top"
-                            overlay={
-                              <Tooltip id="tooltip-saveAttr">
-                                Save Changes
-                              </Tooltip>
-                            }
-                          >
-                            <FaRegSave color="#33B5E5" />
-                          </OverlayTrigger>
-                        ) : (
-                          <OverlayTrigger
-                            key="editAttr"
-                            placement="top"
-                            overlay={
-                              <Tooltip id="tooltip-editAttr">
-                                Edit Attributes
-                              </Tooltip>
-                            }
-                          >
-                            <FaEdit color="#FF3547" />
-                          </OverlayTrigger>
-                        )}
-                      </span>
-                    </Form.Label>
-
-                    <div
-                      style={{
-                        overflowX: "hidden",
-                        overflowY: "auto",
-                        maxHeight: "500px",
-                      }}
-                    >
-                      {attrList()}
-                    </div>
                   </Col>
                 </Row>
               </Card.Body>

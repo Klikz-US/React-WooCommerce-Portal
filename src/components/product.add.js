@@ -14,7 +14,6 @@ import {
   productAddService,
   productAllCategoriesService,
   productAllTagsService,
-  productAllAttributesService,
   productPhotoAddService,
 } from "../services/product.service";
 import BreadcrumSection from "./sections/breadcrumb.section";
@@ -58,7 +57,6 @@ export default function ProductEdit() {
     weight: "",
     tags: [],
     categories: [],
-    attributes: [],
     images: [],
   });
 
@@ -81,15 +79,12 @@ export default function ProductEdit() {
 
   const [currentTags, setCurrentTags] = useState([]);
   const [currentCategories, setCurrentCategories] = useState([]);
-  const [currentAttributes, setCurrentAttributes] = useState([]);
 
   const [allTags, setAllTags] = useState([]);
   const [allCategories, setAllCategories] = useState([]);
-  const [allAttributes, setAllAttributes] = useState([]);
 
   const [showTagsForm, setShowTagsForm] = useState(false);
   const [showCategoriesForm, setShowCategoriesForm] = useState(false);
-  const [showAttributesForm, setShowAttributesForm] = useState(false);
 
   const [productImages, setProductImages] = useState([]);
 
@@ -112,18 +107,8 @@ export default function ProductEdit() {
       setPageLoading(false);
     }
 
-    async function fetchAllAttributes() {
-      setPageLoading(true);
-      const attributes = await productAllAttributesService();
-      if (!attributes.error) {
-        setAllAttributes(attributes.data);
-      }
-      setPageLoading(false);
-    }
-
     fetchAllTags();
     fetchAllCategories();
-    fetchAllAttributes();
   }, [dispatch]);
 
   const handleSubmit = (e) => {
@@ -151,7 +136,6 @@ export default function ProductEdit() {
       weight: weight.value,
       tags: currentTags,
       categories: currentCategories,
-      attributes: currentAttributes,
       images: productImages,
     };
 
@@ -518,78 +502,6 @@ export default function ProductEdit() {
                 : ""}
             </p>
           </div>
-        );
-      });
-    }
-  };
-
-  const handleAttributeUpdate = (e) => {
-    var checkedAttributes = [];
-    var checkedCheckboxes = document.getElementsByName("attribute");
-    checkedCheckboxes.forEach((checkedCheckbox) => {
-      if (checkedCheckbox.checked) {
-        for (let i = 0; i < allAttributes.length; i++) {
-          if (
-            allAttributes[i].id.toString() === checkedCheckbox.value.toString()
-          ) {
-            checkedAttributes.push(allAttributes[i]);
-            break;
-          }
-        }
-      }
-    });
-    setCurrentAttributes(checkedAttributes);
-  };
-
-  const attrList = () => {
-    if (showAttributesForm) {
-      return allAttributes.map(function (allAttribute, index) {
-        let checked = false;
-        currentAttributes.forEach((currentAttribute) => {
-          if (parseInt(allAttribute.id) === parseInt(currentAttribute.id)) {
-            checked = true;
-          }
-        });
-
-        return (
-          <Form.Check
-            className="mr-5"
-            type="checkbox"
-            name="attribute"
-            value={allAttribute.id}
-            label={allAttribute.name}
-            checked={!!checked}
-            onChange={handleAttributeUpdate}
-            key={index}
-          />
-        );
-      });
-    } else {
-      return currentAttributes.map(function (currentAttribute, index) {
-        return (
-          <div key={index} className="mb-2">
-            <Row>
-              <Col>
-                <small style={{ backgroundColor: "#eeeeee" }}>
-                  {currentAttribute.name}
-                </small>
-              </Col>
-              <Col>{optionList(currentAttribute.options)}</Col>
-            </Row>
-          </div>
-        );
-      });
-    }
-  };
-
-  const optionList = (options) => {
-    if (options !== undefined) {
-      return options.map(function (option, index) {
-        return (
-          <small key={index}>
-            {index === 0 ? "" : ", "}
-            {option}
-          </small>
         );
       });
     }
