@@ -1,5 +1,5 @@
 const activity = require("../activity/controller");
-const note = require("../note/controller");
+const NoteModel = require("../note/model");
 
 const WooCommerceRestApi = require("@woocommerce/woocommerce-rest-api").default;
 const WooCommerce = new WooCommerceRestApi({
@@ -53,11 +53,17 @@ exports.getById = (req, res) => {
         if (!product) {
           res.status(404).send("No Data");
         } else {
-          res.json(product.data);
+          NoteModel.findOne({ productId: _id }, function (err, note) {
+            if (err || !note) {
+              res.json(product.data);
+            } else {
+              res.json({ ...product.data, noteToErin: note.noteToErin });
+            }
+          });
         }
       })
       .catch((err) => {
-        res.status(500).send("Server Error");
+        res.status(500).send(err);
       });
   }
   process();
@@ -71,12 +77,10 @@ exports.getVariants = (req, res) => {
         if (!variations) {
           res.status(404).send("No Data");
         } else {
-          console.log(variations.data);
           res.json(variations.data);
         }
       })
       .catch((err) => {
-        console.log(err);
         res.status(500).send(err);
       });
   }
@@ -125,6 +129,7 @@ exports.createVariants = (req, res) => {
 exports.editById = (req, res) => {
   const _id = req.params._id;
   const data = req.body;
+  const noteToErin = req.body.noteToErin;
 
   async function process() {
     WooCommerce.put("products/" + _id, data)
@@ -133,10 +138,25 @@ exports.editById = (req, res) => {
           res.status(404).send("Update failed");
         } else {
           res.json(product.data);
+
           activity.add(req.body.auth_user, "product updated", {
             name: product.data.name,
             link: "/products/edit/" + product.data.id,
           });
+
+          NoteModel.findOneAndUpdate(
+            { productId: _id },
+            { noteToErin: noteToErin },
+            function (err, note) {
+              if (!err && !note) {
+                const newNote = new NoteModel({
+                  productId: _id,
+                  noteToErin: noteToErin,
+                });
+                newNote.save();
+              }
+            }
+          );
         }
       })
       .catch((err) => {
@@ -186,8 +206,7 @@ exports.add = (req, res) => {
         }
       })
       .catch((err) => {
-        console.log(err);
-        res.status(500).send("Server Error");
+        res.status(500).send(err);
       });
   }
   process();

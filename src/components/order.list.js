@@ -148,9 +148,7 @@ export default function OrderList() {
 
   const orderList = (orders) => {
     return orders.map(function (order, index) {
-      console.log(order);
       const order_meta = convertArrayToObject(order.meta_data, "key");
-      console.log(order_meta._wc_shipment_tracking_items);
       return (
         <Order
           order={order}

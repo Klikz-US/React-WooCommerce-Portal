@@ -112,8 +112,7 @@ exports.add = (req, res) => {
         }
       })
       .catch((err) => {
-        console.log(err);
-        res.status(500).send("Server Error");
+        res.status(500).send(err);
       });
   }
   process();

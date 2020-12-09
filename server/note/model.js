@@ -3,12 +3,12 @@ const Schema = mongoose.Schema;
 
 const NoteModel = new Schema(
   {
-    product: {
+    productId: {
       type: String,
       default: "",
       required: true,
     },
-    data: {
+    noteToErin: {
       type: String,
       default: "",
     },

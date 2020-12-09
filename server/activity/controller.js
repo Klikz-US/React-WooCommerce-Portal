@@ -64,12 +64,7 @@ exports.getById = (req, res) => {
 
 exports.add = (user, type, action) => {
   const newActivity = new Model({ user: user, type: type, action: action });
-  newActivity
-    .save()
-    .then(() => {})
-    .catch((err) => {
-      console.log(err);
-    });
+  newActivity.save();
 };
 
 exports.search = (req, res) => {

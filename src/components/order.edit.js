@@ -88,7 +88,6 @@ export default function OrderEdit() {
       if (orderData.error) {
         setPageError("Server Error! Please retry...");
       } else {
-        console.log(orderData.data);
         setOrder(orderData.data);
       }
       setPageLoading(false);
@@ -122,7 +121,6 @@ export default function OrderEdit() {
     async function fetchData() {
       setPageLoading(true);
 
-      console.log(order);
       const result = await orderUpdateService(id, {
         ...order,
         auth_user: auth_obj.user,

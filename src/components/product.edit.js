@@ -104,7 +104,6 @@ export default function ProductEdit() {
       if (productData.error) {
         setPageError("Server Error! Please retry...");
       } else {
-        console.log(productData.data);
         setProduct((product) => ({ ...product, ...productData.data }));
         setCurrentTags(productData.data.tags);
         setCurrentCategories(productData.data.categories);
@@ -163,7 +162,6 @@ export default function ProductEdit() {
 
     async function fetchData() {
       setPageLoading(true);
-      console.log(product);
       const result = await productUpdateService(id, {
         ...product,
         auth_user: auth_obj.user,

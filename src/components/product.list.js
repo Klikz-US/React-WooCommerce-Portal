@@ -74,7 +74,6 @@ export default function ProductList() {
         setPageError("Server Error! Please retry...");
       } else {
         setProducts(productList.data);
-        console.log(productList.data);
       }
       setPageLoading(false);
     }
