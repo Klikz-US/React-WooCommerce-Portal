@@ -762,6 +762,9 @@ export default function ProductEdit() {
                         type="number"
                         {...price}
                       />
+                      <Form.Control.Feedback type="invalid">
+                        Please provide a valid product price.
+                      </Form.Control.Feedback>
                     </Form.Group>
 
                     <hr />
@@ -803,7 +806,7 @@ export default function ProductEdit() {
                           {...height}
                         />
                         <Form.Control.Feedback type="invalid">
-                          Please provide a valid height.
+                          Invalid height.
                         </Form.Control.Feedback>
                       </Form.Group>
 
@@ -817,7 +820,7 @@ export default function ProductEdit() {
                           {...length}
                         />
                         <Form.Control.Feedback type="invalid">
-                          Please provide a valid length.
+                          Invalid length.
                         </Form.Control.Feedback>
                       </Form.Group>
 
@@ -831,7 +834,7 @@ export default function ProductEdit() {
                           {...width}
                         />
                         <Form.Control.Feedback type="invalid">
-                          Please provide a valid width.
+                          Invalid width.
                         </Form.Control.Feedback>
                       </Form.Group>
                     </Form.Row>
@@ -861,6 +864,8 @@ export default function ProductEdit() {
                       />
                     </Form.Group>
 
+                    <hr />
+
                     <Form.Group>
                       <Form.Label className="text-danger">
                         Note to Admin
@@ -871,6 +876,7 @@ export default function ProductEdit() {
                         id="userNote"
                         name="userNote"
                         {...userNote}
+                        style={{ height: "140px" }}
                       />
                       <Form.Control.Feedback type="invalid">
                         Please input notes for admin review or future backup.
