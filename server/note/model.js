@@ -8,7 +8,7 @@ const NoteModel = new Schema(
       default: "",
       required: true,
     },
-    noteToErin: {
+    userNote: {
       type: String,
       default: "",
     },

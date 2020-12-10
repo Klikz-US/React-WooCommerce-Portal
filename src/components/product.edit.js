@@ -66,13 +66,14 @@ export default function ProductEdit() {
     attributes: [],
     images: [],
     description: "",
-    noteToErin: "",
+    userNote: "",
   });
 
   const history = useHistory();
   const [pageError, setPageError] = useState("");
   const [pageLoading, setPageLoading] = useState(true);
   const [showThankyou, setShowThankyou] = useState(false);
+  const [validated, setValidated] = useState(false);
 
   const sku = useFormInput(product.sku);
   const name = useFormInput(product.name);
@@ -86,7 +87,7 @@ export default function ProductEdit() {
   const width = useFormInput(product.dimensions.width);
   const weight = useFormInput(product.weight);
   const description = useFormInput(product.description);
-  const noteToErin = useFormInput(product.noteToErin);
+  const userNote = useFormInput(product.userNote);
 
   const [currentTags, setCurrentTags] = useState([]);
   const [currentCategories, setCurrentCategories] = useState([]);
@@ -138,46 +139,53 @@ export default function ProductEdit() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const product = {
-      sku: sku.value,
-      name: name.value,
-      price: price.value,
-      regular_price: price.value,
-      manage_stock: manage_stock.checked,
-      stock_status: manage_stock.checked
-        ? stock_quantity.value > 0
-          ? "instock"
-          : "outofstock"
-        : "onbackorder",
-      stock_quantity: manage_stock.checked ? stock_quantity.value : null,
-      dimensions: {
-        height: height.value,
-        length: length.value,
-        width: width.value,
-      },
-      weight: weight.value,
-      description: description.value,
-      noteToErin: noteToErin.value,
-      tags: currentTags,
-      categories: currentCategories,
-      images: productImages,
-    };
+    const form = e.currentTarget;
+    if (form.checkValidity() === false) {
+      e.stopPropagation();
+    } else {
+      const product = {
+        sku: sku.value,
+        name: name.value,
+        price: price.value,
+        regular_price: price.value,
+        manage_stock: manage_stock.checked,
+        stock_status: manage_stock.checked
+          ? stock_quantity.value > 0
+            ? "instock"
+            : "outofstock"
+          : "onbackorder",
+        stock_quantity: manage_stock.checked ? stock_quantity.value : null,
+        dimensions: {
+          height: height.value,
+          length: length.value,
+          width: width.value,
+        },
+        weight: weight.value,
+        description: description.value,
+        userNote: userNote.value,
+        tags: currentTags,
+        categories: currentCategories,
+        images: productImages,
+      };
 
-    async function fetchData() {
-      setPageLoading(true);
-      const result = await productUpdateService(id, {
-        ...product,
-        auth_user: auth_obj.user,
-      });
-      if (result.error) {
-        setPageError("Server Error! Please retry...");
-      } else {
-        setProduct((product) => ({ ...product, ...result.data }));
-        setShowThankyou(true);
+      async function fetchData() {
+        setPageLoading(true);
+        const result = await productUpdateService(id, {
+          ...product,
+          auth_user: auth_obj.user,
+        });
+        if (result.error) {
+          setPageError("Server Error! Please retry...");
+        } else {
+          setProduct((product) => ({ ...product, ...result.data }));
+          setShowThankyou(true);
+        }
+        setPageLoading(false);
       }
-      setPageLoading(false);
+      fetchData();
     }
-    fetchData();
+
+    setValidated(true);
   };
 
   const ThankyouPopup = () => {
@@ -546,7 +554,12 @@ export default function ProductEdit() {
       <Container>
         <h1 className="m-5 text-center">Edit Product</h1>
 
-        <Form autoComplete="off">
+        <Form
+          autoComplete="off"
+          noValidate
+          validated={validated}
+          onSubmit={handleSubmit}
+        >
           <Container>
             <Card className="h-100 shadow">
               <Card.Header className="bg-info text-white">
@@ -714,22 +727,36 @@ export default function ProductEdit() {
                   <Col lg={6}>
                     <Form.Group>
                       <Form.Label>Product SKU</Form.Label>
-                      <Form.Control id="sku" name="sku" type="text" {...sku} />
+                      <Form.Control
+                        required
+                        id="sku"
+                        name="sku"
+                        type="text"
+                        {...sku}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        Please provide a valid product sku.
+                      </Form.Control.Feedback>
                     </Form.Group>
 
                     <Form.Group>
                       <Form.Label>Product Name</Form.Label>
                       <Form.Control
+                        required
                         id="name"
                         name="name"
                         type="text"
                         {...name}
                       />
+                      <Form.Control.Feedback type="invalid">
+                        Please provide a valid product name.
+                      </Form.Control.Feedback>
                     </Form.Group>
 
                     <Form.Group>
                       <Form.Label>Price</Form.Label>
                       <Form.Control
+                        required
                         id="price"
                         name="price"
                         type="number"
@@ -753,11 +780,15 @@ export default function ProductEdit() {
                       <Form.Group>
                         <Form.Label>Quantity</Form.Label>
                         <Form.Control
+                          required
                           id="stock_quantity"
                           name="stock_quantity"
                           type="number"
                           {...stock_quantity}
                         />
+                        <Form.Control.Feedback type="invalid">
+                          Please provide a valid quantity.
+                        </Form.Control.Feedback>
                       </Form.Group>
                     )}
 
@@ -765,42 +796,58 @@ export default function ProductEdit() {
                       <Form.Group as={Col}>
                         <Form.Label>Height (cm)</Form.Label>
                         <Form.Control
+                          required
                           id="height"
                           name="height"
                           type="number"
                           {...height}
                         />
+                        <Form.Control.Feedback type="invalid">
+                          Please provide a valid height.
+                        </Form.Control.Feedback>
                       </Form.Group>
 
                       <Form.Group as={Col}>
                         <Form.Label>Length (cm)</Form.Label>
                         <Form.Control
+                          required
                           id="length"
                           name="length"
                           type="number"
                           {...length}
                         />
+                        <Form.Control.Feedback type="invalid">
+                          Please provide a valid length.
+                        </Form.Control.Feedback>
                       </Form.Group>
 
                       <Form.Group as={Col}>
                         <Form.Label>Width (cm)</Form.Label>
                         <Form.Control
+                          required
                           id="width"
                           name="width"
                           type="number"
                           {...width}
                         />
+                        <Form.Control.Feedback type="invalid">
+                          Please provide a valid width.
+                        </Form.Control.Feedback>
                       </Form.Group>
                     </Form.Row>
 
                     <Form.Group>
                       <Form.Label>Weight (kg)</Form.Label>
                       <Form.Control
+                        required
                         id="weight"
                         name="weight"
                         type="number"
                         {...weight}
                       />
+                      <Form.Control.Feedback type="invalid">
+                        Please provide a valid weight.
+                      </Form.Control.Feedback>
                     </Form.Group>
 
                     <Form.Group>
@@ -815,13 +862,19 @@ export default function ProductEdit() {
                     </Form.Group>
 
                     <Form.Group>
-                      <Form.Label>Note to Erin</Form.Label>
+                      <Form.Label className="text-danger">
+                        Note to Admin
+                      </Form.Label>
                       <Form.Control
+                        required
                         as="textarea"
-                        id="noteToErin"
-                        name="noteToErin"
-                        {...noteToErin}
+                        id="userNote"
+                        name="userNote"
+                        {...userNote}
                       />
+                      <Form.Control.Feedback type="invalid">
+                        Please input notes for admin review or future backup.
+                      </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
                 </Row>
@@ -830,11 +883,7 @@ export default function ProductEdit() {
 
             <Row>
               <Col className="d-flex pt-5">
-                <Button
-                  className="m-0 mr-2"
-                  variant="primary"
-                  onClick={handleSubmit}
-                >
+                <Button className="m-0 mr-2" variant="primary" type="submit">
                   Update
                 </Button>
 

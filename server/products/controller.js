@@ -57,7 +57,7 @@ exports.getById = (req, res) => {
             if (err || !note) {
               res.json(product.data);
             } else {
-              res.json({ ...product.data, noteToErin: note.noteToErin });
+              res.json({ ...product.data, userNote: note.userNote });
             }
           });
         }
@@ -129,7 +129,7 @@ exports.createVariants = (req, res) => {
 exports.editById = (req, res) => {
   const _id = req.params._id;
   const data = req.body;
-  const noteToErin = req.body.noteToErin;
+  const userNote = req.body.userNote;
 
   async function process() {
     WooCommerce.put("products/" + _id, data)
@@ -139,19 +139,24 @@ exports.editById = (req, res) => {
         } else {
           res.json(product.data);
 
-          activity.add(req.body.auth_user, "product updated", {
-            name: product.data.name,
-            link: "/products/edit/" + product.data.id,
-          });
+          activity.add(
+            req.body.auth_user,
+            "product updated",
+            {
+              name: product.data.name,
+              link: "/products/edit/" + product.data.id,
+            },
+            userNote
+          );
 
           NoteModel.findOneAndUpdate(
             { productId: _id },
-            { noteToErin: noteToErin },
+            { userNote: userNote },
             function (err, note) {
               if (!err && !note) {
                 const newNote = new NoteModel({
                   productId: _id,
-                  noteToErin: noteToErin,
+                  userNote: userNote,
                 });
                 newNote.save();
               }
@@ -191,6 +196,7 @@ exports.deleteById = (req, res) => {
 
 exports.add = (req, res) => {
   const data = req.body;
+  const userNote = req.body.userNote;
 
   async function process() {
     WooCommerce.post("products", data)
@@ -198,11 +204,31 @@ exports.add = (req, res) => {
         if (!product) {
           res.status(404).send("Create failed");
         } else {
+          activity.add(
+            req.body.auth_user,
+            "product created",
+            {
+              name: product.data.name,
+              link: "/products/edit/" + product.data.id,
+            },
+            userNote
+          );
+
+          NoteModel.findOneAndUpdate(
+            { productId: product.data.id },
+            { userNote: userNote },
+            function (err, note) {
+              if (!err && !note) {
+                const newNote = new NoteModel({
+                  productId: product.data.id,
+                  userNote: userNote,
+                });
+                newNote.save();
+              }
+            }
+          );
+
           res.json(product.data);
-          activity.add(req.body.auth_user, "product created", {
-            name: product.data.name,
-            link: "/products/edit/" + product.data.id,
-          });
         }
       })
       .catch((err) => {

@@ -18,6 +18,10 @@ const ActivityModel = new Schema(
       type: Object,
       default: {},
     },
+    userNote: {
+      type: String,
+      default: "",
+    },
   },
   {
     collection: "activity",

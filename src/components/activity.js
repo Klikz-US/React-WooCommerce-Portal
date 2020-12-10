@@ -99,6 +99,13 @@ export default function ActivityList() {
           "MMM DD, YYYY, hh:mm"
         )}
       </td>
+      <td>
+        <div
+          style={{ maxHeight: "200px", overflowY: "auto", overflowX: "hidden" }}
+        >
+          {props.activity.userNote}
+        </div>
+      </td>
     </tr>
   );
 
@@ -243,6 +250,7 @@ export default function ActivityList() {
                   <th>Action</th>
                   <th>Target</th>
                   <th>Time</th>
+                  <th style={{ width: "300px" }}>Note</th>
                 </tr>
               </thead>
 

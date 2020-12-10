@@ -62,8 +62,13 @@ exports.getById = (req, res) => {
   });
 };
 
-exports.add = (user, type, action) => {
-  const newActivity = new Model({ user: user, type: type, action: action });
+exports.add = (user, type, action, userNote) => {
+  const newActivity = new Model({
+    user: user,
+    type: type,
+    action: action,
+    userNote: userNote,
+  });
   newActivity.save();
 };
 

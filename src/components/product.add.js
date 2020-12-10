@@ -76,6 +76,8 @@ export default function ProductEdit() {
   const length = useFormInput(product.dimensions.length);
   const width = useFormInput(product.dimensions.width);
   const weight = useFormInput(product.weight);
+  const description = useFormInput(product.description);
+  const userNote = useFormInput(product.userNote);
 
   const [currentTags, setCurrentTags] = useState([]);
   const [currentCategories, setCurrentCategories] = useState([]);
@@ -134,6 +136,8 @@ export default function ProductEdit() {
         width: width.value,
       },
       weight: weight.value,
+      description: description.value,
+      userNote: userNote.value,
       tags: currentTags,
       categories: currentCategories,
       images: productImages,
@@ -184,8 +188,8 @@ export default function ProductEdit() {
                     Product List
                   </Link>
 
-                  <Link className="btn btn-primary" to={`/products/edit/${id}`}>
-                    Edit Product
+                  <Link className="btn btn-white" to={`/products/edit/${id}`}>
+                    Update Product
                   </Link>
                 </Card.Body>
               </Card>
@@ -774,6 +778,29 @@ export default function ProductEdit() {
                         name="weight"
                         type="number"
                         {...weight}
+                      />
+                    </Form.Group>
+
+                    <Form.Group>
+                      <Form.Label>Description</Form.Label>
+                      <Form.Control
+                        as="textarea"
+                        id="description"
+                        name="description"
+                        {...description}
+                        style={{ height: "240px" }}
+                      />
+                    </Form.Group>
+
+                    <Form.Group>
+                      <Form.Label className="text-danger">
+                        Note to Admin
+                      </Form.Label>
+                      <Form.Control
+                        as="textarea"
+                        id="userNote"
+                        name="userNote"
+                        {...userNote}
                       />
                     </Form.Group>
                   </Col>
