@@ -829,6 +829,17 @@ export default function ProductEdit() {
                       </Form.Control.Feedback>
                     </Form.Group>
 
+                    <Form.Group>
+                      <Form.Label>Description</Form.Label>
+                      <Form.Control
+                        as="textarea"
+                        id="description"
+                        name="description"
+                        {...description}
+                        style={{ height: "240px" }}
+                      />
+                    </Form.Group>
+
                     <hr />
 
                     <Form.Group>
