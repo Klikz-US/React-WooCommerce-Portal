@@ -8,6 +8,7 @@ import csc from "country-state-city";
 import { verifyTokenAsync } from "../actions/auth-async.action";
 import { setAuthToken } from "../services/auth.service";
 import { useFormInput } from "../utils/form-input.util";
+import { useFormSwitch } from "../utils/form-switch.util";
 import { customerAddService } from "../services/customer.service";
 import BreadcrumSection from "./sections/breadcrumb.section";
 import { PageLoading } from "../utils/page-status.util";
@@ -35,6 +36,7 @@ export default function CustomerAdd() {
   const [pageError, setPageError] = useState("");
   const [pageLoading, setPageLoading] = useState(false);
   const [showThankyou, setShowThankyou] = useState(false);
+  const [validated, setValidated] = useState(false);
 
   const email = useFormInput("");
   const first_name = useFormInput("");
@@ -52,18 +54,12 @@ export default function CustomerAdd() {
   const shipping_postcode = useFormInput("");
   const shipping_country = useFormInput("US");
 
+  const sameAsShipping = useFormSwitch(false);
+
   const customer = {
     email: email.value,
     first_name: first_name.value,
     last_name: last_name.value,
-    billing: {
-      address_1: billing_address_1.value,
-      address_2: billing_address_2.value,
-      city: billing_city.value,
-      state: billing_state.value,
-      postcode: billing_postcode.value,
-      country: billing_country.value,
-    },
     shipping: {
       address_1: shipping_address_1.value,
       address_2: shipping_address_2.value,
@@ -72,26 +68,51 @@ export default function CustomerAdd() {
       postcode: shipping_postcode.value,
       country: shipping_country.value,
     },
+    billing: {
+      address_1: sameAsShipping.checked
+        ? shipping_address_1.value
+        : billing_address_1.value,
+      address_2: sameAsShipping.checked
+        ? shipping_address_2.value
+        : billing_address_2.value,
+      city: sameAsShipping.checked ? shipping_city.value : billing_city.value,
+      state: sameAsShipping.checked
+        ? shipping_state.value
+        : billing_state.value,
+      postcode: sameAsShipping.checked
+        ? shipping_postcode.value
+        : billing_postcode.value,
+      country: sameAsShipping.checked
+        ? shipping_country.value
+        : billing_country.value,
+    },
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    async function fetchData() {
-      setPageLoading(true);
-      const result = await customerAddService({
-        ...customer,
-        auth_user: auth_obj.user,
-      });
-      if (result.error) {
-        setPageError("Server Error! Please retry...");
-      } else {
-        setId(result.data.id);
-        setShowThankyou(true);
+    const form = e.currentTarget;
+    if (form.checkValidity() === false) {
+      e.stopPropagation();
+    } else {
+      async function fetchData() {
+        setPageLoading(true);
+        const result = await customerAddService({
+          ...customer,
+          auth_user: auth_obj.user,
+        });
+        if (result.error) {
+          setPageError("Server Error! Please retry...");
+        } else {
+          setId(result.data.id);
+          setShowThankyou(true);
+        }
+        setPageLoading(false);
       }
-      setPageLoading(false);
+      fetchData();
     }
-    fetchData();
+
+    setValidated(true);
   };
 
   const ThankyouPopup = () => {
@@ -216,7 +237,12 @@ export default function CustomerAdd() {
       <Container>
         <h1 className="m-5 text-center">New Customer</h1>
 
-        <Form autoComplete="off">
+        <Form
+          autoComplete="off"
+          noValidate
+          validated={validated}
+          onSubmit={handleSubmit}
+        >
           <Container>
             <Card className="h-100 shadow">
               <Card.Header
@@ -246,21 +272,29 @@ export default function CustomerAdd() {
                     <Form.Group>
                       <Form.Label>Customer Email</Form.Label>
                       <Form.Control
+                        required
                         id="email"
                         name="email"
                         type="email"
                         {...email}
                       />
+                      <Form.Control.Feedback type="invalid">
+                        Invalid email address.
+                      </Form.Control.Feedback>
                     </Form.Group>
 
                     <Form.Group>
                       <Form.Label>First Name</Form.Label>
                       <Form.Control
+                        required
                         id="first_name"
                         name="first_name"
                         type="text"
                         {...first_name}
                       />
+                      <Form.Control.Feedback type="invalid">
+                        Invalid first name.
+                      </Form.Control.Feedback>
                     </Form.Group>
 
                     <Form.Group>
@@ -276,13 +310,19 @@ export default function CustomerAdd() {
 
                   <Col lg={6}>
                     <Form.Label>Shipping Address</Form.Label>
+
                     <Form.Group>
                       <Form.Control
+                        required
                         id="shipping_address_1"
                         name="shipping_address_1"
                         type="text"
                         {...shipping_address_1}
+                        placeholder="Street Address 1"
                       />
+                      <Form.Control.Feedback type="invalid">
+                        Invalid street address.
+                      </Form.Control.Feedback>
                     </Form.Group>
 
                     <Form.Group>
@@ -291,38 +331,53 @@ export default function CustomerAdd() {
                         name="shipping_address_2"
                         type="text"
                         {...shipping_address_2}
+                        placeholder="Street Address 2"
                       />
                     </Form.Group>
 
                     <Form.Row>
                       <Form.Group as={Col}>
                         <Form.Control
+                          required
                           id="shipping_city"
                           name="shipping_city"
                           type="text"
                           {...shipping_city}
+                          placeholder="City"
                         />
+                        <Form.Control.Feedback type="invalid">
+                          Invalid city name.
+                        </Form.Control.Feedback>
                       </Form.Group>
 
                       <Form.Group as={Col}>
                         <Form.Control
+                          required
                           id="shipping_state"
                           name="shipping_state"
                           type="text"
                           {...shipping_state}
                           placeholder="State"
                         />
+                        <Form.Control.Feedback type="invalid">
+                          Invalid state name.
+                        </Form.Control.Feedback>
                       </Form.Group>
                     </Form.Row>
 
                     <Form.Row>
                       <Form.Group as={Col}>
                         <Form.Control
+                          required
                           id="shipping_postcode"
                           name="shipping_postcode"
                           type="text"
                           {...shipping_postcode}
+                          placeholder="Zip Code"
                         />
+                        <Form.Control.Feedback type="invalid">
+                          Invalid Zipcode.
+                        </Form.Control.Feedback>
                       </Form.Group>
 
                       <Form.Group as={Col}>
@@ -337,67 +392,103 @@ export default function CustomerAdd() {
                       </Form.Group>
                     </Form.Row>
 
+                    <hr />
+
                     <Form.Label>Billing Address</Form.Label>
+
                     <Form.Group>
-                      <Form.Control
-                        id="billing_address_1"
-                        name="billing_address_1"
-                        type="text"
-                        {...billing_address_1}
+                      <Form.Check
+                        type="switch"
+                        id="same-shipping"
+                        label="Same as shipping address?"
+                        {...sameAsShipping}
                       />
                     </Form.Group>
 
-                    <Form.Group>
-                      <Form.Control
-                        id="billing_address_2"
-                        name="billing_address_2"
-                        type="text"
-                        {...billing_address_2}
-                      />
-                    </Form.Group>
+                    {!sameAsShipping.checked && (
+                      <>
+                        <Form.Group>
+                          <Form.Control
+                            required
+                            id="billing_address_1"
+                            name="billing_address_1"
+                            type="text"
+                            {...billing_address_1}
+                            placeholder="Stree Address 1"
+                          />
+                          <Form.Control.Feedback type="invalid">
+                            Invalid street address.
+                          </Form.Control.Feedback>
+                        </Form.Group>
 
-                    <Form.Row>
-                      <Form.Group as={Col}>
-                        <Form.Control
-                          id="billing_city"
-                          name="billing_city"
-                          type="text"
-                          {...billing_city}
-                        />
-                      </Form.Group>
+                        <Form.Group>
+                          <Form.Control
+                            id="billing_address_2"
+                            name="billing_address_2"
+                            type="text"
+                            {...billing_address_2}
+                            placeholder="Stree Address 2"
+                          />
+                        </Form.Group>
 
-                      <Form.Group as={Col}>
-                        <Form.Control
-                          id="billing_state"
-                          name="billing_state"
-                          type="text"
-                          {...billing_state}
-                          placeholder="State"
-                        />
-                      </Form.Group>
-                    </Form.Row>
+                        <Form.Row>
+                          <Form.Group as={Col}>
+                            <Form.Control
+                              required
+                              id="billing_city"
+                              name="billing_city"
+                              type="text"
+                              {...billing_city}
+                              placeholder="City"
+                            />
+                            <Form.Control.Feedback type="invalid">
+                              Invalid city name.
+                            </Form.Control.Feedback>
+                          </Form.Group>
 
-                    <Form.Row>
-                      <Form.Group as={Col}>
-                        <Form.Control
-                          id="billing_postcode"
-                          name="billing_postcode"
-                          type="text"
-                          {...billing_postcode}
-                        />
-                      </Form.Group>
+                          <Form.Group as={Col}>
+                            <Form.Control
+                              required
+                              id="billing_state"
+                              name="billing_state"
+                              type="text"
+                              {...billing_state}
+                              placeholder="State"
+                            />
+                          </Form.Group>
+                          <Form.Control.Feedback type="invalid">
+                            Invalid state name.
+                          </Form.Control.Feedback>
+                        </Form.Row>
 
-                      <Form.Group as={Col}>
-                        <Form.Control
-                          id="billing_country"
-                          name="billing_country"
-                          as="select"
-                          {...billing_country}
-                        >
-                          {listCountries(billing_country.value)}
-                        </Form.Control>
-                      </Form.Group>
-                    </Form.Row>
+                        <Form.Row>
+                          <Form.Group as={Col}>
+                            <Form.Control
+                              required
+                              id="billing_postcode"
+                              name="billing_postcode"
+                              type="text"
+                              {...billing_postcode}
+                              placeholder="Zip Code"
+                            />
+                            <Form.Control.Feedback type="invalid">
+                              Invalid Zipcode.
+                            </Form.Control.Feedback>
+                          </Form.Group>
+
+                          <Form.Group as={Col}>
+                            <Form.Control
+                              id="billing_country"
+                              name="billing_country"
+                              as="select"
+                              {...billing_country}
+                            >
+                              {listCountries(billing_country.value)}
+                            </Form.Control>
+                          </Form.Group>
+                        </Form.Row>
+                      </>
+                    )}
                   </Col>
                 </Row>
               </Card.Body>
@@ -405,11 +496,7 @@ export default function CustomerAdd() {
 
             <Row>
               <Col className="d-flex pt-5">
-                <Button
-                  className="m-0 mr-2"
-                  variant="primary"
-                  onClick={handleSubmit}
-                >
+                <Button className="m-0 mr-2" variant="primary" type="submit">
                   Add Customer
                 </Button>
 

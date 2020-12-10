@@ -53,7 +53,7 @@ exports.getById = (req, res) => {
         if (!product) {
           res.status(404).send("No Data");
         } else {
-          NoteModel.findOne({ productId: _id }, function (err, note) {
+          NoteModel.findOne({ targetId: _id }, function (err, note) {
             if (err || !note) {
               res.json(product.data);
             } else {
@@ -129,7 +129,6 @@ exports.createVariants = (req, res) => {
 exports.editById = (req, res) => {
   const _id = req.params._id;
   const data = req.body;
-  const userNote = req.body.userNote;
 
   async function process() {
     WooCommerce.put("products/" + _id, data)
@@ -146,17 +145,17 @@ exports.editById = (req, res) => {
               name: product.data.name,
               link: "/products/edit/" + product.data.id,
             },
-            userNote
+            req.body.userNote
           );
 
           NoteModel.findOneAndUpdate(
-            { productId: _id },
-            { userNote: userNote },
+            { targetId: _id },
+            { userNote: req.body.userNote },
             function (err, note) {
               if (!err && !note) {
                 const newNote = new NoteModel({
-                  productId: _id,
-                  userNote: userNote,
+                  targetId: _id,
+                  userNote: req.body.userNote,
                 });
                 newNote.save();
               }
@@ -196,7 +195,6 @@ exports.deleteById = (req, res) => {
 
 exports.add = (req, res) => {
   const data = req.body;
-  const userNote = req.body.userNote;
 
   async function process() {
     WooCommerce.post("products", data)
@@ -211,17 +209,17 @@ exports.add = (req, res) => {
               name: product.data.name,
               link: "/products/edit/" + product.data.id,
             },
-            userNote
+            req.body.userNote
           );
 
           NoteModel.findOneAndUpdate(
-            { productId: product.data.id },
-            { userNote: userNote },
+            { targetId: product.data.id },
+            { userNote: req.body.userNote },
             function (err, note) {
               if (!err && !note) {
                 const newNote = new NoteModel({
-                  productId: product.data.id,
-                  userNote: userNote,
+                  targetId: product.data.id,
+                  userNote: req.body.userNote,
                 });
                 newNote.save();
               }

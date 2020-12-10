@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const NoteModel = new Schema(
   {
-    productId: {
+    targetId: {
       type: String,
       default: "",
       required: true,
