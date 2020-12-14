@@ -20,7 +20,9 @@ import ProductEdit from "../components/product.edit";
 import CustomerList from "../components/customer.list";
 import CustomerAdd from "../components/customer.add";
 import CustomerEdit from "../components/customer.edit";
-import OrderList from "../components/order.list";
+import OrderPurchaseList from "../components/order.purchase.list";
+import OrderRentalList from "../components/order.rental.list";
+import OrderProposalList from "../components/order.proposal.list";
 import OrderAdd from "../components/order.add";
 import OrderEdit from "../components/order.edit";
 
@@ -126,7 +128,21 @@ export default function MainRouter() {
               <PrivateRoute
                 path="/orders"
                 exact
-                component={OrderList}
+                component={OrderPurchaseList}
+                isAuthenticated={isAuthenticated}
+              />
+
+              <PrivateRoute
+                path="/orders/rentals"
+                exact
+                component={OrderRentalList}
+                isAuthenticated={isAuthenticated}
+              />
+
+              <PrivateRoute
+                path="/orders/proposals"
+                exact
+                component={OrderProposalList}
                 isAuthenticated={isAuthenticated}
               />
 

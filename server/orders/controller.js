@@ -8,18 +8,19 @@ const WooCommerce = new WooCommerceRestApi({
 
 const axios = require("axios");
 
-var gfConfig = {
+const gfConsumerKey = "ck_6ca93104069513d7f3ceebd15dfea88887f9e7fb";
+const gfConsumerSecret = "cs_a778fbd85b85fd8613d4a641d63316f2a86d297d";
+const gfConfig = {
   method: "get",
-  url: "https://www.cleanair.com/wp-json/gf/v2/entries",
   headers: {
     Authorization:
-      "Basic Y2tfNmNhOTMxMDQwNjk1MTNkN2YzY2VlYmQxNWRmZWE4ODg4N2Y5ZTdmYjpjc19hNzc4ZmJkODViODVmZDg2MTNkNGE2NDFkNjMzMTZmMmE4NmQyOTdk",
-    Username: "ck_6ca93104069513d7f3ceebd15dfea88887f9e7fb",
-    Password: "cs_a778fbd85b85fd8613d4a641d63316f2a86d297d",
+      "Basic " +
+      Buffer.from(`${gfConsumerKey}:${gfConsumerSecret}`).toString("base64"),
   },
 };
 
-exports.getTotal = (req, res) => {
+// Purchase Orders
+exports.getPurchaseOrdersTotal = (req, res) => {
   const pageId = req.params.pageId;
   async function process() {
     WooCommerce.get("reports/orders/totals")
@@ -37,7 +38,7 @@ exports.getTotal = (req, res) => {
   process();
 };
 
-exports.getByPage = (req, res) => {
+exports.getPurchaseOrdersByPage = (req, res) => {
   const pageId = req.params.pageId;
   async function process() {
     WooCommerce.get("orders?page=" + pageId + "&per_page=20")
@@ -46,14 +47,6 @@ exports.getByPage = (req, res) => {
           res.status(404).send("No Order");
         } else {
           res.json(orders.data);
-
-          axios(gfConfig)
-            .then(function (response) {
-              console.log(JSON.stringify(response.data));
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
         }
       })
       .catch((err) => {
@@ -63,7 +56,7 @@ exports.getByPage = (req, res) => {
   process();
 };
 
-exports.getById = (req, res) => {
+exports.getPurchaseOrderById = (req, res) => {
   const _id = req.params._id;
   async function process() {
     WooCommerce.get("orders/" + _id)
@@ -81,7 +74,7 @@ exports.getById = (req, res) => {
   process();
 };
 
-exports.editById = (req, res) => {
+exports.editPurchaseOrderById = (req, res) => {
   const _id = req.params._id;
   const data = req.body;
 
@@ -101,7 +94,7 @@ exports.editById = (req, res) => {
   process();
 };
 
-exports.deleteById = (req, res) => {
+exports.deletePurchaseOrderById = (req, res) => {
   const _id = req.params._id;
 
   async function process() {
@@ -120,7 +113,7 @@ exports.deleteById = (req, res) => {
   process();
 };
 
-exports.add = (req, res) => {
+exports.addPurchaseOrder = (req, res) => {
   const data = req.body;
 
   async function process() {
@@ -139,7 +132,7 @@ exports.add = (req, res) => {
   process();
 };
 
-exports.search = (req, res) => {
+exports.searchPurchaseOrders = (req, res) => {
   const search = req.body.value;
   async function process() {
     WooCommerce.get("orders?per_page=100&search=" + search)
@@ -151,59 +144,92 @@ exports.search = (req, res) => {
         }
       })
       .catch((err) => {
-        res.status(500).send("Server Error");
+        res.status(500).send(err);
       });
   }
   process();
 };
 
-exports.getCategories = (req, res) => {
-  async function process() {
-    WooCommerce.get("orders/categories?per_page=99")
-      .then((categories) => {
-        if (!categories) {
-          res.status(404).send("No Category");
-        } else {
-          res.json(categories.data);
-        }
-      })
-      .catch((err) => {
-        res.status(500).send("Server Error");
-      });
-  }
-  process();
+// Rental Quotes
+exports.getRentalQuotesByPage = (req, res) => {
+  gfConfig.url =
+    "https://www.cleanair.com/wp-json/gf/v2/entries?form_ids[0]=1&paging[page_size]=20&paging[current_page]=" +
+    req.params.pageId;
+
+  axios(gfConfig)
+    .then(function (result) {
+      res.json({ total: result.data });
+    })
+    .catch(function (error) {
+      console.log(error);
+      res.status(500).send(error);
+    });
 };
 
-exports.getTags = (req, res) => {
-  async function process() {
-    WooCommerce.get("orders/tags")
-      .then((tags) => {
-        if (!tags) {
-          res.status(404).send("No Tag");
-        } else {
-          res.json(tags.data);
-        }
-      })
-      .catch((err) => {
-        res.status(500).send("Server Error");
-      });
-  }
-  process();
+exports.getRentalQuoteById = (req, res) => {
+  gfConfig.url =
+    "https://www.cleanair.com/wp-json/gf/v2/entries/" + req.params._id;
+
+  axios(gfConfig)
+    .then(function (result) {
+      res.json({ total: result.data });
+    })
+    .catch(function (error) {
+      console.log(error);
+      res.status(500).send(error);
+    });
 };
 
-exports.getAttributes = (req, res) => {
-  async function process() {
-    WooCommerce.get("orders/attributes")
-      .then((attributes) => {
-        if (!attributes) {
-          res.status(404).send("No Attributes");
-        } else {
-          res.json(attributes.data);
-        }
-      })
-      .catch((err) => {
-        res.status(500).send("Server Error");
-      });
-  }
-  process();
+exports.searchRentalQuotes = (req, res) => {
+  gfConfig.url = `https://www.cleanair.com/wp-json/gf/v2/entries?form_ids[0]=1&search={"field_filters":{"mode":"any","0":{"key":1.3,"value":${req.body.value},"operator":"contains"},"1":{"key":1.6,"value":${req.body.value},"operator":"contains"}},"2":{"key":3,"value":${req.body.value},"operator":"contains"}},"3":{"key":2,"value":${req.body.value},"operator":"contains"}}}`;
+
+  axios(gfConfig)
+    .then(function (result) {
+      res.json({ total: result.data });
+    })
+    .catch(function (error) {
+      res.status(500).send(error);
+    });
+};
+
+// Purchase Proposals
+exports.getPurchaseProposalsByPage = (req, res) => {
+  gfConfig.url =
+    "https://www.cleanair.com/wp-json/gf/v2/entries?form_ids[0]=2&paging[page_size]=20&paging[current_page]=" +
+    req.params.pageId;
+
+  axios(gfConfig)
+    .then(function (result) {
+      res.json({ total: result.data });
+    })
+    .catch(function (error) {
+      console.log(error);
+      res.status(500).send(error);
+    });
+};
+
+exports.getPurchaseProposalById = (req, res) => {
+  gfConfig.url =
+    "https://www.cleanair.com/wp-json/gf/v2/entries/" + req.params._id;
+
+  axios(gfConfig)
+    .then(function (result) {
+      res.json({ total: result.data });
+    })
+    .catch(function (error) {
+      console.log(error);
+      res.status(500).send(error);
+    });
+};
+
+exports.searchPurchaseProposals = (req, res) => {
+  gfConfig.url = `https://www.cleanair.com/wp-json/gf/v2/entries?form_ids[0]=2&search={"field_filters":{"mode":"any","0":{"key":1.3,"value":${req.body.value},"operator":"contains"},"1":{"key":1.6,"value":${req.body.value},"operator":"contains"}},"2":{"key":2,"value":${req.body.value},"operator":"contains"}},"3":{"key":4,"value":${req.body.value},"operator":"contains"}}}`;
+
+  axios(gfConfig)
+    .then(function (result) {
+      res.json({ total: result.data });
+    })
+    .catch(function (error) {
+      res.status(500).send(error);
+    });
 };

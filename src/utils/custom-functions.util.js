@@ -7,3 +7,10 @@ export const convertArrayToObject = (array, key) => {
     };
   }, initialValue);
 };
+
+export const convertStringToHTML = (string) => {
+  let html = document.createElement("div");
+  html.innerHTML = string;
+  console.log(html);
+  return html.firstChild;
+};

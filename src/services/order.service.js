@@ -1,5 +1,6 @@
 import axios from "axios";
 
+// Purchase Orders
 export const orderGetTotal = async () => {
   try {
     return await axios.get(`${window.$server_url}/admin/orders/total`);
@@ -76,6 +77,86 @@ export const orderUpdateService = async (id, order) => {
 export const orderSearchService = async (req) => {
   try {
     return await axios.post(`${window.$server_url}/admin/orders/search`, req);
+  } catch (err) {
+    return {
+      error: true,
+      errMsg: err.message,
+    };
+  }
+};
+
+// Rental Quotes
+export const rentalQuotesGetListService = async (activePage) => {
+  try {
+    return await axios.get(
+      `${window.$server_url}/admin/orders/rentals/page/${activePage}`
+    );
+  } catch (err) {
+    return {
+      error: true,
+      errMsg: err.message,
+    };
+  }
+};
+
+export const rentalQuoteGetService = async (_id) => {
+  try {
+    return await axios.get(`${window.$server_url}/admin/orders/rentals/${_id}`);
+  } catch (err) {
+    return {
+      error: true,
+      errMsg: err.message,
+    };
+  }
+};
+
+export const rentalQuotesSearchService = async (req) => {
+  try {
+    return await axios.post(
+      `${window.$server_url}/admin/orders/rentals/search`,
+      req
+    );
+  } catch (err) {
+    return {
+      error: true,
+      errMsg: err.message,
+    };
+  }
+};
+
+// Purchase Proposals
+export const purchaseProposalsGetListService = async (activePage) => {
+  try {
+    return await axios.get(
+      `${window.$server_url}/admin/orders/proposals/page/${activePage}`
+    );
+  } catch (err) {
+    return {
+      error: true,
+      errMsg: err.message,
+    };
+  }
+};
+
+export const purchaseProposalGetService = async (_id) => {
+  try {
+    return await axios.get(
+      `${window.$server_url}/admin/orders/proposals/${_id}`
+    );
+  } catch (err) {
+    return {
+      error: true,
+      errMsg: err.message,
+    };
+  }
+};
+
+export const purchaseProposalsSearchService = async (req) => {
+  try {
+    return await axios.post(
+      `${window.$server_url}/admin/orders/proposals/search`,
+      req
+    );
   } catch (err) {
     return {
       error: true,

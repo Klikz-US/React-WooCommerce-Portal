@@ -1,15 +1,21 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { Accordion, Button } from "react-bootstrap";
 
 import logo from "./../assets/images/logo.png";
 
-import { FcHome } from "react-icons/fc";
-import { FcCustomerSupport } from "react-icons/fc";
-import { FcContacts } from "react-icons/fc";
-import { FcCurrencyExchange } from "react-icons/fc";
-import { FcApproval } from "react-icons/fc";
-import { FcBullish } from "react-icons/fc";
+import {
+  FcHome,
+  FcCustomerSupport,
+  FcContacts,
+  FcCurrencyExchange,
+  FcApproval,
+  FcBullish,
+} from "react-icons/fc";
+import { FiShoppingCart } from "react-icons/fi";
+import { BsChatQuote } from "react-icons/bs";
+import { CgNotes } from "react-icons/cg";
 
 export default function Navigation() {
   const auth_obj = useSelector((state) => state.auth);
@@ -69,18 +75,83 @@ export default function Navigation() {
         </span>
       </Link>
 
-      <Link
-        to="/orders"
-        className={`btn w-100 px-4 py-3 m-0 mb-1 text-left ${
-          location.pathname === "/orders" ? "bg-info text-white" : "bg-white"
-        }`}
-        onClick={hideMenu}
-      >
-        <FcCurrencyExchange size="24" style={{ verticalAlign: "bottom" }} />
-        <span className="ml-2" style={{ fontSize: "16px" }}>
-          Orders
-        </span>
-      </Link>
+      <Accordion className="w-100 btn m-0 mb-1 p-0">
+        <Accordion.Toggle
+          as={Button}
+          variant="link"
+          className="btn w-100 m-0 text-left px-4 py-3"
+          eventKey="2"
+        >
+          <FcCurrencyExchange size="24" style={{ verticalAlign: "bottom" }} />
+          <span className="ml-2" style={{ fontSize: "16px" }}>
+            Orders
+          </span>
+        </Accordion.Toggle>
+        <Accordion.Collapse eventKey="2">
+          <>
+            <Link
+              to="/orders"
+              className={`d-block w-100 px-4 py-3 m-0 text-left ${
+                location.pathname === "/orders"
+                  ? "bg-info text-white"
+                  : "bg-white text-dark"
+              }`}
+              onClick={hideMenu}
+              style={{ borderTop: "1px solid #cccccc" }}
+            >
+              <FiShoppingCart
+                className="ml-2"
+                size="20"
+                color="#007CC3"
+                style={{ verticalAlign: "bottom" }}
+              />
+              <span className="ml-2" style={{ fontSize: "16px" }}>
+                Purchase Orders
+              </span>
+            </Link>
+
+            <Link
+              to="/orders/rentals"
+              className={`d-block w-100 px-4 py-3 m-0 text-left ${
+                location.pathname === "/orders/rentals"
+                  ? "bg-info text-white"
+                  : "bg-white text-dark"
+              }`}
+              onClick={hideMenu}
+            >
+              <BsChatQuote
+                className="ml-2"
+                size="20"
+                color="#007CC3"
+                style={{ verticalAlign: "bottom" }}
+              />
+              <span className="ml-2" style={{ fontSize: "16px" }}>
+                Rental Quotes
+              </span>
+            </Link>
+
+            <Link
+              to="/orders/proposals"
+              className={`d-block w-100 px-4 py-3 m-0 text-left ${
+                location.pathname === "/orders/proposals"
+                  ? "bg-info text-white"
+                  : "bg-white text-dark"
+              }`}
+              onClick={hideMenu}
+            >
+              <CgNotes
+                className="ml-2"
+                size="20"
+                color="#007CC3"
+                style={{ verticalAlign: "bottom" }}
+              />
+              <span className="ml-2" style={{ fontSize: "16px" }}>
+                Purchase Proposals
+              </span>
+            </Link>
+          </>
+        </Accordion.Collapse>
+      </Accordion>
 
       <Link
         to="/customers"
