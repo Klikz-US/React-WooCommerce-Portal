@@ -161,7 +161,6 @@ exports.getRentalQuotesByPage = (req, res) => {
       res.json({ total: result.data });
     })
     .catch(function (error) {
-      console.log(error);
       res.status(500).send(error);
     });
 };
@@ -175,7 +174,6 @@ exports.getRentalQuoteById = (req, res) => {
       res.json({ total: result.data });
     })
     .catch(function (error) {
-      console.log(error);
       res.status(500).send(error);
     });
 };
@@ -203,7 +201,6 @@ exports.getPurchaseProposalsByPage = (req, res) => {
       res.json({ total: result.data });
     })
     .catch(function (error) {
-      console.log(error);
       res.status(500).send(error);
     });
 };
@@ -217,7 +214,6 @@ exports.getPurchaseProposalById = (req, res) => {
       res.json({ total: result.data });
     })
     .catch(function (error) {
-      console.log(error);
       res.status(500).send(error);
     });
 };

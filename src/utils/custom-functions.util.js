@@ -11,6 +11,5 @@ export const convertArrayToObject = (array, key) => {
 export const convertStringToHTML = (string) => {
   let html = document.createElement("div");
   html.innerHTML = string;
-  console.log(html);
   return html.firstChild;
 };

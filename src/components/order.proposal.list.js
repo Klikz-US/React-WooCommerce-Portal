@@ -92,7 +92,6 @@ export default function OrderList() {
 
   const orderList = (orders) => {
     return orders.map(function (order, index) {
-      console.log(order);
       return <Order order={order} key={index} />;
     });
   };
@@ -116,7 +115,6 @@ export default function OrderList() {
           setHasSearchError(true);
           setHasResult(false);
         } else {
-          console.log(searchResult.data);
           setHasSearchError(false);
           setHasResult(true);
           setOrders(searchResult.data.total.entries);
