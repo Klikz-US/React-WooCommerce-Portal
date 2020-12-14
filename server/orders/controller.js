@@ -6,6 +6,19 @@ const WooCommerce = new WooCommerceRestApi({
   version: "wc/v3",
 });
 
+const axios = require("axios");
+
+var gfConfig = {
+  method: "get",
+  url: "https://www.cleanair.com/wp-json/gf/v2/entries",
+  headers: {
+    Authorization:
+      "Basic Y2tfNmNhOTMxMDQwNjk1MTNkN2YzY2VlYmQxNWRmZWE4ODg4N2Y5ZTdmYjpjc19hNzc4ZmJkODViODVmZDg2MTNkNGE2NDFkNjMzMTZmMmE4NmQyOTdk",
+    Username: "ck_6ca93104069513d7f3ceebd15dfea88887f9e7fb",
+    Password: "cs_a778fbd85b85fd8613d4a641d63316f2a86d297d",
+  },
+};
+
 exports.getTotal = (req, res) => {
   const pageId = req.params.pageId;
   async function process() {
@@ -33,6 +46,14 @@ exports.getByPage = (req, res) => {
           res.status(404).send("No Order");
         } else {
           res.json(orders.data);
+
+          axios(gfConfig)
+            .then(function (response) {
+              console.log(JSON.stringify(response.data));
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
         }
       })
       .catch((err) => {
