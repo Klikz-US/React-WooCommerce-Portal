@@ -1,3 +1,4 @@
+const Model = require("./model");
 const activity = require("../activity/controller");
 
 const WooCommerceRestApi = require("@woocommerce/woocommerce-rest-api").default;
@@ -56,7 +57,19 @@ exports.getById = (req, res) => {
         if (!customer) {
           res.status(404).send("No Data");
         } else {
-          res.json(customer.data);
+          Model.findOne({ customerId: _id }, (err, result) => {
+            if (err || !result) {
+              res.json(customer.data);
+            } else {
+              res.json({
+                ...customer.data,
+                ...{
+                  shippingPreference: result.shippingPreference,
+                  shippingAccount: result.shippingAccount,
+                },
+              });
+            }
+          });
         }
       })
       .catch((err) => {
@@ -95,10 +108,27 @@ exports.editById = (req, res) => {
           res.status(404).send("Update failed");
         } else {
           res.json(customer.data);
+
           activity.add(req.body.auth_user, "customer updated", {
             name: customer.data.email,
             link: "/customers/edit/" + customer.data.id,
           });
+
+          const customerData = {
+            customerId: customer.data.id,
+            shippingPreference: data.shippingPreference,
+            shippingAccount: data.shippingAccount,
+          };
+          Model.findOneAndUpdate(
+            { customerId: _id },
+            customerData,
+            (err, customer) => {
+              if (!err && !customer) {
+                const newCustomer = new Model(customerData);
+                newCustomer.save();
+              }
+            }
+          );
         }
       })
       .catch((err) => {
@@ -143,10 +173,18 @@ exports.add = (req, res) => {
           res.status(404).send("Create failed");
         } else {
           res.json(customer.data);
+
           activity.add(req.body.auth_user, "customer created", {
             name: customer.data.email,
             link: "/customers/edit/" + customer.data.id,
           });
+
+          const newCustomer = new Model({
+            customerId: customer.data.id,
+            shippingPreference: data.shippingPreference,
+            shippingAccount: data.shippingAccount,
+          });
+          newCustomer.save();
         }
       })
       .catch((err) => {

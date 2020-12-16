@@ -56,6 +56,9 @@ export default function CustomerAdd() {
 
   const sameAsShipping = useFormSwitch(false);
 
+  const shippingPreference = useFormInput("fedex");
+  const shippingAccount = useFormInput("");
+
   const customer = {
     email: email.value,
     first_name: first_name.value,
@@ -86,6 +89,8 @@ export default function CustomerAdd() {
         ? shipping_country.value
         : billing_country.value,
     },
+    shippingPreference: shippingPreference.value,
+    shippingAccount: shippingAccount.value,
   };
 
   const handleSubmit = (e) => {
@@ -304,6 +309,32 @@ export default function CustomerAdd() {
                         name="last_name"
                         type="text"
                         {...last_name}
+                      />
+                    </Form.Group>
+
+                    <hr />
+
+                    <Form.Group>
+                      <Form.Label>Shipping Method Preference</Form.Label>
+                      <Form.Control
+                        as="select"
+                        id="shippingPreference"
+                        name="shippingPreference"
+                        {...shippingPreference}
+                      >
+                        <option value="fedex">Fedex</option>
+                        <option value="ups">UPS</option>
+                        <option value="local">Ship on account Number</option>
+                      </Form.Control>
+                    </Form.Group>
+
+                    <Form.Group>
+                      <Form.Label>Shipping Account #</Form.Label>
+                      <Form.Control
+                        type="text"
+                        id="shippingAccount"
+                        name="shippingAccount"
+                        {...shippingAccount}
                       />
                     </Form.Group>
                   </Col>

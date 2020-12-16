@@ -58,6 +58,8 @@ export default function CustomerEdit() {
       postcode: "",
       country: "US",
     },
+    shippingPreference: "fedex",
+    shippingAccount: "",
   });
 
   const history = useHistory();
@@ -82,6 +84,9 @@ export default function CustomerEdit() {
   const shipping_country = useFormInput(customer.shipping.country);
 
   const sameAsShipping = useFormSwitch(false);
+
+  const shippingPreference = useFormInput(customer.shippingPreference);
+  const shippingAccount = useFormInput(customer.shippingAccount);
 
   useEffect(() => {
     async function getData() {
@@ -134,6 +139,8 @@ export default function CustomerEdit() {
             ? shipping_country.value
             : billing_country.value,
         },
+        shippingPreference: shippingPreference.value,
+        shippingAccount: shippingAccount.value,
       };
 
       async function fetchData() {
@@ -332,6 +339,32 @@ export default function CustomerEdit() {
                         name="last_name"
                         type="text"
                         {...last_name}
+                      />
+                    </Form.Group>
+
+                    <hr />
+
+                    <Form.Group>
+                      <Form.Label>Shipping Method Preference</Form.Label>
+                      <Form.Control
+                        as="select"
+                        id="shippingPreference"
+                        name="shippingPreference"
+                        {...shippingPreference}
+                      >
+                        <option value="fedex">Fedex</option>
+                        <option value="ups">UPS</option>
+                        <option value="local">Ship on account Number</option>
+                      </Form.Control>
+                    </Form.Group>
+
+                    <Form.Group>
+                      <Form.Label>Shipping Account #</Form.Label>
+                      <Form.Control
+                        type="text"
+                        id="shippingAccount"
+                        name="shippingAccount"
+                        {...shippingAccount}
                       />
                     </Form.Group>
                   </Col>
