@@ -1,0 +1,10 @@
+[
+  {
+    "role": "admin",
+    "email": "murrell@sparkinator.com",
+    "password": "",
+    "name": "Murrell Johnson",
+    "isAdmin": true,
+    "phone": "859-951-2822"
+  }
+]
