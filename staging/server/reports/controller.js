@@ -1,11 +1,13 @@
+require("dotenv").config();
+
 const activity = require("../activity/controller");
 const dateformat = require("dateformat");
 
 const WooCommerceRestApi = require("@woocommerce/woocommerce-rest-api").default;
 const WooCommerce = new WooCommerceRestApi({
-  url: "https://www.cleanair.com/",
-  consumerKey: "ck_920be0506bbf6a6c54744e8f0aa88b9695645af8",
-  consumerSecret: "cs_816b29db6e1baa1f83ecacdfe11a0ab8265f430f",
+  url: process.env.WOO_SITE_URL,
+  consumerKey: process.env.WOO_CONSUMER_KEY,
+  consumerSecret: process.env.WOO_CONSUMER_SEC,
   version: "wc/v3",
 });
 

@@ -1,11 +1,13 @@
+require("dotenv").config();
+
 const activity = require("../activity/controller");
 const NoteModel = require("../note/model");
 
 const WooCommerceRestApi = require("@woocommerce/woocommerce-rest-api").default;
 const WooCommerce = new WooCommerceRestApi({
-  url: "https://cleanairportal.wpengine.com/",
-  consumerKey: "ck_86f6086e182c8ac6bf95429b1ee5993b996ffd23",
-  consumerSecret: "cs_7624fbf93ff239f08686727adb9b020a066f79e9",
+  url: process.env.WOO_SITE_URL,
+  consumerKey: process.env.WOO_CONSUMER_KEY,
+  consumerSecret: process.env.WOO_CONSUMER_SEC,
   version: "wc/v3",
 });
 

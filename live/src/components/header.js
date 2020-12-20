@@ -83,6 +83,16 @@ export default function Header() {
           </Nav>
         </Navbar.Collapse>
       </Navbar>
+
+      <Navbar className="bg-white">
+        <p className="mr-auto text-danger mb-0 px-lg-5">
+          You are on the Portal of the <strong>PRODUCTION</strong> store.{" "}
+          <a className="" href="https://storeportal.cleanair.com/staging/">
+            <strong>SWITCH</strong>
+          </a>{" "}
+          to the STAGING store.
+        </p>
+      </Navbar>
     </header>
   );
 }
