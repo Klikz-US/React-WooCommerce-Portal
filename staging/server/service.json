@@ -1,0 +1,10 @@
+{
+  "uid": "server",
+  "append": true,
+  "watch": true,
+  "script": "./index.js",
+  "sourceDir": "",
+  "logFile": "/home/klikz/logs/cleanairportal.klikz.us/log.log",
+  "outFile": "/home/klikz/logs/cleanairportal.klikz.us/out.log",
+  "errFile": "/home/klikz/logs/cleanairportal.klikz.us/err.log"
+}
