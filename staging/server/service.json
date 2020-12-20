@@ -4,7 +4,7 @@
   "watch": true,
   "script": "./index.js",
   "sourceDir": "",
-  "logFile": "/home/klikz/logs/cleanairportal.klikz.us/log.log",
-  "outFile": "/home/klikz/logs/cleanairportal.klikz.us/out.log",
-  "errFile": "/home/klikz/logs/cleanairportal.klikz.us/err.log"
+  "logFile": "/home/storeportal/logs/staging/log.log",
+  "outFile": "/home/storeportal/logs/staging/out.log",
+  "errFile": "/home/storeportal/logs/staging/err.log"
 }
