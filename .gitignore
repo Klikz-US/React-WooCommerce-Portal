@@ -12,6 +12,8 @@
 
 # production
 /build
+/live/build
+/staging/build
 
 # misc
 .DS_Store
