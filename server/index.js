@@ -38,10 +38,6 @@ const https = require("https");
 const credentials = {
   key: fs.readFileSync("./ssl/private.key"),
   cert: fs.readFileSync("./ssl/public.crt"),
-  ca: [
-    fs.readFileSync("./ssl/CA_root.crt"),
-    fs.readFileSync("./ssl/alphasslrootcabundle.crt"),
-  ],
 };
 
 const httpServer = http.createServer(app);
